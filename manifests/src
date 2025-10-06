@@ -55,6 +55,9 @@ sysdep/libnix/sources/headers/stdio.h
 sysdep/libnix/sources/headers/strsup.h
 sysdep/libnix/sources/history
 sysdep/libnix/sources/math/Makefile.in
+sysdep/libnix/sources/math/extra/frexp.c
+sysdep/libnix/sources/math/extra/ldexp.c
+sysdep/libnix/sources/math/extra/modf.c
 sysdep/libnix/sources/math/extra/rand48.c
 sysdep/libnix/sources/math/stdio/isinf.c
 sysdep/libnix/sources/math/stdio/isnan.c
@@ -275,6 +278,12 @@ sysdep/libnix/sources/nix/time/localtime.c
 sysdep/libnix/sources/nix/time/mktime.c
 sysdep/libnix/sources/nix/time/strftime.c
 sysdep/libnix/sources/nix/time/time.c
+sysdep/libnix/sources/nix13/Makefile.in
+sysdep/libnix/sources/nix13/extra/stricmp.c
+sysdep/libnix/sources/nix13/extra/strnicmp.c
+sysdep/libnix/sources/nix13/math/__divsi3.c
+sysdep/libnix/sources/nix13/math/__mulsi3.c
+sysdep/libnix/sources/nix13/math/__udivsi3.c
 sysdep/libnix/sources/nix_main/Makefile.in
 sysdep/libnix/sources/nix_main/__nocommandline.c
 sysdep/libnix/sources/nix_main/_main.c
@@ -372,7 +381,6 @@ sysdep/libnix/sources/stubs/misc/__UtilityBase.c
 sysdep/libnix/sources/stubs/misc/__cpucheck.c
 sysdep/libnix/sources/stubs/misc/__flush_cache.c
 sysdep/libnix/sources/stubs/misc/__initlibraries.c
-sysdep/libnix/sources/stubs/misc/__openliberror.c
 sysdep/libnix/sources/stubs/stubs/__exit_list__.c
 sysdep/libnix/sources/stubs/stubs/__init_list__.c
 sysdep/libnix/sources/stubs/stubs/__lib_list__.c

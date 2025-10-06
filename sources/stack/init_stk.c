@@ -1,12 +1,10 @@
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <stabs.h>
+#include "stabs.h"
 
-extern APTR __SaveSP;
 extern ULONG __stk_safezone;
 
-APTR  __stk_limit=NULL;
-APTR *__stackborders=NULL;
+APTR *__stackborders=0,__stk_limit=0;
 
 /*
  * This way to find the bottom of the current stackframe
@@ -23,17 +21,14 @@ APTR *__stackborders=NULL;
 
 void __init_stk(void)
 {
-  struct Process *me;
-  APTR sl;
+  struct Process *me = (struct Process *)FindTask(NULL);
+  UBYTE *sl;
 
-  me=(struct Process *)FindTask(NULL);
-  __stackborders=&me->pr_Task.tc_SPLower;
-  sl=&me->pr_Task.tc_SPLower;
-  if(me->pr_CLI)
-    sl=(char *)me->pr_ReturnAddr /*+sizeof(ULONG)*/ -*(ULONG *)me->pr_ReturnAddr;
-  			         /*^^^^^^^^^^^^^^ need not be that precise */
-  sl+=__stk_safezone;
-  __stk_limit=sl;
+  __stackborders = (APTR *)(sl = (UBYTE *)&me->pr_Task.tc_SPLower);
+  if (me->pr_CLI)
+    sl = /*sizeof(ULONG)+*/ (UBYTE *)me->pr_ReturnAddr - *(ULONG *)me->pr_ReturnAddr;
+         /*^^^^^^^^^^^^^^ need not be that precise */
+  __stk_limit = (sl += __stk_safezone);
 }
 
 ADD2INIT(__init_stk,-50);

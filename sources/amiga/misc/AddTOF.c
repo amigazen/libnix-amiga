@@ -5,23 +5,23 @@
 #include <proto/graphics.h>
 #include <proto/exec.h>
 
-static int stub()
+STATIC int stub(struct Isrvstr *intr asm("a1"))
 {
-  register struct Isrvstr *intr asm("a1");
-
   (*intr->ccode)(intr->Carg); return 0;
 }
 
-void AddTOF(struct Isrvstr *intr, long (*code)(), long arg)
-{
-   intr->Iptr=intr;
-   intr->code=(int (*)())stub;
-   intr->ccode=(int (*)())code;
-   intr->Carg=(int)arg;
-   AddIntServer(INTB_VERTB,(struct Interrupt *)intr);
+VOID AddTOF(struct Isrvstr *intr,LONG (*code)(APTR),APTR arg)
+{ APTR SysBase = *(APTR *)4L;
+
+  intr->Iptr  = intr;
+  intr->code  = (int (*)())stub;
+  intr->ccode = (int (*)())code;
+  intr->Carg  = (int)arg;
+  AddIntServer(INTB_VERTB,(struct Interrupt *)intr);
 }
 
-void RemTOF(struct Isrvstr *intr)
-{
+VOID RemTOF(struct Isrvstr *intr)
+{ APTR SysBase = *(APTR *)4L;
+
   RemIntServer(INTB_VERTB,(struct Interrupt *)intr);
 }

@@ -15,7 +15,7 @@
 extern struct Locale *__localevec[];
 
 /* All calendar strings */
-static const unsigned char *strings[]=
+static const unsigned char *const strings[]=
 { "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",
   "Sun","Mon","Tue","Wed","Thu","Fri","Sat",
   "January","February","March","April","May","June",
@@ -48,7 +48,7 @@ size_t strftime(char *s,size_t maxsize,const char *format,const struct tm *timep
         case 'h':
           ADDS(STR(ABMON_1+timeptr->tm_mon));
         case 'c':
-          ADDS("%m/%d/%y");
+          ADDS("%m/%d/%y %H:%M:%S");
         case 'd':
           ADDN(2,timeptr->tm_mday);
         case 'e':
@@ -68,7 +68,7 @@ size_t strftime(char *s,size_t maxsize,const char *format,const struct tm *timep
         case 'w':
           ADDN(1,timeptr->tm_wday);
         case 'x':
-          ADDS("%m/%d/%y %H:%M:%S");
+          ADDS("%m/%d/%y");
         case 'y':
           ADDN(2,timeptr->tm_year%100);
         case 'A':

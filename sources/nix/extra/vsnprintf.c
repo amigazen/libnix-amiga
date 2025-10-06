@@ -16,4 +16,3 @@ int vsnprintf(char *s,size_t size,const char *format,va_list args)
   fputc('\0',&buffer);
   return retval;
 }
-

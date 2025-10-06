@@ -1,33 +1,30 @@
-#include <pool.h>
+#include "pool.h"
 
-VOID AsmFreePooled(POOL *poolHeader REG(a0), APTR memory REG(a1), ULONG memSize REG(d0), struct ExecBase *SysBase REG(a6))
+VOID ASM AsmFreePooled(REG(a0,POOL *poolHeader),REG(a1,APTR memory),REG(d0,ULONG memSize),REG(a6,APTR SysBase))
 {
-  if (SysBase->LibNode.lib_Version>=39)
+  if (((struct Library *)SysBase)->lib_Version>=39)
     return (FreePooled(poolHeader,memory,memSize));
-  else {
+  else if (poolHeader!=NULL && memory!=NULL) {
 
-    if (poolHeader!=NULL && memory!=NULL) {
+    ULONG size,*puddle=(ULONG *)((struct MinNode *)memory-1)-1;
 
-      ULONG size,*puddle=(ULONG *)((struct MinNode *)memory-1)-1;
+    if (poolHeader->ThreshSize>memSize) {
 
-      if (poolHeader->ThreshSize>memSize) {
+      struct MemHeader *a=(struct MemHeader *)&poolHeader->PuddleList.mlh_Head;
 
-        struct MemHeader *a=(struct MemHeader *)&poolHeader->PuddleList.mlh_Head;
-
-        for(;;) {
-          a=(struct MemHeader *)a->mh_Node.ln_Succ;
-          if (a->mh_Node.ln_Succ==NULL)
-            return;
-          if (a->mh_Node.ln_Type && memory>=a->mh_Lower && memory<a->mh_Upper)
-            break;
-        }
-        Deallocate(a,memory,memSize);
-        if (a->mh_Free!=poolHeader->PuddleSize)
+      for(;;) {
+        a=(struct MemHeader *)a->mh_Node.ln_Succ;
+        if (a->mh_Node.ln_Succ==NULL)
           return;
-        puddle=(ULONG *)&a->mh_Node;
+        if (a->mh_Node.ln_Type && memory>=a->mh_Lower && memory<a->mh_Upper)
+          break;
       }
-      Remove((struct Node *)puddle);
-      size=*--puddle; FreeMem(puddle,size);
+      Deallocate(a,memory,memSize);
+      if (a->mh_Free!=poolHeader->PuddleSize)
+        return;
+      puddle=(ULONG *)&a->mh_Node;
     }
+    Remove((struct Node *)puddle);
+    size=*--puddle; FreeMem(puddle,size);
   }
 }

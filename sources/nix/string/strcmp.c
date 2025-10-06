@@ -1,15 +1,8 @@
 #include <string.h>
 
 int strcmp(const char *s1,const char *s2)
-{ 
-  const unsigned char *p1=s1,*p2=s2;
+{ unsigned char *p1=(unsigned char *)s1, *p2=(unsigned char *)s2;
   unsigned long r,c;
 
-  c=0;  
-  do
-  {
-    r=*p1++;
-    ((unsigned char)c)=*p2++;
-  } while (!(r-=c) && (unsigned char)c);
-  return r;
+  do;while(r=*p1++,c=*p2++,!(r-=c) && (char)c); return r;
 }

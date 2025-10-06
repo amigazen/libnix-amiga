@@ -2,8 +2,8 @@
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include "stabs.h"
 #include <stdlib.h>
+#include "stabs.h"
 
 /*
  * swapstack.c
@@ -30,7 +30,7 @@ static struct StackSwapStruct stack;
 static char *newstack;
 
 void __stkinit(long a)
-{
+{ APTR SysBase = *(APTR *)4;
   register char *sp asm("sp");
   ULONG size,needed=__stack;
   struct Process *pr;
@@ -44,8 +44,7 @@ void __stkinit(long a)
 
   size = (char *)pr->pr_Task.tc_SPUpper - (char *)pr->pr_Task.tc_SPLower;
 
-  if (pr->pr_CLI)
-  {
+  if (pr->pr_CLI) {
     size = *(ULONG *)pr->pr_ReturnAddr;
   }
 
@@ -57,8 +56,7 @@ void __stkinit(long a)
 
   /* Allocate new stack */
   newstack = new = AllocVec(needed,MEMF_PUBLIC);
-  if (!new)
-  {
+  if (!new) {
     __request("Couldn't allocate new stack!");
     exit(RETURN_FAIL);
   }
@@ -77,7 +75,7 @@ void __stkinit(long a)
 }
 
 void __stkexit(ULONG a)
-{
+{ APTR SysBase = *(APTR *)4;
   register char *sp asm("sp");
   ULONG size;
   char *new;

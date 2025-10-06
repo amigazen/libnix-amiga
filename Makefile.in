@@ -1,13 +1,14 @@
 # Build all models of the libnix libraries.
 #
-# CFLAGS=-Wall -O3 -DOS_20_ONLY
+# CFLAGS=-Wall -O3
 #
 #   -fbaserel -DSMALL_DATA	for small data model
-#   -mc68020			for 68020 specific code
-#   -mc68881			for 68881 specific code
+#   -fbaserel32			for large baserel model
+#   -m68020			for 68020 specific code
+#   -m68060			for 68060 specific code
+#   -m68881			for 68881 specific code (FPU)
 #   -DIXPATHS			for Un*x path option
 #   -DDEBUG_LIB 		build a library for debugging (not yet fully working)
-#   -DOS_20_ONLY		disable some 1.3 compatibilities (use always)
 
 #### Start of system configuration section. ####
 
@@ -28,32 +29,31 @@ INSTALL =	@INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA =	@INSTALL_DATA@
 
-CC =		@CC@
-CPP =           @CPP@
-AS =		as
-
-RANLIB =	@RANLIB@
-
 #### End system configuration section ####
 
-V=VER: libnix 1.1b (12.10.97)
+V=VER: libnix 2.1 (11.09.2004)
 
 CURDIR := $(shell pwd)
 
-MAKE=make -f $(CURDIR)/sources/Makefile
+MAK2=$(MAKE) -f $(CURDIR)/sources/Makefile
 
-SUBDIRS=startup lib libb lib020 libb020 lib881 libb881
+SUBDIRS=startup lib libb lib020 libb020 lib881 libb881 libb32 #lib060 libb060 libb32 libb32881 libb32060
 
-all: libnix.guide libnix.info $(SUBDIRS)
-	cd sources;	make filelists
-	cd startup;	make -f $(CURDIR)/sources/startup/Makefile V="$(V)"
-	cd lib; 	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DOS_20_ONLY"
-	cd libb;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DOS_20_ONLY -fbaserel -DSMALL_DATA"
-	cd lib020;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DOS_20_ONLY -mc68020"
-	cd libb020;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DOS_20_ONLY -fbaserel -DSMALL_DATA -mc68020"
-	cd lib881;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DOS_20_ONLY -mc68020 -m68881"
-	cd libb881;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DOS_20_ONLY -fbaserel -DSMALL_DATA -mc68020 -m68881"
-#	cd libix;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DOS_20_ONLY -DIXPATHS"
+all: $(SUBDIRS)
+	cd sources;	$(MAKE) filelists
+	cd startup;	$(MAKE) -f $(CURDIR)/sources/startup/Makefile V="$(V)"
+	cd lib; 	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer"
+	cd libb;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA"
+	cd lib020;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68020"
+	cd libb020;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68020"
+	cd lib881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68020 -m68881"
+	cd libb881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68020 -m68881"
+#	cd lib060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68060 -m68881"
+#	cd libb060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68060 -m68881"
+	cd libb32;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68020"
+#	cd libb32881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68020 -m68881"
+#	cd libb32060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68060 -m68881"
+#	cd libix;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DIXPATHS"
 
 $(SUBDIRS):
 	mkdir $@
@@ -61,28 +61,40 @@ $(SUBDIRS):
 libamiga:
 	if [ ! -d lib ] ; then mkdir lib ; else true ; fi
 	if [ ! -d libb ] ; then mkdir libb ; else true ; fi
-	cd sources;	make filelists
-	cd lib; 	$(MAKE) libamiga CFLAGS="-O3 -fomit-frame-pointer"
-	cd libb;	$(MAKE) libamiga CFLAGS="-O3 -fomit-frame-pointer -fbaserel"
+	if [ ! -d libb32 ] ; then mkdir libb32 ; else true ; fi
+	cd sources;	$(MAK2) filelists
+	cd lib; 	$(MAK2) libamiga CFLAGS="-O3 -fomit-frame-pointer"
+	cd libb;	$(MAK2) libamiga CFLAGS="-O3 -fomit-frame-pointer -fbaserel"
+	cd libb32;	$(MAK2) libamiga CFLAGS="-O3 -fomit-frame-pointer -fbaserel32 -m68020"
 
 clean:
-	cd lib; 	$(MAKE) clean
-	cd libb;	$(MAKE) clean
-	cd lib020;	$(MAKE) clean
-	cd libb020;	$(MAKE) clean
-	cd lib881;	$(MAKE) clean
-	cd libb881;	$(MAKE) clean
-#	cd libix;	$(MAKE) clean
+	cd lib; 	$(MAK2) clean
+	cd libb;	$(MAK2) clean
+	cd lib020;	$(MAK2) clean
+	cd libb020;	$(MAK2) clean
+	cd lib881;	$(MAK2) clean
+	cd libb881;	$(MAK2) clean
+#	cd lib060;	$(MAK2) clean
+#	cd libb060;	$(MAK2) clean
+	cd libb32;	$(MAK2) clean
+#	cd libb32881;	$(MAK2) clean
+#	cd libb32060;	$(MAK2) clean
+#	cd libix;	$(MAK2) clean
 	-rm -f sources/*/filelist sources/stubs/libbases/* sources/stubs/libnames/*
 
 veryclean:
-	cd lib; 	$(MAKE) veryclean
-	cd libb;	$(MAKE) veryclean
-	cd lib020;	$(MAKE) veryclean
-	cd libb020;	$(MAKE) veryclean
-	cd lib881;	$(MAKE) veryclean
-	cd libb881;	$(MAKE) veryclean
-#	cd libix;	$(MAKE) veryclean
+	cd lib; 	$(MAK2) veryclean
+	cd libb;	$(MAK2) veryclean
+	cd lib020;	$(MAK2) veryclean
+	cd libb020;	$(MAK2) veryclean
+	cd lib881;	$(MAK2) veryclean
+	cd libb881;	$(MAK2) veryclean
+#	cd lib060;	$(MAK2) veryclean
+#	cd libb060;	$(MAK2) veryclean
+	cd libb32;	$(MAK2) veryclean
+#	cd libb32881;	$(MAK2) veryclean
+#	cd libb32060;	$(MAK2) veryclean
+#	cd libix;	$(MAK2) veryclean
 	-rm sources/*/filelist
 
 libnix.guide: libnix.texi
@@ -105,8 +117,18 @@ install: installdirs
 	$(INSTALL) lib881/misc/*.o $(prefix)/lib/libm020/libm881/libnix
 	$(INSTALL) libb881/*/lib*.a $(prefix)/lib/libb/libm020/libm881/libnix
 	$(INSTALL) libb881/misc/*.o $(prefix)/lib/libb/libm020/libm881/libnix
-	$(INSTALL_DATA) *.info* $(infodir)
-	$(INSTALL_DATA) libnix.guide $(guidedir)/libnix.guide
+#	$(INSTALL) lib060/*/lib*.a $(prefix)/lib/libm060/libnix
+#	$(INSTALL) lib060/misc/*.o $(prefix)/lib/libm060/libnix
+#	$(INSTALL) libb060/*/lib*.a $(prefix)/lib/libb/libm060/libnix
+#	$(INSTALL) libb060/misc/*.o $(prefix)/lib/libb/libm060/libnix
+	$(INSTALL) libb32/*/lib*.a $(prefix)/lib/libb32/libm020/libnix
+	$(INSTALL) libb32/misc/*.o $(prefix)/lib/libb32/libm020/libnix
+#	$(INSTALL) libb32881/*/lib*.a $(prefix)/lib/libb32/libm020/libm881/libnix
+#	$(INSTALL) libb32881/misc/*.o $(prefix)/lib/libb32/libm020/libm881/libnix
+#	$(INSTALL) libb32060/*/lib*.a $(prefix)/lib/libb32/libm060/libnix
+#	$(INSTALL) libb32060/misc/*.o $(prefix)/lib/libb32/libm060/libnix
+#	$(INSTALL_DATA) *.info* $(infodir)
+#	$(INSTALL_DATA) libnix.guide $(guidedir)/libnix.guide
 
 installdirs: mkinstalldirs
 	$(srcdir)/mkinstalldirs \
@@ -123,32 +145,58 @@ installdirs: mkinstalldirs
 	$(libdir)/libb/libm020 \
 	$(libdir)/libb/libm020/libnix \
 	$(libdir)/libb/libm020/libm881 \
-	$(libdir)/libb/libm020/libm881/libnix
+	$(libdir)/libb/libm020/libm881/libnix \
+	$(libdir)/libb32 \
+	$(libdir)/libb32/libnix \
+	$(libdir)/libb32/libm020 \
+	$(libdir)/libb32/libm020/libnix 
+#	$(libdir)/libm060 \
+#	$(libdir)/libm060/libnix \
+#	$(libdir)/libb/libm060 \
+#	$(libdir)/libb/libm060/libnix
+#	$(libdir)/libb32 \
+#	$(libdir)/libb32/libnix \
+#	$(libdir)/libb32/libm020 \
+#	$(libdir)/libb32/libm020/libnix \
+#	$(libdir)/libb32/libm020/libm881 \
+#	$(libdir)/libb32/libm020/libm881/libnix \
+#	$(libdir)/libb32/libm060 \
+#	$(libdir)/libb32/libm060/libnix
 
 distribution:
-	mkdir T:gnu T:gnu/lib T:gnu/lib/libnix
-	lha a -mraxez T:gnu/libnix-sources.lha Makefile libnix.texi
-	lha a -mraxez T:gnu/libnix-sources.lha sources examples
-	mkdir T:gnu/lib/libm020 T:gnu/lib/libm020/libnix \
-	      T:gnu/lib/libm020/libm881 T:gnu/lib/libm020/libm881/libnix \
-	      T:gnu/lib/libb T:gnu/lib/libb/libnix \
-	      T:gnu/lib/libb/libm020 T:gnu/lib/libb/libm020/libnix \
-	      T:gnu/lib/libb/libm020/libm881 T:gnu/lib/libb/libm020/libm881/libnix
-	cp -p startup/*.o T:gnu/lib/libnix
-	cp -p lib/*/*.a T:gnu/lib/libnix
-	cp -p lib/misc/*.o T:gnu/lib/libnix
-	cp -p libb/*/*.a T:gnu/lib/libb/libnix
-	cp -p libb/misc/*.o T:gnu/lib/libb/libnix
-	cp -p lib020/*/*.a T:gnu/lib/libm020/libnix
-	cp -p lib020/misc/*.o T:gnu/lib/libm020/libnix
-	cp -p libb020/*/*.a T:gnu/lib/libb/libm020/libnix
-	cp -p libb020/misc/*.o T:gnu/lib/libb/libm020/libnix
-	cp -p lib881/*/*.a T:gnu/lib/libm020/libm881/libnix
-	cp -p lib881/misc/*.o T:gnu/lib/libm020/libm881/libnix
-	cp -p libb881/*/*.a T:gnu/lib/libb/libm020/libm881/libnix
-	cp -p libb881/misc/*.o T:gnu/lib/libb/libm020/libm881/libnix
-	-rm T:gnu/lib/libnix/libglue.a T:gnu/lib/libb/libnix/libglue.a
-	-cp * T:gnu
-	rm T:gnu/Makefile T:gnu/libnix.texi
-	cd /t;lha m -mraxeZ libnix.lha gnu
-	rm -r T:gnu
+	mkdir t:gg t:gg/lib t:gg/lib/libnix
+	lha a -mraxez t:gg/libnix-sources.lha Makefile libnix.texi
+	lha a -mraxez t:gg/libnix-sources.lha sources examples
+	mkdir t:gg/lib/libm020 t:gg/lib/libm020/libnix \
+	      t:gg/lib/libm020/libm881 t:gg/lib/libm020/libm881/libnix \
+	      t:gg/lib/libb t:gg/lib/libb/libnix \
+	      t:gg/lib/libb/libm020 t:gg/lib/libb/libm020/libnix \
+	      t:gg/lib/libb/libm020/libm881 t:gg/lib/libb/libm020/libm881/libnix
+	cp -p startup/*.o t:gg/lib/libnix
+	cp -p lib/*/*.a t:gg/lib/libnix
+	cp -p lib/misc/*.o t:gg/lib/libnix
+	cp -p libb/*/*.a t:gg/lib/libb/libnix
+	cp -p libb/misc/*.o t:gg/lib/libb/libnix
+	cp -p lib020/*/*.a t:gg/lib/libm020/libnix
+	cp -p lib020/misc/*.o t:gg/lib/libm020/libnix
+	cp -p libb020/*/*.a t:gg/lib/libb/libm020/libnix
+	cp -p libb020/misc/*.o t:gg/lib/libb/libm020/libnix
+	cp -p lib881/*/*.a t:gg/lib/libm020/libm881/libnix
+	cp -p lib881/misc/*.o t:gg/lib/libm020/libm881/libnix
+	cp -p libb881/*/*.a t:gg/lib/libb/libm020/libm881/libnix
+	cp -p libb881/misc/*.o t:gg/lib/libb/libm020/libm881/libnix
+#	cp -p lib060/*/*.a t:gg/lib/libm060/libnix
+#	cp -p lib060/misc/*.o t:gg/lib/libm060/libnix
+#	cp -p libb060/*/*.a t:gg/lib/libm060/libnix
+#	cp -p libb060/misc/*.o t:gg/lib/libm060/libnix
+#	cp -p libb32/*/*.a t:gg/lib/libm020/libnix
+#	cp -p libb32/misc/*.o t:gg/lib/libm020/libnix
+#	cp -p libb32881/*/*.a t:gg/lib/libm020/libm881/libnix
+#	cp -p libb32881/misc/*.o t:gg/lib/libm020/libm881/libnix
+#	cp -p libb32060/*/*.a t:gg/lib/libm060/libnix
+#	cp -p libb32060/misc/*.o t:gg/lib/libm060/libnix
+	-rm t:gg/lib/libnix/libglue.a t:gg/lib/libb/libnix/libglue.a
+	-cp * t:gg
+	rm t:gg/Makefile t:gg/libnix.texi
+	cd t:gg;lha m -mraxeZ libnix.lha *
+	rm -rf t:gg

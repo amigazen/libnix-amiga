@@ -1,14 +1,18 @@
+#ifndef _HEADERS_POOL_H
+#define _HEADERS_POOL_H
+
 #include <exec/types.h>
 
-#if !defined(__GNUC__)
-#define REG(x)
+#if defined(__GNUC__)
+#define ASM
+#define REG(reg,arg) arg __asm(#reg)
 #else
-#define REG(x) __asm(#x)
+#define ASM __asm
+#define REG(reg,arg) register __##reg arg
 #endif
 
 #include <exec/lists.h>
 #include <exec/memory.h>
-#include <exec/execbase.h>
 #include <proto/exec.h>
 
 /*
@@ -24,10 +28,12 @@ typedef struct Pool {
 } POOL;
 
 /*
-** required prototypes ;)
+** required prototypes
 */
 
-APTR AsmCreatePool(ULONG REG(d0),ULONG REG(d1),ULONG REG(d2),struct ExecBase * REG(a6));
-APTR AsmAllocPooled(POOL * REG(a0),ULONG REG(d0),struct ExecBase * REG(a6));
-VOID AsmFreePooled(POOL * REG(a0),APTR REG(a1),ULONG REG(d0), struct ExecBase * REG(a6));
-VOID AsmDeletePool(POOL * REG(a0),struct ExecBase * REG(a6));
+APTR ASM AsmCreatePool(REG(d0,ULONG),REG(d1,ULONG),REG(d2,ULONG),REG(a6,APTR));
+APTR ASM AsmAllocPooled(REG(a0,POOL *),REG(d0,ULONG),REG(a6,APTR));
+VOID ASM AsmFreePooled(REG(a0,POOL *),REG(a1,APTR),REG(d0,ULONG),REG(a6,APTR));
+VOID ASM AsmDeletePool(REG(a0,POOL *),REG(a6,APTR));
+
+#endif /* _HEADERS_POOL_H */

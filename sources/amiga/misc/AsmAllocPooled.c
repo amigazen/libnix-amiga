@@ -1,8 +1,8 @@
-#include <pool.h>
+#include "pool.h"
 
-APTR AsmAllocPooled(POOL *poolHeader REG(a0), ULONG memSize REG(d0), struct ExecBase *SysBase REG(a6))
+APTR ASM AsmAllocPooled(REG(a0,POOL *poolHeader),REG(d0,ULONG memSize),REG(a6,APTR SysBase))
 {
-  if (SysBase->LibNode.lib_Version>=39)
+  if (((struct Library *)SysBase)->lib_Version>=39)
     return (AllocPooled(poolHeader,memSize));
   else {
 

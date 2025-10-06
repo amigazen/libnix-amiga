@@ -2,4 +2,4 @@
 #include <stdlib.h>
 
 long atol(const char *nptr)
-{ return strtol(nptr,NULL,0); }
+{ return strtol(nptr,NULL,10); }

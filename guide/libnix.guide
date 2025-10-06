@@ -1,45 +1,46 @@
-@database libnix.guide
+@database libnix.info
 
-@Master /gg-src/gg/sysdep/libnix/libnix.texi
+@Master libnix.texi
 
 @Width 72
 
 
-This is the AmigaGuide®  file libnix.guide, produced by Makeinfo-1.68 from 
-the input file /gg-src/gg/sysdep/libnix/libnix.texi.
+This is the AmigaGuide. file libnix.info, produced by Makeinfo-1.55 from 
+the input file libnix.texi.
 
    This is libnix.texi the documentation of the libnix library.  Since
 this document is part of the libnix package it stands under the same
 copyright as the library itself, i.e. it's public domain.
 
-@node Main "libnix.guide"
-@next "Description"
+
+@Node Main "libnix.info"
+@Next "Description"
 
    This is the documentation of libnix. The following is a list of
 chapters. You need not read all of them - but reading the chapter
 Features is recommended.
 
 
- @{" Description     " link "Description"}  What is libnix?
- @{" Authors         " link "Authors"}  Who did it?
- @{" Disclaimer      " link "Disclaimer"}  Copyright and other legal stuff.
- @{" Naming          " link "Naming"}  Naming conventions.
- @{" Usage           " link "Usage"}  How to use it ;-)
- @{" Features        " link "Features"}  Details of the implementation (and more).
- @{" Special startups " link "Special startups"}  How to write shared libraries and devices with gcc.
- @{" Set elements    " link "Set elements"}  A nice feature of gnu ld.
- @{" geta4           " link "geta4"}  Some words on code and data models
- @{" Library bases   " link "Library bases"}  And how they work.
- @{" Code size       " link "Code size"}  How to write small programs with gcc
- @{" FAQs            " link "FAQs"}  Frequently asked questions and answers.
+ @{" Description " Link "Description"}       What is libnix?
+ @{" Authors " Link "Authors"} 	     Who did it?
+ @{" Disclaimer " Link "Disclaimer"} 	     Copyright and other legal stuff.
+ @{" Naming " Link "Naming"} 	     Naming conventions.
+ @{" Usage " Link "Usage"} 	     How to use it ;-)
+ @{" Features " Link "Features"} 	     Details of the implementation (and more).
+ @{" Special startups " Link "Special startups"}  How to write shared libraries and devices with gcc.
+ @{" Set elements " Link "Set elements"}      A nice feature of gnu ld.
+ @{" geta4 " Link "geta4"} 	     Some words on code and data models
+ @{" Library bases " Link "Library bases"}     And how they work.
+ @{" Code size " Link "Code size"} 	     How to write small programs with gcc
+ @{" FAQs " Link "FAQs"} 	     Frequently asked questions and answers.
 
 
-@endnode
+@EndNode
 
-@node "Description" "libnix.guide/Description"
-@next "Authors"
-@prev "Main"
-@toc "Main"
+@Node "Description" "libnix.info/Description"
+@Next "Authors"
+@Prev "Main"
+@Toc "Main"
 
 What is libnix?
 ***************
@@ -69,12 +70,12 @@ redistribute ixemul.library - this can be your choice.
    But be aware - libnix requires Amiga OS 2.0 or higher :(.
 
 
-@endnode
+@EndNode
 
-@node "Authors" "libnix.guide/Authors"
-@next "Disclaimer"
-@prev "Description"
-@toc "Main"
+@Node "Authors" "libnix.info/Authors"
+@Next "Disclaimer"
+@Prev "Description"
+@Toc "Main"
 
 Authors
 *******
@@ -95,12 +96,12 @@ Brand for finding a name for this beast and Kriton Kyrimis who
 contributed some of the non-ANSI functions and a lot of ideas.
 
 
-@endnode
+@EndNode
 
-@node "Disclaimer" "libnix.guide/Disclaimer"
-@next "Naming"
-@prev "Authors"
-@toc "Main"
+@Node "Disclaimer" "libnix.info/Disclaimer"
+@Next "Naming"
+@Prev "Authors"
+@Toc "Main"
 
 Disclaimer
 **********
@@ -113,12 +114,12 @@ responsible for any damage resulting out of the use of it - you simply
 shouldn't trust anything you didn't pay for :-).
 
 
-@endnode
+@EndNode
 
-@node "Naming" "libnix.guide/Naming"
-@next "Usage"
-@prev "Disclaimer"
-@toc "Main"
+@Node "Naming" "libnix.info/Naming"
+@Next "Usage"
+@Prev "Disclaimer"
+@Toc "Main"
 
 Naming conventions
 ******************
@@ -129,28 +130,28 @@ programmer (if you want to write your own startup, etc).
    If you want to write code for it you should be aware of the normal
 naming conventions for ANSI libraries:
 
-   * Names with no underscore @{b}foo@{ub} are ANSI or POSIX compliant - there
+   * Names with no underscore `foo' are ANSI or POSIX compliant - there
      is absolutely no risk in using them. If you use only these you can
      write portable programs.
 
-   * Names with a single underscore @{b}_foo@{ub} are ANSI extensions for the
+   * Names with a single underscore `_foo' are ANSI extensions for the
      end user. Usually they are very common on certain systems but not
      used on others.
 
-   * Names with two underscores @{b}__foo@{ub} are for the library programmers
+   * Names with two underscores `__foo' are for the library programmers
      only.  If they are not documented you cannot rely on them. And
      even if they are you should use them only for writing library code.
 
-   There is only one exception of these conventions (@{b}__chkabort()@{ub}) and
-this is for compatibility reasons.
+   There is only one exception of these conventions (`__chkabort()')
+and this is for compatibility reasons.
 
 
-@endnode
+@EndNode
 
-@node "Usage" "libnix.guide/Usage"
-@next "Features"
-@prev "Naming"
-@toc "Main"
+@Node "Usage" "libnix.info/Usage"
+@Next "Features"
+@Prev "Naming"
+@Toc "Main"
 
 Usage
 *****
@@ -168,43 +169,44 @@ important thing is the right linkage order:
 
    Normally this is handled by the specs file of gcc.
 
-@{b}   gcc (-fbaserel) (-resident) -noixemul YOUR_OBJECTS (-nix_main) (-lm)@{ub}
+   `gcc (-fbaserel) (-resident) -noixemul YOUR_OBJECTS (-nix_main)
+(-lm)'
 
-   If you use @{b}-lnix_main@{ub} you get a different commandline parser.  @{b}-lm@{ub}
-uses the math library.
+   If you use `-lnix_main' you get a different commandline parser.
+`-lm' uses the math library.
 
    Be aware that the formatted I/O-functions need the math library to
 work correctly for floating point numbers. Without the math library you
-get only floating point support for simple operators like @{b}+@{ub}, @{b}*@{ub}, casts
-and that like.
+get only floating point support for simple operators like `+', `*',
+casts and that like.
 
    If you don't use the assembler inline functions of gcc you will have
-to use @{b}libamiga.a@{ub} if you want to use any Amiga OS function.  gcc comes
-with a free version of libamiga.a which is a subset of the original
-one. You can build it yourself if you unpack the sources, but be
-prepared that it may take some time.
+to use `libamiga.a' if you want to use any Amiga OS function.  gcc
+comes with a free version of libamiga.a which is a subset of the
+original one. You can build it yourself if you unpack the sources, but
+be prepared that it may take some time.
 
-   For compiling a4-relative programs you should choose the @{b}-fbaserel@{ub}
-option. You get resident (pure) programs if you set the @{b}-resident@{ub}
+   For compiling a4-relative programs you should choose the `-fbaserel'
+option. You get resident (pure) programs if you set the `-resident'
 option. Anything else necessary for these options is handled by the
 specs-file (choosing the right startups and libraries).
 
    If you (for some reason) don't trust you specs-file you can call
 everything by hand:
 
-@{b}   gcc -nostdlib ncrt0.o YOUR_OBJECTS libnixmain.a (libm.a) libnix.a
-libstubs.a@{ub}
+   `gcc -nostdlib ncrt0.o YOUR_OBJECTS libnixmain.a (libm.a) libnix.a
+libstubs.a'
 
    But that's not the recommended way. Therefore I don't explain this in
-detail here - use the @{b}-v@{ub} option of gcc for more details.
+detail here - use the `-v' option of gcc for more details.
 
 
-@endnode
+@EndNode
 
-@node "Features" "libnix.guide/Features"
-@next "Special startups"
-@prev "Usage"
-@toc "Main"
+@Node "Features" "libnix.info/Features"
+@Next "Special startups"
+@Prev "Usage"
+@Toc "Main"
 
 Features - what you get
 ***********************
@@ -215,35 +217,35 @@ bottom and take one file of each menu entry you will get a working
 configuration.
 
 
- @{" Startup codes     " link "Startup codes"}  Does all work necessary for startup.
+ @{" Startup codes " Link "Startup codes"}       Does all work necessary for startup.
   Your objects	       Need I say anything about that?
- @{" Commandline parser " link "Commandline parser"}  Calculates argc and argv.
+ @{" Commandline parser " Link "Commandline parser"}  Calculates argc and argv.
   libm.a	       The math library (optional).
- @{" libstack.a        " link "libstack.a"}  Stack extension code (optional).
- @{" libnix.a          " link "libnix.a"}  The library itself.
- @{" libamiga.a        " link "libamiga.a"}  If you have one.
- @{" detach.o          " link "detach.o"}  Auto detaching
- @{" libstubs.a        " link "libstubs.a"}  The library bases.
+ @{" libstack.a " Link "libstack.a"} 	       Stack extension code (optional).
+ @{" libnix.a " Link "libnix.a"} 	       The library itself.
+ @{" libamiga.a " Link "libamiga.a"} 	       If you have one.
+ @{" detach.o " Link "detach.o"} 	       Auto detaching
+ @{" libstubs.a " Link "libstubs.a"} 	       The library bases.
 
 
-@endnode
+@EndNode
 
-@node "Startup codes" "libnix.guide/Startup codes"
-@next "Commandline parser"
-@prev "Features"
-@toc "Features"
+@Node "Startup codes" "libnix.info/Startup codes"
+@Next "Commandline parser"
+@Prev "Features"
+@Toc "Features"
 
 Startup codes
 *************
 
-   There is a lot of work to do before your @{b}main@{ub} function can be called
-- open shared libraries, open stdin, stdout, etc.  Depending on the
-compiler options and the ANSI functions you use.  This work is done by
-the startup code.
+   There is a lot of work to do before your `main' function can be
+called - open shared libraries, open stdin, stdout, etc.  Depending on
+the compiler options and the ANSI functions you use.  This work is done
+by the startup code.
 
 
- @{" Startup interface " link "Startup interface"}  
- @{" Startup usage   " link "Startup usage"}
+ @{" Startup interface " Link "Startup interface"} 
+ @{" Startup usage " Link "Startup usage"} 
 
    To get a short startup all the necessary modules are optional - they
 get only linked in if you use them. There are 2 exceptions from this
@@ -251,7 +253,7 @@ get only linked in if you use them. There are 2 exceptions from this
 
    * The commandline parser. It can be deactivated by declaring
 
-@{b}     __nocommandline@{ub}
+     `__nocommandline'
 
      somewhere in your program (the type doesn't matter).
 
@@ -279,27 +281,27 @@ possible.
      int main(void)
      { if(_WBenchMsg==NULL)
        { if((DOSBase=(struct DosLibrary *)OpenLibrary("dos.library",37))!=NULL)
-         { Write(Output(),"Hello world\\n",12);
+         { Write(Output(),"Hello world\n",12);
            CloseLibrary((struct Library *)DOSBase); } }
        return 0;
      }
 
    compiled and linked with
 
-@{b}   gcc -noixemul -s -O2 -fbaserel helloworld.c@{ub}
+   `gcc -noixemul -s -O2 -fbaserel helloworld.c'
 
-   gives an executable of 492 bytes. And this with the normal @{b}main@{ub}
+   gives an executable of 492 bytes. And this with the normal `main'
 function!
 
    So you never need to try to write a program without a startup code.
 
 
-@endnode
+@EndNode
 
-@node "Startup interface" "libnix.guide/Startup interface"
-@next "Startup usage"
-@prev "Startup codes"
-@toc "Startup codes"
+@Node "Startup interface" "libnix.info/Startup interface"
+@Next "Startup usage"
+@Prev "Startup codes"
+@Toc "Startup codes"
 
 Startup code interface
 **********************
@@ -309,58 +311,58 @@ Startup code interface
    * They catch the workbench startup message and place it into the
      variable
 
-@{b}     extern struct WBStartup *_WBenchMsg@{ub}
+     `extern struct WBStartup *_WBenchMsg'
 
-     you can simply look into this place (and test for a @{b}NULL@{ub} pointer)
-     to check if your program was started from WB. If this is a @{b}NULL@{ub}
-     pointer
+     you can simply look into this place (and test for a `NULL'
+     pointer) to check if your program was started from WB. If this is
+     a `NULL' pointer
 
-@{b}     extern char *__commandline@{ub}
+     `extern char *__commandline'
 
-     contains the (@{b}\\n@{ub} terminated) parameters of the commandline.
+     contains the (`\n' terminated) parameters of the commandline.
 
    * They call all functions in the
 
-@{b}     long __INIT_LIST__[];@{ub}
+     `long __INIT_LIST__[];'
 
      with ascending priority.
 
    * They call the function
 
-@{b}     int main(int argc,char *argv[])@{ub}
+     `int main(int argc,char *argv[])'
 
-     You can exit by simply falling through the end of @{b}main@{ub} or by
+     You can exit by simply falling through the end of `main' or by
      calling
 
-@{b}     __volatile void exit(int returncode)@{ub}
+     `__volatile void exit(int returncode)'
 
      which does the cleanup:
 
    * It calls all functions in the
 
-@{b}     long __EXIT_LIST__[];@{ub}
+     `long __EXIT_LIST__[];'
 
      with descending priority.
 
    * It replys the WB startup message if necessary, resets the
      stackpointer and returns to the shell.
 
-@{b}   __INIT_LIST__@{ub} and @{b}__EXIT_LIST__@{ub} are two set elements which are a
+   `__INIT_LIST__' and `__EXIT_LIST__' are two set elements which are a
 speciality of the gnu ld. Since everything that needs initialization
 works over these two lists the bare startups are very short. In fact
 they are even shorter then some low-level-startups
 
    You can easily add your own functions to the startup procedure by
-using the macros in the file @{b}headers/stabs.h@{ub} - but keep in mind that
+using the macros in the file `headers/stabs.h' - but keep in mind that
 this is non-portable. Priority values <=0 are reserved for library
 implementors.
 
 
-@endnode
+@EndNode
 
-@node "Startup usage" "libnix.guide/Startup usage"
-@prev "Startup interface"
-@toc "Startup codes"
+@Node "Startup usage" "libnix.info/Startup usage"
+@Prev "Startup interface"
+@Toc "Startup codes"
 
 Startup code usage
 ******************
@@ -369,35 +371,35 @@ Startup code usage
 will be more in the future). Depending on the code and data model you
 use and some other things you should choose one of them:
 
-@{b}ncrt0.o@{ub}
+`ncrt0.o'
      This is the normal (i.e. large code, large data model) startup.
-     It contains a @{b}geta4()@{ub} entry point to enable you to use one source
+     It contains a `geta4()' entry point to enable you to use one source
      for two code models. There is no other need for this function.
 
-@{b}nbcrt0.o@{ub}
+`nbcrt0.o'
      This one is for compiling small data model (a4 relative) programs.
-     There is a @{b}geta4()@{ub} entry that places the right information into a4.
-     Use this startup code if you compiled with @{b}-fbaserel@{ub}.
+     There is a `geta4()' entry that places the right information into
+     a4.  Use this startup code if you compiled with `-fbaserel'.
 
-@{b}nrcrt0.o@{ub}
+`nrcrt0.o'
      This startup code allocates a new data area every time you call it.
      Even if you don't call it at all the data are is there once.  This
      gives you multientrant and reentrant code.  Therefore this startup
      code is for compiling resident (pure) programs.  Resident programs
      are always small data model if you let the compiler do the work.
 
-     There is no @{b}geta4()@{ub} entry - I just don't know how this could be
+     There is no `geta4()' entry - I just don't know how this could be
      done.  (If you start your code 10 times and want to access global
      data out of a hook you cannot tell which one of the 10 data areas
      to use because you want to access the data from a different task!)
 
 
-@endnode
+@EndNode
 
-@node "Commandline parser" "libnix.guide/Commandline parser"
-@next "libstack.a"
-@prev "Startup codes"
-@toc "Features"
+@Node "Commandline parser" "libnix.info/Commandline parser"
+@Next "libstack.a"
+@Prev "Startup codes"
+@Toc "Features"
 
 Commandline parser
 ******************
@@ -405,49 +407,50 @@ Commandline parser
    There are currently 2 commandline parser modules in the libnix
 package.  You can easily write your own by looking into the examples
 
-@{b}libnixmain.a@{ub}
+`libnixmain.a'
      This is the normal one, i.e. it does all the work necessary for
-     ANSI compatibility and gives you the normal @{b}main@{ub} calling
+     ANSI compatibility and gives you the normal `main' calling
      convention. You can shut down the commandline parsing (if you want
      to use the amiga OS commandline parser) by declaring
 
-@{b}     __nocommandline@{ub}
+     `__nocommandline'
 
      somewhere in your code (the type of it actually doesn't matter).
      This spares some bytes and is compatible to every other compiler.
 
      And you can declare your own WB shell window by declaring a
 
-@{b}     char __stdiowin[]@{ub}
+     `char __stdiowin[]'
 
      variable somewhere in your code (but only if you parse the
      commandline - without the commandline parser you get no window at
      all!).
 
-@{b}libnix_main.a@{ub}
+`libnix_main.a'
      This is a special version of a commandline parser - it doesn't call
-     the normal @{b}main@{ub} but
+     the normal `main' but
 
-@{b}     int main(char *commandline)@{ub}
+     `int main(char *commandline)'
 
-@{b}     commandline@{ub} is the complete commandline - including the quoted
+     `commandline' is the complete commandline - including the quoted
      filename of your program (it's only quoted, not escaped - this is
      for compatibility reasons :-( ). You might think the name of the
-     game should be @{b}_main@{ub} and not @{b}main@{ub} - and you are completely right.
-     You can use @{b}_main@{ub} for @{b}main@{ub} and @{b}_exit@{ub} for @{b}exit@{ub} - there are symbol
-     redirections for these and the linker does the work.
+     game should be `_main' and not `main' - and you are completely
+     right. You can use `_main' for `main' and `_exit' for `exit' -
+     there are symbol redirections for these and the linker does the
+     work.
 
      This commandline parser is useful for compatibility.  You can use
      it as a second example or for recompiling PD programs that use the
      single argument. You cannot use it for compiling ANSI code.
 
 
-@endnode
+@EndNode
 
-@node "libstack.a" "libnix.guide/libstack.a"
-@next "libnix.a"
-@prev "Commandline parser"
-@toc "Features"
+@Node "libstack.a" "libnix.info/libstack.a"
+@Next "libnix.a"
+@Prev "Commandline parser"
+@Toc "Features"
 
 special stack handling facilities
 *********************************
@@ -468,19 +471,19 @@ it's simpler) but please don't try to mix it with the newer
 check/extend methods.
 
 
- @{" swapstack           " link "swapstack"}  Old method.
- @{" stackextend implementation " link "stackextend implementation"}  How stack extend works.
- @{" stackextend usage   " link "stackextend usage"}  Usage. @{b}read@{ub}
- @{" Advanced            " link "Advanced"}  Fine tuning.
- @{" Costs               " link "Costs"}  Some damned lies (Benchmarks ;-) ).
+ @{" swapstack " Link "swapstack"} 		       Old method.
+ @{" stackextend implementation " Link "stackextend implementation"}  How stack extend works.
+ @{" stackextend usage " Link "stackextend usage"} 	       Usage. *read*
+ @{" Advanced " Link "Advanced"} 		       Fine tuning.
+ @{" Costs " Link "Costs"} 		       Some damned lies (Benchmarks ;-) ).
 
 
-@endnode
+@EndNode
 
-@node "swapstack" "libnix.guide/swapstack"
-@next "stackextend implementation"
-@prev "libstack.a"
-@toc "libstack.a"
+@Node "swapstack" "libnix.info/swapstack"
+@Next "stackextend implementation"
+@Prev "libstack.a"
+@Toc "libstack.a"
 
 Minimum stack setting
 *********************
@@ -492,18 +495,18 @@ At startup this module checks if the current stack is large enough for
 your needs and switches to a new one if not.  All you have to do is to
 provide a variable
 
-@{b}   unsigned long __stack={required stacksize};@{ub}
+   `unsigned long __stack={required stacksize};'
 
    somewhere in your code and to link with the appropriate swapstack.o
 module.
 
 
-@endnode
+@EndNode
 
-@node "stackextend implementation" "libnix.guide/stackextend implementation"
-@next "stackextend usage"
-@prev "swapstack"
-@toc "libstack.a"
+@Node "stackextend implementation" "libnix.info/stackextend implementation"
+@Next "stackextend usage"
+@Prev "swapstack"
+@Toc "libstack.a"
 
 Implementation of stack checking and extension
 **********************************************
@@ -512,15 +515,15 @@ Implementation of stack checking and extension
 special code to check if the stack is large enough whenever there's
 need for a bigger chunk of stackspace, i.e. at function entry when
 local arrays are allocated, at the start of blocks with local variable
-sized arrays and when calling @{b}alloca()@{ub}.  If the needed stackchunk is
+sized arrays and when calling `alloca()'.  If the needed stackchunk is
 bigger than the left stackspace the program ends.
 
    Since this special code costs memory and CPU time smaller stackneeds
 (e.g. when calling library functions) are handled by not really
 checking against the hard border of the stackframe but against one that
-leaves a certain amount of stackspace left (See @{"Advanced" link "Advanced"}.). If you
-like to call functions with a lot of arguments (more than 256 bytes)
-you should raise this value.
+leaves a certain amount of stackspace left (See @{"Advanced" Link "Advanced"}.). If you like
+to call functions with a lot of arguments (more than 256 bytes) you
+should raise this value.
 
    Stack extension builds on the same basic principle but allocates a
 new stackframe whenever necessary. If this happens at the entry of a
@@ -539,12 +542,12 @@ value raised once. This may look like a memory leak (while in fact it
 isn't). Be prepared for it.
 
 
-@endnode
+@EndNode
 
-@node "stackextend usage" "libnix.guide/stackextend usage"
-@next "Advanced"
-@prev "stackextend implementation"
-@toc "libstack.a"
+@Node "stackextend usage" "libnix.info/stackextend usage"
+@Next "Advanced"
+@Prev "stackextend implementation"
+@Toc "libstack.a"
 
 Using stack checking or extension
 *********************************
@@ -553,18 +556,18 @@ Using stack checking or extension
 V2.7.0 of gcc. With this compiler you get 2 new amiga specific options
 that emit special code whenever necessary:
 
-   * @{b}-mstackcheck@{ub} Emits code that checks if there is enough stack left.
-     The program exits if not.
+   * `-mstackcheck' Emits code that checks if there is enough stack
+     left.  The program exits if not.
 
-   * @{b}-mstackextend@{ub} Tries to extend the stack before exiting (this may
+   * `-mstackextend' Tries to extend the stack before exiting (this may
      happen due to low or fragmented memory).
 
-   Always use those switches together with @{b}-lstack@{ub} to link with the
+   Always use those switches together with `-lstack' to link with the
 stack extension code or you will get a lot of undefined references ;-).
 You can mix functions compiled with or without stack checking and
 extention without problems.
 
-@{b}   Caution:@{ub}
+   *Caution:*
 
    Do not use stack checking and/or extension switches when compiling
 hook or interrupt code. Both run in alien contexts with a different
@@ -572,21 +575,21 @@ stack and all stack magic must fail. Also don't try to do some other
 stack magic on your own if you want to use stack extension.
 
    Also note that a program compiled with stack extension/checking may
-@{b}exit()@{ub} at @{i}any@{ui} function entry or when using alloca or variable sized
-arrays. Either prepare your cleanup function accordingly (use @{b}atexit()@{ub})
-or don't use this feature.
+`exit()' at *any* function entry or when using alloca or variable sized
+arrays. Either prepare your cleanup function accordingly (use
+`atexit()') or don't use this feature.
 
    If you like to write or call functions with more than 256 bytes of
 arguments (64 ints, longs or pointers) you should adjust the behaviour
-of the stack extension code (See @{"Advanced" link "Advanced"}.).
+of the stack extension code (See @{"Advanced" Link "Advanced"}.).
 
 
-@endnode
+@EndNode
 
-@node "Advanced" "libnix.guide/Advanced"
-@next "Costs"
-@prev "stackextend usage"
-@toc "libstack.a"
+@Node "Advanced" "libnix.info/Advanced"
+@Next "Costs"
+@Prev "stackextend usage"
+@Toc "libstack.a"
 
 Stack extension fine tuning
 ***************************
@@ -594,32 +597,32 @@ Stack extension fine tuning
    To adjust the behaviour of the stack extension code to your personal
 needs you may set some of the following variables (or functions)
 
-@{b}   unsigned long __stk_minframe@{ub} (default: 32768)
+   `unsigned long __stk_minframe' (default: 32768)
 
    Minimum amount of memory to allocate for a new stackframe. Setting a
 higher value speeds the code up but costs more memory if it is unused.
 
-@{b}   unsigned long __stk_safezone@{ub} (default: 2048)
+   `unsigned long __stk_safezone' (default: 2048)
 
    Size of the safety zone. Set this to a higher value if you want to
-@{i}call@{ui} functions with lots of arguments.
+*call* functions with lots of arguments.
 
-@{b}   unsigned long __stk_argbytes@{ub} (default: 256)
+   `unsigned long __stk_argbytes' (default: 256)
 
    Number of bytes copied as arguments. Set this to a higher value if
-@{i}your@{ui} functions may have lots of arguments.
+*your* functions may have lots of arguments.
 
-@{b}   void _CXOVF(void)@{ub}
+   `void _CXOVF(void)'
 
    Is a user replaceable stack overflow handler. The default one just
 pops up a requester, then exits. This function is not allowed to return.
 
 
-@endnode
+@EndNode
 
-@node "Costs" "libnix.guide/Costs"
-@prev "Advanced"
-@toc "libstack.a"
+@Node "Costs" "libnix.info/Costs"
+@Prev "Advanced"
+@Toc "libstack.a"
 
 Overhead of stack extension
 ***************************
@@ -646,12 +649,12 @@ idea for it.  (Times are in 1/60s, sizes in bytes):
      Library code size     0 	184	      788
 
 
-@endnode
+@EndNode
 
-@node "libnix.a" "libnix.guide/libnix.a"
-@next "libamiga.a"
-@prev "libstack.a"
-@toc "Features"
+@Node "libnix.a" "libnix.info/libnix.a"
+@Next "libamiga.a"
+@Prev "libstack.a"
+@Toc "Features"
 
 Some ANSI (mis)features
 ***********************
@@ -662,32 +665,32 @@ special features of the implementation - you should know these if you
 want to use this library.
 
 
- @{" Locale " link "Locale"}  
- @{" Formatted I-O " link "Formatted I-O"}  
- @{" atof strtod " link "atof strtod"}  
- @{" Memory management " link "Memory management"}  
- @{" Standard I-O " link "Standard I-O"}  
- @{" Signal handling " link "Signal handling"}  
- @{" setjmp longjmp " link "setjmp longjmp"}  
- @{" ctype " link "ctype"}  
- @{" clock " link "clock"}  
- @{" Multibyte character functions " link "Multibyte character functions"}
+ @{" Locale " Link "Locale"} 
+ @{" Formatted I-O " Link "Formatted I-O"} 
+ @{" atof strtod " Link "atof strtod"} 
+ @{" Memory management " Link "Memory management"} 
+ @{" Standard I-O " Link "Standard I-O"} 
+ @{" Signal handling " Link "Signal handling"} 
+ @{" setjmp longjmp " Link "setjmp longjmp"} 
+ @{" ctype " Link "ctype"} 
+ @{" clock " Link "clock"} 
+ @{" Multibyte character functions " Link "Multibyte character functions"} 
 
    ---------- Footnotes ----------
 
-   (1) I recommend this one:
+   (1)  I recommend this one:
 
    Brian W. Kernighan, Dennis M.Ritchie:
 The C Programming Language (Second Edition)
 Prentice Hall, Englewood Cliffs, 1988
 
 
-@endnode
+@EndNode
 
-@node "Locale" "libnix.guide/Locale"
-@next "Formatted I-O"
-@prev "libnix.a"
-@toc "libnix.a"
+@Node "Locale" "libnix.info/Locale"
+@Next "Formatted I-O"
+@Prev "libnix.a"
+@Toc "libnix.a"
 
 Locale
 ******
@@ -711,8 +714,8 @@ setlocale()-call. If you do not have locale.library you will get only
    Another important point is that the ANSI standard requires the
 default locale to be loaded at program startup. i.e. if you use german
 locale (for example) you will just get it - printf and scanf will not
-work as expected but use the decimal comma @{b},@{ub} instead of the decimal
-point @{b}.@{ub} for their floating point numbers, ctype functions will behave
+work as expected but use the decimal comma `,' instead of the decimal
+point `.' for their floating point numbers, ctype functions will behave
 differently, too.
 
    This can be very annoying if you don't want to use ANSI locale but
@@ -732,12 +735,12 @@ setlocale anywhere in your program - you will get default locale at
 program startup then.
 
 
-@endnode
+@EndNode
 
-@node "Formatted I-O" "libnix.guide/Formatted I-O"
-@next "atof strtod"
-@prev "Locale"
-@toc "libnix.a"
+@Node "Formatted I-O" "libnix.info/Formatted I-O"
+@Next "atof strtod"
+@Prev "Locale"
+@Toc "libnix.a"
 
 Formatted I/O
 *************
@@ -751,36 +754,36 @@ should know about them:
 
    * Half of the code of a full blown printf handles floating point
      numbers - but not everybody needs them. So there are two functions
-     for both @{b}vfprintf@{ub} and @{b}vfscanf@{ub} - one in @{b}libnix.a@{ub} not including
-     floating point support and one in @{b}libm.a@{ub} including floating point
-     support.
+     for both `vfprintf' and `vfscanf' - one in `libnix.a' not including
+     floating point support and one in `libm.a' including floating
+     point support.
 
      So if you want to use one of the formatted I/O specifiers for
-     floats you should link with the math library @{b}-lm@{ub}.
+     floats you should link with the math library `-lm'.
 
 
-@endnode
+@EndNode
 
-@node "atof strtod" "libnix.guide/atof strtod"
-@next "Memory management"
-@prev "Formatted I-O"
-@toc "libnix.a"
+@Node "atof strtod" "libnix.info/atof strtod"
+@Next "Memory management"
+@Prev "Formatted I-O"
+@Toc "libnix.a"
 
 atof strtod
 ***********
 
-   The two functions @{b}atof@{ub} and @{b}strtod@{ub} require a working @{b}%f@{ub} specifier in
-@{b}vfscanf@{ub} - therefore they require the formatted I/O functions in the
-math library.  Since @{b}libm.a@{ub} is linked before @{b}libnix.a@{ub} these two
-functions have been gone into the math library.
+   The two functions `atof' and `strtod' require a working `%f'
+specifier in `vfscanf' - therefore they require the formatted I/O
+functions in the math library.  Since `libm.a' is linked before
+`libnix.a' these two functions have been gone into the math library.
 
 
-@endnode
+@EndNode
 
-@node "Memory management" "libnix.guide/Memory management"
-@next "Standard I-O"
-@prev "atof strtod"
-@toc "libnix.a"
+@Node "Memory management" "libnix.info/Memory management"
+@Next "Standard I-O"
+@Prev "atof strtod"
+@Toc "libnix.a"
 
 Memory management
 *****************
@@ -804,52 +807,53 @@ memory then expected.
    If you don't like this value (if you use bigger portions frequently
 or only use very little memory) you can replace it by declaring
 
-@{b}   unsigned long _MSTEP@{ub}
+   `unsigned long _MSTEP'
 
    You should use a multiple of MMU pages. If you don't use a full MMU
 page you gain nothing - malloc rounds up anyway.
 
 
-@endnode
+@EndNode
 
-@node "Standard I-O" "libnix.guide/Standard I-O"
-@next "Signal handling"
-@prev "Memory management"
-@toc "libnix.a"
+@Node "Standard I-O" "libnix.info/Standard I-O"
+@Next "Signal handling"
+@Prev "Memory management"
+@Toc "libnix.a"
 
 Standard I/O - where stdin, stdout, stderr come from
 ****************************************************
 
    2 of the 3 standard I/O streams are no real problem:
 
-   * @{b}stdin@{ub} is set to the value the @{b}Input()@{ub} function of @{b}dos.library@{ub}
+   * `stdin' is set to the value the `Input()' function of `dos.library'
      serves,
 
-   * @{b}stdout@{ub} is set to the @{b}Output()@{ub} value.
+   * `stdout' is set to the `Output()' value.
 
    Both streams are managed by the OS and the library need not take much
-care about them. But @{b}stderr@{ub} is a different thing since there is no
-@{b}Errput()@{ub} ;-) function. So @{b}stderr@{ub} is handled as follows:
+care about them. But `stderr' is a different thing since there is no
+`Errput()' ;-) function. So `stderr' is handled as follows:
 
-  1. If @{b}process->pr_CES@{ub} is set, this value is taken. There are not much
-     shells that set this value so most of the time this leads to NULL.
+  1. If `process->pr_CES' is set, this value is taken. There are not
+     much shells that set this value so most of the time this leads to
+     NULL.
 
   2. If this didn't work and your program was started from CLI the
-     library opens @{b}Open("*",MODE_NEWFILE)@{ub}.  This opens the last
+     library opens `Open("*",MODE_NEWFILE)'.  This opens the last
      interactive terminal attached to stdout, i.e.  if you use the
      normal Amiga shell and redirect your output to a file you get the
-     terminal, if you redirect your output to @{b}NIL:@{ub} you get @{b}NIL:@{ub}.
+     terminal, if you redirect your output to `NIL:' you get `NIL:'.
 
   3. If this didn't work too (you never know) or your program was
-     started from WB you simply get the same stream as in @{b}stdout@{ub}.
+     started from WB you simply get the same stream as in `stdout'.
 
 
-@endnode
+@EndNode
 
-@node "Signal handling" "libnix.guide/Signal handling"
-@next "setjmp longjmp"
-@prev "Standard I-O"
-@toc "libnix.a"
+@Node "Signal handling" "libnix.info/Signal handling"
+@Next "setjmp longjmp"
+@Prev "Standard I-O"
+@Toc "libnix.a"
 
 Signal handling
 ***************
@@ -868,7 +872,7 @@ handlers are bogus upto OS 2.0 (even there you need a good setpatch)).
    So SIGINT (CTRL-C) is just polled at the start of most I/O-functions
 by calling the function
 
-@{b}   void __chkabort(void)@{ub}
+   `void __chkabort(void)'
 
    Other signals are even more difficult to implement:
 
@@ -884,10 +888,10 @@ by calling the function
 
    * SIGTERM couldn't be disabled - even if it was there ;-).
 
-   You can disable CTRL-C handling by replacing @{b}__chkabort@{ub} with a
+   You can disable CTRL-C handling by replacing `__chkabort' with a
 do-nothing stub function - but there is a better way. Just call
 
-@{b}   signal(SIGINT,SIG_IGN)@{ub}
+   `signal(SIGINT,SIG_IGN)'
 
    Replacing __chkabort is used very often by amiga-programs and if
 your application does not need CTRL-C handling at all and is amiga
@@ -895,12 +899,12 @@ specific you can use this. The second method is the ANSI standard
 method and works on all types of machines.
 
 
-@endnode
+@EndNode
 
-@node "setjmp longjmp" "libnix.guide/setjmp longjmp"
-@next "ctype"
-@prev "Signal handling"
-@toc "libnix.a"
+@Node "setjmp longjmp" "libnix.info/setjmp longjmp"
+@Next "ctype"
+@Prev "Signal handling"
+@Toc "libnix.a"
 
 setjmp, longjmp
 ***************
@@ -912,12 +916,12 @@ restore any of the other local variables (they are restored :-) ), so
 this is NO incompatibility to the ANSI standard.
 
 
-@endnode
+@EndNode
 
-@node "ctype" "libnix.guide/ctype"
-@next "clock"
-@prev "setjmp longjmp"
-@toc "libnix.a"
+@Node "ctype" "libnix.info/ctype"
+@Next "clock"
+@Prev "setjmp longjmp"
+@Toc "libnix.a"
 
 ctype.h functions
 *****************
@@ -930,12 +934,12 @@ duplicate as functions.
    And remember: These functions are affected by the setlocale() call.
 
 
-@endnode
+@EndNode
 
-@node "clock" "libnix.guide/clock"
-@next "Multibyte character functions"
-@prev "ctype"
-@toc "libnix.a"
+@Node "clock" "libnix.info/clock"
+@Next "Multibyte character functions"
+@Prev "ctype"
+@Toc "libnix.a"
 
 The clock function
 ******************
@@ -946,11 +950,11 @@ specific task - but there is no information like this in the amiga OS
 compatible with this behaviour to all single tasking OSs around.
 
 
-@endnode
+@EndNode
 
-@node "Multibyte character functions" "libnix.guide/Multibyte character functions"
-@prev "clock"
-@toc "libnix.a"
+@Node "Multibyte character functions" "libnix.info/Multibyte character functions"
+@Prev "clock"
+@Toc "libnix.a"
 
 Multibyte character functions
 *****************************
@@ -960,12 +964,12 @@ Amiga OS uses no other character set than ECMA Latin I they simulate
 just "C" locale. This means they do nothing useful.
 
 
-@endnode
+@EndNode
 
-@node "libstubs.a" "libnix.guide/libstubs.a"
-@next "detach.o"
-@prev "libamiga.a"
-@toc "Features"
+@Node "libstubs.a" "libnix.info/libstubs.a"
+@Next "detach.o"
+@Prev "libamiga.a"
+@Toc "Features"
 
 libstubs - automatic library opening
 ************************************
@@ -988,16 +992,16 @@ calling one of the functions) but don't open yourself get opened for
 you by the compiler.
 
 
- @{" Auto-library-opening usage    " link "Auto-library-opening usage"}  How to use it.
- @{" Auto-library-opening interface " link "Auto-library-opening interface"}  How it works.
+ @{" Auto-library-opening usage " Link "Auto-library-opening usage"} 	   How to use it.
+ @{" Auto-library-opening interface " Link "Auto-library-opening interface"}  How it works.
 
 
-@endnode
+@EndNode
 
-@node "Auto-library-opening usage" "libnix.guide/Auto-library-opening usage"
-@next "Auto-library-opening interface"
-@prev "libstubs.a"
-@toc "libstubs.a"
+@Node "Auto-library-opening usage" "libnix.info/Auto-library-opening usage"
+@Next "Auto-library-opening interface"
+@Prev "libstubs.a"
+@Toc "libstubs.a"
 
 Usage
 *****
@@ -1006,17 +1010,17 @@ Usage
 automatic). But you can control the library version if you wish by
 declaring
 
-@{b}   long __oslibversion;@{ub}
+   `long __oslibversion;'
 
    somewhere in your program. But don't set this lower than 37 - most
 functions of libnix (including the commandline parsers) need 37 or more.
 
 
-@endnode
+@EndNode
 
-@node "Auto-library-opening interface" "libnix.guide/Auto-library-opening interface"
-@prev "Auto-library-opening usage"
-@toc "libstubs.a"
+@Node "Auto-library-opening interface" "libnix.info/Auto-library-opening interface"
+@Prev "Auto-library-opening usage"
+@Toc "libstubs.a"
 
 Interface
 *********
@@ -1045,24 +1049,24 @@ pointer.  The first one is a
      { struct Library *base;
        char *name; };
 
-   containing the library base pointer (a @{b}NULL@{ub} pointer at program start)
-and a pointer to the name of the library. This name
+   containing the library base pointer (a `NULL' pointer at program
+start) and a pointer to the name of the library. This name
 
-@{b}   extern char name[]@{ub}
+   `extern char name[]'
 
    is the second object. All these structs are collected together into
 one single set element called
 
-@{b}   extern struct lib *__LIB_LIST__[]@{ub}
+   `extern struct lib *__LIB_LIST__[]'
 
    To open and close the shared libraries there are two functions in
 libstubs:
 
-@{b}   void __initlibraries(void)@{ub}
+   `void __initlibraries(void)'
 
    and
 
-@{b}   void __exitlibraries(void)@{ub}
+   `void __exitlibraries(void)'
 
    Since it is still possible to open the shared libraries by hand I had
 to take care about the library base pointers for libnix itself - they
@@ -1078,25 +1082,26 @@ libraries do this.
 compiler:
    * You declare the library base variable somewhere globally:
 
-@{b}     struct DosLibrary *DOSBase=NULL;@{ub}
+     `struct DosLibrary *DOSBase=NULL;'
 
-     The initialization @{b}=NULL@{ub} is necessary! Uninitialized variables get
-     overwritten by initialized ones in other object files - and the
-     library base pointers in @{b}libstubs.a@{ub} are initialized with @{b}NULL@{ub}.
-     This is a feature of the GNU ld and I cannot do much about it :(.
+     The initialization `=NULL' is necessary! Uninitialized variables
+     get overwritten by initialized ones in other object files - and
+     the library base pointers in `libstubs.a' are initialized with
+     `NULL'.  This is a feature of the GNU ld and I cannot do much
+     about it :(.
 
    * You open the library before using it:
 
-@{b}     DOSBase=(struct DosLibrary *)OpenLibrary("dos.library",37);@{ub}
+     `DOSBase=(struct DosLibrary *)OpenLibrary("dos.library",37);'
 
      and do some action if it fails :).
 
 
-@endnode
+@EndNode
 
-@node "detach.o" "libnix.guide/detach.o"
-@prev "libstubs.a"
-@toc "Features"
+@Node "detach.o" "libnix.info/detach.o"
+@Prev "libstubs.a"
+@Toc "Features"
 
 Detaching from the current CLI
 ******************************
@@ -1119,18 +1124,18 @@ default values (don't blame me for them - it's your own fault :-} ).
 
    ---------- Footnotes ----------
 
-   (1)  Please be aware that you lose the ability to synchronize your
+   (1)   Please be aware that you lose the ability to synchronize your
 tool with the calling CLI - this can be very nasty if one needs to. Use
 this feature very sparse: Most of the time it's better to just rely on
-the user being able to type @{b}Run >NIL: <NIL:@{ub}.
+the user being able to type `Run >NIL: <NIL:'.
 
 
-@endnode
+@EndNode
 
-@node "Special startups" "libnix.guide/Special startups"
-@next "Set elements"
-@prev "Features"
-@toc "Main"
+@Node "Special startups" "libnix.info/Special startups"
+@Next "Set elements"
+@Prev "Features"
+@Toc "Main"
 
 Special startups
 ****************
@@ -1142,24 +1147,24 @@ work for you if you decide to use one of our startups. Be aware that
 writing a shared library is a task for the experienced programmer (1).
 
 
- @{" Calling convention " link "Calling convention"}  How to interface to the system.
- @{" libinit.o         " link "libinit.o"}  Shared library startup.
- @{" libinitr.o        " link "libinitr.o"}  Shared library with a new data segment for each caller.
- @{" devinit.o         " link "devinit.o"}  Device startup.
+ @{" Calling convention " Link "Calling convention"}  How to interface to the system.
+ @{" libinit.o " Link "libinit.o"} 	       Shared library startup.
+ @{" libinitr.o " Link "libinitr.o"} 	       Shared library with a new data segment for each caller.
+ @{" devinit.o " Link "devinit.o"} 	       Device startup.
 
    ---------- Footnotes ----------
 
-   (1)  Most ANSI library functions don't work out of a shared library.
-libnix makes no difference here - even simple operations like
+   (1)   Most ANSI library functions don't work out of a shared
+library. libnix makes no difference here - even simple operations like
 multiplying two integers can fail - don't take anything for granted.
 
 
-@endnode
+@EndNode
 
-@node "Calling convention" "libnix.guide/Calling convention"
-@next "libinit.o"
-@prev "Special startups"
-@toc "Special startups"
+@Node "Calling convention" "libnix.info/Calling convention"
+@Next "libinit.o"
+@Prev "Special startups"
+@Toc "Special startups"
 
 Calling convention
 ******************
@@ -1181,7 +1186,7 @@ macros in the stabs.h file of the libnix sources. Usage:
 
    As a bonus these macros add your function to your library's jump
 vector.  All you have to do is to care for the right linkage order. And
-don't forget to add a @{b}ADDTABL_END();@{ub} at the end of the vector.
+don't forget to add a `ADDTABL_END();' at the end of the vector.
 
    Attention: Other programmers may decide to patch into your library's
 jump vector - therefore it's a good idea to call even own functions
@@ -1191,12 +1196,12 @@ code and you have to privatize the function's name by adding some '__'s
 or similar. You will also have to set up your OWN library base.
 
 
-@endnode
+@EndNode
 
-@node "libinit.o" "libnix.guide/libinit.o"
-@next "libinitr.o"
-@prev "Calling convention"
-@toc "Special startups"
+@Node "libinit.o" "libnix.info/libinit.o"
+@Next "libinitr.o"
+@Prev "Calling convention"
+@Toc "Special startups"
 
 Shared library startup
 **********************
@@ -1221,17 +1226,17 @@ variables
 
    ---------- Footnotes ----------
 
-   (1) It'll be possible to add an Open() and Close() function, too.
+   (1)  It'll be possible to add an Open() and Close() function, too.
 But this would be incompatible to libinitr.o and wouldn't give any
 advantages over this method.
 
 
-@endnode
+@EndNode
 
-@node "libinitr.o" "libnix.guide/libinitr.o"
-@next "devinit.o"
-@prev "libinit.o"
-@toc "Special startups"
+@Node "libinitr.o" "libnix.info/libinitr.o"
+@Next "devinit.o"
+@Prev "libinit.o"
+@Toc "Special startups"
 
 Shared library with different data segments
 *******************************************
@@ -1247,11 +1252,11 @@ library.  There are two disadvantages over libinit.o:
    The usage stays the same.
 
 
-@endnode
+@EndNode
 
-@node "devinit.o" "libnix.guide/devinit.o"
-@prev "libinitr.o"
-@toc "Special startups"
+@Node "devinit.o" "libnix.info/devinit.o"
+@Prev "libinitr.o"
+@Toc "Special startups"
 
 Device startup
 **************
@@ -1270,12 +1275,12 @@ Device startup
      (And some begin and abort function as well)
 
 
-@endnode
+@EndNode
 
-@node "Set elements" "libnix.guide/Set elements"
-@next "geta4"
-@prev "Special startups"
-@toc "Main"
+@Node "Set elements" "libnix.info/Set elements"
+@Next "geta4"
+@Prev "Special startups"
+@Toc "Main"
 
 Set elements - a nice feature of the gnu ld
 *******************************************
@@ -1290,12 +1295,12 @@ set elements.
 
    You can take 4 Library base pointers
 
-@{b}   DOSBase@{ub}, @{b}IntuitionBase@{ub}, @{b}GfxBase@{ub}, @{b}IconBase@{ub}
+   `DOSBase', `IntuitionBase', `GfxBase', `IconBase'
 
    tell the linker to put them together into a set element called
-@{b}librarybases@{ub} by placing some assembler lines like
+`librarybases' by placing some assembler lines like
 
-@{b}   asm(".stabs \\"_librarybases\\",24,0,0,_DOSBase")@{ub}
+   `asm(".stabs \"_librarybases\",24,0,0,_DOSBase")'
 
    into your code (22 for text, 24 for data, 26 for bss - and don't
 forget the single underscore) and get an array of pointers like this:
@@ -1313,12 +1318,12 @@ feature :-). Set elements are used in this library for collecting
 together library bases, initialization routines and cleanup routines.
 
 
-@endnode
+@EndNode
 
-@node "geta4" "libnix.guide/geta4"
-@next "Library bases"
-@prev "Set elements"
-@toc "Main"
+@Node "geta4" "libnix.info/geta4"
+@Next "Library bases"
+@Prev "Set elements"
+@Toc "Main"
 
 geta4 and other things - some words on code and data models
 ***********************************************************
@@ -1363,16 +1368,16 @@ pure=resident programs.
    Some details:
 
 
- @{" Data models " link "Data models"}  
- @{" Code models " link "Code models"}
+ @{" Data models " Link "Data models"} 
+ @{" Code models " Link "Code models"} 
 
 
-@endnode
+@EndNode
 
-@node "Data models" "libnix.guide/Data models"
-@next "Code models"
-@prev "geta4"
-@toc "geta4"
+@Node "Data models" "libnix.info/Data models"
+@Next "Code models"
+@Prev "geta4"
+@Toc "geta4"
 
 Data models - large and small
 *****************************
@@ -1383,7 +1388,7 @@ Data models - large and small
      
      int max=100;
      int count;
-     char string[]="Hello, world\\n";
+     char string[]="Hello, world\n";
      
      int main(void)
      { int i;
@@ -1395,15 +1400,15 @@ Data models - large and small
 
    If we look at it carefully we see 4 different types of data in it:
 
-  1. The variable @{b}max@{ub} and the array @{b}string@{ub} - both are nonconstant
+  1. The variable `max' and the array `string' - both are nonconstant
      initialized global data.
 
-  2. The variable @{b}count@{ub} - this is uninitialized (and therefore
+  2. The variable `count' - this is uninitialized (and therefore
      nonconstant) global data.
 
   3. The string "%s" - this one is constant data.
 
-  4. The variable @{b}i@{ub} - this one is local data.
+  4. The variable `i' - this one is local data.
 
    The compiler places these 4 types of data into 4 different places:
 
@@ -1450,7 +1455,7 @@ tricks to prevent this - but not all linkers support such tricks).
 (a4) or all the hell breaks lose.
 
    If you ever lost them (this can only happen in certain cases when
-using interrupts or hooks) you can restore them by calling @{b}geta4()@{ub} or
+using interrupts or hooks) you can restore them by calling `geta4()' or
 you can use no global data at all (and have no problems then).
 
    The second method is recommended - and it is possible sometimes
@@ -1458,20 +1463,20 @@ since the OS takes care of this and supports local data areas in these
 nasty cases. But don't call any shared library - or you will access
 (hidden) a library base pointer.
 
-   It is not possible to have a @{b}geta4()@{ub} function with resident programs
-= multiple data sections (which one would you choose? You access the
-data from a different task!)
+   It is not possible to have a `geta4()' function with resident
+programs = multiple data sections (which one would you choose? You
+access the data from a different task!)
 
    It's in general not possible to mix objects compiled for the two
 data models. There are some exceptions, but people that know enough to
 prevent collosions need no explanation of when it's possible ;-).
 
 
-@endnode
+@EndNode
 
-@node "Code models" "libnix.guide/Code models"
-@prev "Data models"
-@toc "geta4"
+@Node "Code models" "libnix.info/Code models"
+@Prev "Data models"
+@Toc "geta4"
 
 Code models
 ***********
@@ -1497,12 +1502,12 @@ different:
      hardly get more than 32k of code out of it.
 
 
-@endnode
+@EndNode
 
-@node "Library bases" "libnix.guide/Library bases"
-@next "Code size"
-@prev "geta4"
-@toc "Main"
+@Node "Library bases" "libnix.info/Library bases"
+@Next "Code size"
+@Prev "geta4"
+@Toc "Main"
 
 Library base pointers - and how they work
 *****************************************
@@ -1515,9 +1520,9 @@ You open libraries under program control, i.e. you can even check if
 they are there and disable some features if not or take other action.
 
    The result of this system function is a pointer to the upper end of a
-jump table (a table of @{b}jmp@{ub} instructions to the different functions) and
-the lower end of a library structure containing extra information for
-every library you opened. These pointers are called library base
+jump table (a table of `jmp' instructions to the different functions)
+and the lower end of a library structure containing extra information
+for every library you opened. These pointers are called library base
 pointers. They are usually stored in normal global variables.
 
    To call a system function you have to put the library base into
@@ -1536,18 +1541,18 @@ sometimes some more).
      call) and call a glue function that does nothing else then taking
      the arguments from the stack and putting them into the right
      registers then calling the function. This glue code is contained
-     in @{b}amiga.lib@{ub}.
+     in `amiga.lib'.
 
    Both methods require to access the library base pointer (and a valid
 value in it) so they make up a reference to this variable.
 
 
-@endnode
+@EndNode
 
-@node "libamiga.a" "libnix.guide/libamiga.a"
-@next "libstubs.a"
-@prev "libnix.a"
-@toc "Features"
+@Node "libamiga.a" "libnix.info/libamiga.a"
+@Next "libstubs.a"
+@Prev "libnix.a"
+@Toc "Features"
 
 Glue code and some other things
 *******************************
@@ -1578,13 +1583,13 @@ objectfile format to a.out format (known by the linker). Type:
      ranlib libamiga.a
      exit
 
-   Doing this on @{b}RAM:@{ub} will improve performance a lot.
+   Doing this on `RAM:' will improve performance a lot.
 
    This doesn't give you the baserelative version blib/libamiga.a - you
 will be unable to compile resident programs. To get a baserelative
-version of amiga.lib try to get the @{b}libtos@{ub} program of the @{b}DICE@{ub} compiler
-of M. Dillon (from fishdisk or somewhere else) - it converts libraries
-to baserelative ones:
+version of amiga.lib try to get the `libtos' program of the `DICE'
+compiler of M. Dillon (from fishdisk or somewhere else) - it converts
+libraries to baserelative ones:
 
      cd <some empty directory>
      lha x amigalibdisk491:dice/dice206_21.lzh #?/libtos
@@ -1593,12 +1598,12 @@ to baserelative ones:
    Then do the same as above.
 
 
-@endnode
+@EndNode
 
-@node "Code size" "libnix.guide/Code size"
-@next "FAQs"
-@prev "Library bases"
-@toc "Main"
+@Node "Code size" "libnix.info/Code size"
+@Next "FAQs"
+@Prev "Library bases"
+@Toc "Main"
 
 Writing small programs
 **********************
@@ -1607,47 +1612,50 @@ Writing small programs
 do it.  Here are some basic tips and tricks:
 
 Do not use printf:
-@{b}     printf@{ub} is the most high-level function of usual ANSI C libraries
+     `printf' is the most high-level function of usual ANSI C libraries
      and builds on almost everything else. Often this function can be
-     replaced by simpler routines like e.g. @{b}puts@{ub}. The same is true for
-     the other formatted I/O functions.
+     replaced by simpler routines like e.g. `puts'. The same is true
+     for the other formatted I/O functions.
 
-     If you write amiga-only programs you can use the @{b}sprintf@{ub} routine of
-     libamiga.a by linking with @{b}-lamiga@{ub}.
+     If you write amiga-only programs you can use the `sprintf' routine
+     of libamiga.a by linking with `-lamiga'.
 
 Try to avoid using buffered I/O:
      A lot of programs can be written using the low-level I/O-functions
-     @{b}read@{ub} and @{b}write@{ub}. This saves the code responsible for buffered I/O.
+     `read' and `write'. This saves the code responsible for buffered
+     I/O.
 
 Avoid -O3:
-@{b}     -O3@{ub} activates all those optimizations that sacrifice code size for
-     speed.  An exception is @{b}-fstrength-reduce@{ub} which costs compile time
-     but not code size. @{b}-O2 -fstrength-reduce@{ub} will give small programs.
+     `-O3' activates all those optimizations that sacrifice code size
+     for speed.  An exception is `-fstrength-reduce' which costs
+     compile time but not code size. `-O2 -fstrength-reduce' will give
+     small programs.
 
 Strip your executables:
-     gcc doesn't strip executables by default. Setting @{b}-s@{ub} will give
+     gcc doesn't strip executables by default. Setting `-s' will give
      worse debugable but small programs.
 
 Use small code and data model:
-@{b}     -msmall-code -fbaserel@{ub} do this. Be aware that this won't work for
+     `-msmall-code -fbaserel' do this. Be aware that this won't work for
      larger programs.
 
 Don't use libgcc.a:
-@{b}     libgcc.a@{ub} which calls global C++ constructors and destructors builds
-     on @{b}atexit@{ub} which builds on @{b}malloc@{ub}, ... If your program doesn't use
-     them you can save some memory by linking by hand (@{b}-nostdlib@{ub}).
+     `libgcc.a' which calls global C++ constructors and destructors
+     builds on `atexit' which builds on `malloc', ... If your program
+     doesn't use them you can save some memory by linking by hand
+     (`-nostdlib').
 
 Set __nocommandline:
-     If you use @{b}ReadArgs@{ub} instead of @{b}argc, argv@{ub} you can save some memory
-     by setting a global variable named @{b}__nocommandline@{ub} to drop parsing
-     of commandline arguments.
+     If you use `ReadArgs' instead of `argc, argv' you can save some
+     memory by setting a global variable named `__nocommandline' to drop
+     parsing of commandline arguments.
 
 
-@endnode
+@EndNode
 
-@node "FAQs" "libnix.guide/FAQs"
-@prev "Code size"
-@toc "Main"
+@Node "FAQs" "libnix.info/FAQs"
+@Prev "Code size"
+@Toc "Main"
 
 FAQs
 ****
@@ -1678,8 +1686,6 @@ A:
      program by Andreas Wolff to fix this and another more serious bug
      with mc68040 processors.
 
-@index "FAQs"
 
-
-@endnode
+@EndNode
 

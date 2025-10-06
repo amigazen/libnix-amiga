@@ -1,5 +1,5 @@
-char *sys_errlist[]=
-{ "Undefined error",
+char *sys_errlist[] = {
+  "Undefined error",
   "Operation not permitted",
   "No such file or directory",
   "No such process",
@@ -81,7 +81,7 @@ char *sys_errlist[]=
   "Inappropriate file type or format"
 };
 
-int sys_nerr=sizeof(sys_errlist)/sizeof(char *);
+int sys_nerr=sizeof(sys_errlist)/sizeof(sys_errlist[0]);
 
 char *strerror(int errno)
 { if(errno<0||errno>=sys_nerr)

@@ -10,4 +10,3 @@ int snprintf(char *s,size_t size,const char *format,...)
   va_end(args);
   return retval;
 }
-

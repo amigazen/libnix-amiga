@@ -1,68 +1,19 @@
-asm("
-		.globl	___umodsi3
-		.globl	___udivsi3
-		.globl	___udivsi4
+#include "bases.h"
 
-| D1.L = D0.L % D1.L unsigned
+asm(
+"		.globl	___umodsi3;"
+"		.globl	___udivsi3;"
 
-___umodsi3:	moveml	sp@(4:W),d0/d1
-		jbsr	___udivsi4
-		movel	d1,d0
-		rts
+/* D1.L = D0.L % D1.L unsigned */
 
-| D0.L = D0.L / D1.L unsigned
+"___umodsi3:	moveml	sp@(4:W),d0/d1;"
+"		jbsr	___udivsi4;"
+"		movel	d1,d0;"
+"		rts;"
 
-___udivsi3:	moveml	sp@(4:W),d0/d1
-___udivsi4:"
+/* D0.L = D0.L / D1.L unsigned */
 
-#ifdef OS_20_ONLY
-
-#ifndef SMALL_DATA
-"
-		movel	_UtilityBase,a0"
-#else
-"
-		movel	a4@(_UtilityBase:W),a0"
-#endif
-"
-		jmp	a0@(-156:W)"
-
-#else
-"
-		movel	d3,sp@-
-		movel	d2,sp@-
-		movel	d1,d3
-		swap	d1
-		tstw	d1
-		bnes	LC4
-		movew	d0,d2
-		clrw	d0
-		swap	d0
-		divu	d3,d0
-		movel	d0,d1
-		swap	d0
-		movew	d2,d1
-		divu	d3,d1
-		movew	d1,d0
-		clrw	d1
-		swap	d1
-		jra	LC1
-LC4:		movel	d0,d1
-		swap	d0
-		clrw	d0
-		clrw	d1
-		swap	d1
-		moveq	#16-1,d2
-LC3:		addl	d0,d0
-		addxl	d1,d1
-		cmpl	d1,d3
-		bhis	LC2
-		subl	d3,d1
-		addqw	#1,d0
-LC2:		dbra	d2,LC3
-LC1:		movel	sp@+,d2
-		movel	sp@+,d3
-		rts"
-
-#endif
+"___udivsi3:	moveml	sp@(4:W),d0/d1;"
+"___udivsi4:	movel	"A4(_UtilityBase)",a0;"
+"		jmp	a0@(-156:W);"
 );

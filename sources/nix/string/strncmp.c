@@ -1,18 +1,10 @@
 #include <string.h>
 
 int strncmp(const char *s1,const char *s2,size_t n)
-{ 
-  const unsigned char *p1=s1,*p2=s2;
+{ unsigned char *p1=(unsigned char *)s1,*p2=(unsigned char *)s2;
   unsigned long r,c;
 
-  if((r=n))
-  {
-    c=0;  
-    do
-    {
-      r=*p1++;
-      ((unsigned char)c)=*p2++;
-    } while (!(r-=c) && (unsigned char)c && --n);
-  }
+  if ((r=n))
+    do;while(r=*p1++,c=*p2++,!(r-=c) && (char)c && --n);
   return r;
 }

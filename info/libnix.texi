@@ -138,7 +138,7 @@ other things or you will run into problems.
 
 Normally this is handled by the specs file of gcc.
 
-@code{gcc (-fbaserel) (-resident) -noixemul YOUR_OBJECTS (-nix_main) (-lm)}
+@code{gcc (-fbaserel) (-resident) -noixemul YOUR_OBJECTS (-lnix_main) (-lm)}
 
 If you use @samp{-lnix_main} you get a different commandline parser.
 @samp{-lm} uses the math library.

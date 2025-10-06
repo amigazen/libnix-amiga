@@ -1,10 +1,20 @@
+#ifndef _HEADERS_LIBINIT_H
+#define _HEADERS_LIBINIT_H
+
 /******************************************************************************/
 /*                                                                            */
-/* include(s)                                                                 */
+/* special define(s)                                                          */
 /*                                                                            */
 /******************************************************************************/
 
+#if !defined(REG)
+#define REG(reg,arg) arg __asm(#reg)
+#endif
+
+#include <exec/resident.h>
 #include <exec/libraries.h>
+#include <proto/exec.h>
+#include "stabs.h"
 
 /******************************************************************************/
 /*                                                                            */
@@ -12,24 +22,17 @@
 /*                                                                            */
 /******************************************************************************/
 
-typedef struct _Library {
-  struct Library LibNode;
-  UWORD PadWord;
-  APTR  SegList;
-  APTR  DataSeg;
-
+typedef struct libBase {
+  struct Library  LibNode;
+  UWORD           Pad;
+  LONG            SegList;
+  APTR            DataSeg,
+                  SysBase;
 #ifdef EXTENDED
-
-  ULONG DataSize;
-  struct _Library *Parent;
-
+  ULONG           DataSize;
+  struct libBase *Parent;
 #endif
-
-} _LIB;
-
-#define DevNode LibNode
-
-typedef _LIB _DEV;
+} *__LIB, *__DEV;
 
 /******************************************************************************/
 /*                                                                            */
@@ -37,11 +40,11 @@ typedef _LIB _DEV;
 /*                                                                            */
 /******************************************************************************/
 
-struct Library *LibInit();
-struct Library *LibOpen();
-APTR LibClose();
-APTR LibExpunge();
-APTR LibExtFunc();
+LONG LibExtFunc(VOID);
+LONG LibExpunge(REG(a6,__LIB));
+LONG LibClose(REG(a6,__LIB));
+APTR LibOpen(REG(a6,__LIB));
+APTR LibInit(REG(a0,LONG),REG(d0,__LIB),REG(a6,struct Library *));
 
 /******************************************************************************/
 /*                                                                            */
@@ -49,14 +52,39 @@ APTR LibExtFunc();
 /*                                                                            */
 /******************************************************************************/
 
-struct Library *DevInit();
-VOID DevOpen();
-APTR DevClose();
-APTR DevExpunge();
-APTR DevExtFunc();
+LONG DevExtFunc(VOID);
+LONG DevExpunge(REG(a6,__DEV));
+LONG DevClose(REG(a1,APTR),REG(a6,__DEV));
+VOID DevOpen(REG(d0,ULONG),REG(a1,APTR),REG(d1,ULONG),REG(a6,__DEV));
+APTR DevInit(REG(a0,LONG),REG(d0,__DEV),REG(a6,struct Library *));
 
 /******************************************************************************/
 /*                                                                            */
-/* end of libinit.h                                                           */
+/* imports                                                                    */
 /*                                                                            */
 /******************************************************************************/
+
+extern LONG __stdargs __UserLibInit(struct Library *,REG(a4,APTR));
+extern VOID __stdargs __UserLibCleanup(REG(a4,APTR));
+
+extern const UWORD LibVersion;
+extern const UWORD LibRevision;
+extern const char LibIdString[];
+extern const char LibName[];
+
+extern LONG __stdargs __UserDevInit(struct Library *,REG(a4,APTR));
+extern LONG __stdargs __UserDevOpen(struct IORequest *,ULONG,ULONG,REG(a4,APTR));
+extern VOID __stdargs __UserDevClose(struct IORequest *,REG(a4,APTR));
+extern VOID __stdargs __UserDevCleanup(REG(a4,APTR));
+
+extern const UWORD DevVersion;
+extern const UWORD DevRevision;
+extern const char DevIdString[];
+extern const char DevName[];
+
+extern APTR __LibTable__[];
+extern APTR __FuncTable__[];
+
+extern LONG __datadata_relocs[];
+
+#endif /* _HEADERS_LIBINIT_H */

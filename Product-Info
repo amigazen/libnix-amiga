@@ -33,7 +33,7 @@ To cut it short:
 Use ixemul.library for porting Un*x programs, libnix for compiling
 amiga-only programs and gcc becomes one of the best Amiga compilers.
 .version
-1.1a
+1.2
 .author
 Matthias Fleischer
 Gunther Nikl

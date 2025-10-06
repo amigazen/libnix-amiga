@@ -1,6 +1,6 @@
-#include <pool.h>
+#include "pool.h"
 
 APTR LibAllocPooled(APTR poolHeader, ULONG memSize)
 {
-  return AsmAllocPooled(poolHeader,memSize,*(struct ExecBase **)4L);
+  return AsmAllocPooled(poolHeader,memSize,*(APTR *)4L);
 }

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <string.h>
 
 char *strpbrk(const char *s1,const char *s2)
@@ -11,5 +10,5 @@ char *strpbrk(const char *s1,const char *s2)
         return (char *)c1;
     c1++;
   }
-  return NULL;
+  return (char *)0;
 }

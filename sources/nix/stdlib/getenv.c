@@ -20,4 +20,3 @@ char *getenv(const char *name)
   else
     return var;
 }
-    

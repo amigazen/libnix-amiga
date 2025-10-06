@@ -1,43 +1,26 @@
-#ifndef _BASE_H_
-#define _BASE_H_
+#ifndef _HEADERS_BASE_H
+#define _HEADERS_BASE_H
 
-#ifdef SMALL_DATA
-
-#define A4(x) "a4@(" #x ":W)"
-
-#define GETAGBASE  movel a4@(_AmigaGuideBase:W),a6
-#define GETASLBASE movel a4@(_AslBase:W),a6
-#define GETBULBASE movel a4@(_BulletBase:W),a6
-#define GETDOSBASE movel a4@(_DOSBase:W),a6
-#define GETDTBASE  movel a4@(_DataTypesBase:W),a6
-#define GETGADBASE movel a4@(_GadToolsBase:W),a6
-#define GETGFXBASE movel a4@(_GfxBase:W),a6
-#define GETINTBASE movel a4@(_IntuitionBase:W),a6
-#define GETLOCBASE movel a4@(_LocaleBase:W),a6
-#define GETLOWBASE movel a4@(_LowLevelBase:W),a6
-#define GETRETBASE movel a4@(_RealTimeBase:W),a6
-#define GETUTLBASE movel a4@(_UtilityBase:W),a6
-#define GETWBBASE  movel a4@(_WorkbenchBase:W),a6
-
-
-#else
-
+#ifndef SMALL_DATA
 #define A4(x) #x
-
-#define GETAGBASE  movel _AmigaGuideBase,a6
-#define GETASLBASE movel _AslBase,a6
-#define GETBULBASE movel _BulletBase,a6
-#define GETDOSBASE movel _DOSBase,a6
-#define GETDTBASE  movel _DataTypesBase,a6
-#define GETGADBASE movel _GadToolsBase,a6
-#define GETGFXBASE movel _GfxBase,a6
-#define GETINTBASE movel _IntuitionBase,a6
-#define GETLOCBASE movel _LocaleBase,a6
-#define GETLOWBASE movel _LowLevelBase,a6
-#define GETRETBASE movel _RealTimeBase,a6
-#define GETUTLBASE movel _UtilityBase,a6
-#define GETWBBASE  movel _WorkbenchBase,a6
-
+#elif defined(mc68020)
+#define A4(x) "a4@(" #x ":L)"
+#else
+#define A4(x) "a4@(" #x ":W)"
 #endif
 
-#endif _BASE_H_
+#define GETAGBASE  movel A4(_AmigaGuideBase),a6
+#define GETASLBASE movel A4(_AslBase),a6
+#define GETBULBASE movel A4(_BulletBase),a6
+#define GETDOSBASE movel A4(_DOSBase),a6
+#define GETDTBASE  movel A4(_DataTypesBase),a6
+#define GETGADBASE movel A4(_GadToolsBase),a6
+#define GETGFXBASE movel A4(_GfxBase),a6
+#define GETINTBASE movel A4(_IntuitionBase),a6
+#define GETLOCBASE movel A4(_LocaleBase),a6
+#define GETLOWBASE movel A4(_LowLevelBase),a6
+#define GETRETBASE movel A4(_RealTimeBase),a6
+#define GETUTLBASE movel A4(_UtilityBase),a6
+#define GETWBBASE  movel A4(_WorkbenchBase),a6
+
+#endif /* _HEADERS_BASE_H */

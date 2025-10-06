@@ -1,13 +1,13 @@
 #include <devices/inputevent.h>
 #include <proto/exec.h>
 
-void FreeIEvents(struct InputEvent *events)
-{
+VOID FreeIEvents(struct InputEvent *events)
+{ APTR SysBase = *(APTR *)4L;
   struct InputEvent *next;
  
-  while(events!=NULL) {
-    next=events->ie_NextEvent;
-    FreeMem((APTR)events,sizeof(struct InputEvent));
-    events=next;
+  while (events != NULL) {
+    next = events->ie_NextEvent;
+    FreeMem(events,sizeof(*events));
+    events = next;
   }
 }

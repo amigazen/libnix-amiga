@@ -1,10 +1,7 @@
 #include <string.h>
 
 size_t strlen(const char *string)
-{
-  const char *s=string;
+{ const char *s=string;
 
-  while(*s++)
-    ;
-  return ~(string-s);
+  do;while(*s++); return ~(string-s);
 }

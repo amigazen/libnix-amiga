@@ -1,31 +1,11 @@
 /******************************************************************************/
 /*                                                                            */
-/* this works with gcc too and makes life easier                              */
+/* our include                                                                */
 /*                                                                            */
 /******************************************************************************/
 
-#define _USEOLDEXEC_
-
-/******************************************************************************/
-/*                                                                            */
-/* includes                                                                   */
-/*                                                                            */
-/******************************************************************************/
-
-#include <exec/types.h>
-#include <exec/resident.h>
-#include <proto/exec.h>
-#define EXTENDED /* multibase library */
+#define EXTENDED /* multibase library! */
 #include "libinit.h"
-#include "stabs.h"
-
-/******************************************************************************/
-/*                                                                            */
-/* *** VERY *** nessecary for relocation!                                     */
-/*                                                                            */
-/******************************************************************************/
-
-int *reloc=(int *)&reloc;
 
 /******************************************************************************/
 /*                                                                            */
@@ -33,239 +13,21 @@ int *reloc=(int *)&reloc;
 /*                                                                            */
 /******************************************************************************/
 
-int safefail()
+LONG safefail(VOID)
 {
   return -1;
 }
 
 /******************************************************************************/
 /*                                                                            */
-/* imports                                                                    */
+/* a do nothing stub (required!)                                              */
 /*                                                                            */
 /******************************************************************************/
 
-extern const UWORD LibVersion;
-extern const UWORD LibRevision;
-
-extern const BYTE LibName[];
-extern const BYTE LibIdString[];
-
-extern APTR  __LibTable__[];
-extern APTR  __FuncTable__[];
-
-extern int __datadata_relocs();
-
-extern int   __UserLibInit(_LIB *);
-extern void  __UserLibCleanup();
-
-/******************************************************************************/
-/*                                                                            */
-/* resident structure                                                         */
-/*                                                                            */
-/******************************************************************************/
-
-const APTR InitTab[4];
-
-static const struct Resident RomTag = {
-  RTC_MATCHWORD,
-  (struct Resident *)&RomTag,
-  (APTR)((&RomTag)+1),
-  RTF_AUTOINIT,
-  0,
-  NT_LIBRARY,
-  0,
-  (BYTE *)LibName,
-  (BYTE *)LibIdString,
-  (APTR)&InitTab
-};
-
-/******************************************************************************/
-/*                                                                            */
-/* autoinit table for use with initial MakeLibrary()                          */
-/*                                                                            */
-/******************************************************************************/
-
-const APTR InitTab[4] = {
-  (APTR)sizeof(_LIB),
-  (APTR)&__LibTable__[1],
-  0,
-  (APTR)LibInit
-};
-
-/******************************************************************************/
-/*                                                                            */
-/* support function(s) to be inlined                                          */
-/*                                                                            */
-/******************************************************************************/
-
-static inline APTR __GetDataSeg()
+LONG
+LibExtFunc(VOID)
 {
-  APTR res;
-  asm ("lea ___a4_init-0x7ffe,%0" : "=a" (res));
-  return res;
-}
-
-static inline ULONG __GetDBSize()
-{
-  ULONG res;
-  asm ("movel #___data_size,%0; addl #___bss_size,%0" : "=d" (res));
-  return res;
-}
-
-static inline ULONG __DSize()
-{
-  ULONG res;
-  asm ("movel #___data_size,%0" : "=d" (res));
-  return res;
-}
-
-/******************************************************************************/
-/*                                                                            */
-/* initialization function called by MakeLibrary()                            */
-/*                                                                            */
-/******************************************************************************/
-
-struct Library *LibInit()
-{
-  register APTR SegList asm("a0");
-  register struct Library *lib asm("d0");
-  _LIB *Library = (_LIB *)lib;
-
-  /* init global library base */
-
-  Library->LibNode.lib_Node.ln_Type = NT_LIBRARY;
-  Library->LibNode.lib_Node.ln_Name = (UBYTE *)LibName;
-  Library->LibNode.lib_Flags        = LIBF_CHANGED | LIBF_SUMUSED;
-  Library->LibNode.lib_Version      = (UWORD)LibVersion;
-  Library->LibNode.lib_Revision     = (UWORD)LibRevision;
-  Library->LibNode.lib_IdString     = (UBYTE *)LibIdString;
-  Library->SegList                  = SegList;
-  Library->DataSeg                  = __GetDataSeg();
-  Library->DataSize                 = __GetDBSize();
-  Library->Parent                   = Library;
-
-  /* this will be added to SysBase->LibList */
-
-  return (struct Library *)Library;
-}
-
-/******************************************************************************/
-/*                                                                            */
-/* LibOpen() will be called for every OpenLibrary()                           */
-/*                                                                            */
-/* !!! CAUTION: This function runs in a forbidden state !!!                   */
-/*                                                                            */
-/******************************************************************************/
-
-struct Library *LibOpen()
-{
-  register struct Library *lib asm("a6");
-  register APTR DataSeg asm("a4");
-  _LIB *Library = (_LIB *)lib, *NewLibrary;
-  long *relocs,numrel;
-
-  /* any memory allocation can cause a call of THIS library expunge vector.
-     if OpenCnt is zero the library might go away ... So fake a user :-) */
-
-  Library->LibNode.lib_OpenCnt++;
-
-  /* create new library base */
-
-  if ((NewLibrary=(_LIB *)MakeLibrary((APTR)&__FuncTable__[1],NULL,(APTR)&LibInit,sizeof(_LIB)+Library->DataSize,0)) != NULL)
-  {
-    int result;
-
-    /* one user */
-
-    NewLibrary->LibNode.lib_OpenCnt++;
-
-    /* copy dataseg */
-
-    CopyMem(NewLibrary->DataSeg,(UBYTE *)NewLibrary+sizeof(_LIB),__DSize());
-
-    /* relocate */
-
-    relocs=(long *)&__datadata_relocs;
-    if ((numrel=*relocs++))
-    {
-      int origmem=(int)NewLibrary->DataSeg, mem=(int)((UBYTE *)NewLibrary+sizeof(_LIB));
-
-      do
-       { 
-         *(long *)(mem + *relocs++) -= origmem - mem;
-       }
-      while(--numrel);
-    }
-    NewLibrary->DataSeg = (APTR)((UBYTE *)NewLibrary+sizeof(_LIB)+0x7ffe);
-
-    /* our 'real' parent */
-
-    NewLibrary->Parent  = Library;
-
-    /* assume user-init won't fail */
-
-    Library->LibNode.lib_Flags &= LIBF_DELEXP;
-    Library->LibNode.lib_OpenCnt++;
-
-    DataSeg=NewLibrary->DataSeg; asm volatile ("" : /**/ : "r" (DataSeg));
- 
-    /* now call user-init */
-
-    result=__UserLibInit(NewLibrary);
-
-    /* all ok? */
-
-    if (result!=0)
-    {
-      ULONG NegSize;
-
-      --Library->LibNode.lib_OpenCnt;
-      NegSize = Library->LibNode.lib_NegSize;
-      FreeMem((APTR)((UBYTE *)NewLibrary-(UBYTE *)NegSize),NegSize+NewLibrary->LibNode.lib_PosSize);
-      NewLibrary = NULL;
-    }
-  }
-
-  /* end of expunge protection */
-
-  --Library->LibNode.lib_OpenCnt;
-
-  return (struct Library *)NewLibrary;
-}
-
-/******************************************************************************/
-/*                                                                            */
-/* CloseLibrary() entry for the private library bases                         */
-/*                                                                            */
-/* !!! CAUTION: This function runs in a forbidden state !!!                   */
-/*                                                                            */
-/******************************************************************************/
-
-APTR LibClose()
-{
-  register struct Library *lib asm("a6");
-  register APTR DataSeg asm("a4");
-  _LIB *Library = (_LIB *)lib;
-  APTR SegList=0;
-  ULONG NegSize;
-
-  if (--Library->Parent->LibNode.lib_OpenCnt==0 && (Library->LibNode.lib_Flags&LIBF_DELEXP))
-    SegList=LibExpunge();
-
-  DataSeg=Library->DataSeg; asm volatile ("" : /**/ : "r" (DataSeg));
-
-  /* call user-exit */
-
-  __UserLibCleanup();
-
-  /* free library */
-
-  NegSize = Library->LibNode.lib_NegSize;
-  FreeMem((APTR)((UBYTE *)Library-(UBYTE *)NegSize),NegSize+Library->LibNode.lib_PosSize);
-
-  /* SegList or NULL (still in use) */
-
-  return SegList;
+  return 0;
 }
 
 /******************************************************************************/
@@ -276,48 +38,220 @@ APTR LibClose()
 /*                                                                            */
 /******************************************************************************/
 
-APTR LibExpunge()
+LONG
+LibExpunge(REG(a6,__LIB lib))
 {
-  register struct Library *lib asm("a6");
-  _LIB *Library = ((_LIB *)lib)->Parent;
-  APTR SegList=0;
+  LONG SegList = 0;
+  
+  /* get 'real' base */
+
+  lib = lib->Parent;
 
   /* set delayed expunge flag */
 
-  Library->LibNode.lib_Flags |= LIBF_DELEXP;
+  lib->LibNode.lib_Flags |= LIBF_DELEXP;
 
   /* still in use? */
 
-  if (Library->LibNode.lib_OpenCnt == 0)
-  {
-    ULONG NegSize;
+  if (!lib->LibNode.lib_OpenCnt) {
 
-    /* return the seglist for UnLoadSeg() */
-
-    SegList = Library->SegList;
+    APTR SysBase = lib->SysBase;
 
     /* remove library from SysBase->LibList */
 
-    Remove((struct Node *)Library);
+    Remove((struct Node *)lib);
+
+    /* return the seglist for UnLoadSeg() */
+
+    SegList = lib->SegList;
 
     /* free library */
 
-    NegSize = Library->LibNode.lib_NegSize;
-    FreeMem((APTR)((UBYTE *)Library-(UBYTE *)NegSize),NegSize+Library->LibNode.lib_PosSize);
+    FreeMem((UBYTE *)lib-lib->LibNode.lib_NegSize,lib->LibNode.lib_NegSize+lib->LibNode.lib_PosSize);
   }
+
   return SegList;
 }
 
 /******************************************************************************/
 /*                                                                            */
-/* a do nothing stub (required!)                                              */
+/* LibClose() will be called for every CloseLibrary()                         */
+/*                                                                            */
+/* !!! CAUTION: This function runs in a forbidden state !!!                   */
 /*                                                                            */
 /******************************************************************************/
 
-APTR LibExtFunc()
+LONG
+LibClose(REG(a6,__LIB lib))
 {
-  return 0;
+  APTR SysBase = lib->SysBase;
+  LONG SegList = 0;
+
+  if (!--lib->Parent->LibNode.lib_OpenCnt && (lib->LibNode.lib_Flags & LIBF_DELEXP))
+    SegList = LibExpunge(lib);
+
+  /* call user-exit */
+
+  __UserLibCleanup(lib->DataSeg);
+
+  /* free library */
+
+  FreeMem((UBYTE *)lib-lib->LibNode.lib_NegSize,lib->LibNode.lib_NegSize+lib->LibNode.lib_PosSize);
+
+  /* SegList or NULL (still in use) */
+
+  return SegList;
 }
+
+/******************************************************************************/
+/*                                                                            */
+/* LibOpen() will be called for every OpenLibrary()                           */
+/*                                                                            */
+/* !!! CAUTION: This function runs in a forbidden state !!!                   */
+/*                                                                            */
+/******************************************************************************/
+
+static __inline ULONG __DSize(void)
+{ ULONG res;
+
+  __asm("movel #___data_size,%0" : "=d" (res)); return res;
+}
+
+APTR
+LibOpen(REG(a6,__LIB lib))
+{
+  APTR dataseg, SysBase = lib->SysBase;
+  __LIB child;
+
+  /* any memory allocation can cause a call of THIS library expunge vector.
+     if OpenCnt is zero the library might go away ... So fake a user :-) */
+
+  lib->LibNode.lib_OpenCnt++;
+
+  /* create new library base */
+
+  if ((child=(__LIB)MakeLibrary(&__FuncTable__[1],NULL,(ULONG (*)())LibInit,sizeof(*lib)+lib->DataSize,0))) {
+
+    LONG *relocs,numrel;
+
+    /* one user */
+
+    child->LibNode.lib_OpenCnt++;
+
+    /* copy dataseg */
+
+    CopyMem(child->DataSeg,dataseg=(UBYTE *)child+sizeof(*lib),__DSize());
+
+    /* relocate */
+
+    relocs = __datadata_relocs;
+    if ((numrel=*relocs++)) {
+      LONG dist = (LONG)child->DataSeg - (LONG)dataseg;
+
+      do { 
+        *(LONG *)((LONG)dataseg + *relocs++) -= dist;
+      } while (--numrel);
+    }
+    child->DataSeg = (dataseg=(UBYTE *)dataseg+0x7ffe);
+
+    /* our 'real' parent */
+
+    child->Parent = lib;
+
+    /* assume user-init won't fail */
+
+    lib->LibNode.lib_Flags &= LIBF_DELEXP;
+    lib->LibNode.lib_OpenCnt++;
+
+    /* now call user-init */
+
+    if (!__UserLibInit(&child->LibNode,dataseg)) {
+      FreeMem((UBYTE *)child-child->LibNode.lib_NegSize,child->LibNode.lib_NegSize+sizeof(*child)+child->DataSize);
+      --lib->LibNode.lib_OpenCnt;
+      child = NULL;
+    }
+  }
+
+  /* end of expunge protection */
+
+  --lib->LibNode.lib_OpenCnt;
+
+  return child;
+}
+
+/******************************************************************************/
+/*                                                                            */
+/* initialization function called by MakeLibrary()                            */
+/*                                                                            */
+/******************************************************************************/
+
+static __inline APTR __GetDataSeg(void)
+{ APTR res;
+
+  __asm("lea ___a4_init-0x7ffe,%0" : "=a" (res)); return res;
+}
+
+static __inline ULONG __GetDBSize(void)
+{ ULONG res;
+
+  __asm("movel #___data_size,%0; addl #___bss_size,%0" : "=d" (res)); return res;
+}
+
+APTR
+LibInit(REG(a0,LONG SegList),REG(d0,__LIB lib),REG(a6,struct Library *SysBase))
+{
+  /* set up header data */
+
+  lib->LibNode.lib_Node.ln_Type = NT_LIBRARY;
+  lib->LibNode.lib_Node.ln_Name = (char *)LibName;
+  lib->LibNode.lib_Flags        = LIBF_CHANGED | LIBF_SUMUSED;
+  lib->LibNode.lib_Version      = (UWORD)LibVersion;
+  lib->LibNode.lib_Revision     = (UWORD)LibRevision;
+  lib->LibNode.lib_IdString     = (char *)LibIdString;
+
+  /* setup private data */
+
+  lib->SegList  = SegList;
+  lib->SysBase  = SysBase;
+  lib->DataSeg  = __GetDataSeg();
+  lib->DataSize = __GetDBSize();
+  lib->Parent   = lib;
+
+  /* this will be added to SysBase->LibList */
+
+  return lib;
+}
+/******************************************************************************/
+/*                                                                            */
+/* autoinit table for use with initial MakeLibrary()                          */
+/*                                                                            */
+/******************************************************************************/
+
+static const APTR InitTab[] = {
+  (APTR)sizeof(struct libBase),
+  (APTR)&__LibTable__[1],
+  (APTR)NULL,
+  (APTR)&LibInit
+};
+
+/******************************************************************************/
+/*                                                                            */
+/* resident structure                                                         */
+/*                                                                            */
+/******************************************************************************/
+
+static const struct Resident RomTag = {
+  RTC_MATCHWORD,
+  (struct Resident *)&RomTag,
+  (struct Resident *)&RomTag+1,
+  RTF_AUTOINIT,
+  0,
+  NT_LIBRARY,
+  0,
+  (char *)LibName,
+  (char *)LibIdString,
+  (APTR)&InitTab
+};
 
 /******************************************************************************/
 /*                                                                            */

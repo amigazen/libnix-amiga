@@ -3,16 +3,15 @@
 #include <dos/dosextens.h>
 #include <proto/dos.h>
 #include <proto/exec.h>
-#include <stabs.h>
+#include "stabs.h"
 
 extern int __stat(struct stat *buf,struct FileInfoBlock *fib);
 extern void __seterrno(void);
 extern char *__amigapath(const char *path);
 
 int stat(const char *name,struct stat *buf)
-{ struct Process *proc=(struct Process *)FindTask(NULL);
+{ APTR oldwin,*wptr=&((struct Process *)FindTask(NULL))->pr_WindowPtr;
   struct FileInfoBlock *fib;
-  APTR oldwin;
   BPTR lock;
   int ret=-1;
 
@@ -23,7 +22,7 @@ int stat(const char *name,struct stat *buf)
 
   /* avoid possible dos-requesters ;-( */
 
-  oldwin=proc->pr_WindowPtr; proc->pr_WindowPtr=(APTR)ret;
+  oldwin=*wptr; *wptr=(APTR)ret;
 
   if((lock=Lock((STRPTR)name,SHARED_LOCK))!=0)
   {
@@ -41,7 +40,7 @@ int stat(const char *name,struct stat *buf)
   else
     __seterrno();
 
-  proc->pr_WindowPtr=oldwin;
+  *wptr=oldwin;
 
   return ret;
 }

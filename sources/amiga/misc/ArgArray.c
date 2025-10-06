@@ -14,12 +14,10 @@ static struct DiskObject *dObj;
 
 UBYTE **ArgArrayInit(long argc, UBYTE **argv)
 {
-  if (argc)
-  {
+  if (argc) {
     if (argc>1)
 #ifdef NEW_ARGARRAY
-      if ((argArray=AllocVec(argc*sizeof(char *),MEMF_ANY)))
-      {
+      if ((argArray=AllocVec(argc*sizeof(char *),MEMF_ANY))) {
         UBYTE **p,**p1;
 
         p=p1=argArray;
@@ -62,7 +60,7 @@ LONG ArgInt(UBYTE **tt, STRPTR entry, long defval)
   return defval;
 }
 
-#ifdef 0 /* only a example ??? */
+#if 0 /* only a example ??? */
 
 CxObj *UserFilter(UBYTE **tt, STRPTR entry, STRPTR defstr)
 {
@@ -81,13 +79,11 @@ void ArgArrayDone(void)
 #ifdef NEW_ARGARRAY
   UBYTE ***a;
 
-  if (*(a=&argArray))
-  {
+  if (*(a=&argArray)) {
     FreeVec(*a); *a=NULL;
   }
 #endif
-  if (*(d=&dObj))
-  {
+  if (*(d=&dObj)) {
     FreeDiskObject(*d); *d=NULL;
   }
 }

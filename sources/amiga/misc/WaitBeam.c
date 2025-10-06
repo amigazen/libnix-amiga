@@ -1,7 +1,7 @@
 #include <clib/alib_protos.h>
 #include <proto/graphics.h>
 
-void waitbeam(long pos)
+VOID waitbeam(LONG pos)
 {
-  do {} while(pos>VBeamPos());
+  do{}while(pos>VBeamPos());
 }

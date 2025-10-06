@@ -2,14 +2,12 @@
 
 void *memchr(const void *s,int c,size_t n)
 {
-  if (n != 0)
-  {
+  if (n) {
     unsigned char *p=(unsigned char *)s;
-    do
-    {
+    do {
       if (*p++==(unsigned char)c)
         return --p;
-    }while(--n != 0);
+    } while (--n);
   }
   return (void *)n;
 }
