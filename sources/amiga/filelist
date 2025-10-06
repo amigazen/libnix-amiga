@@ -1,0 +1,33 @@
+#Computer generated partial makefile-do not edit
+OBJECTS= \
+misc/AbsExecBase.o \
+misc/AddTOF.o \
+misc/ArgArray.o \
+misc/BeginIO.o \
+misc/CallHook.o \
+misc/Cia.o \
+misc/CoerceMethod.o \
+misc/CreateIO.o \
+misc/CreatePort.o \
+misc/CreateTask.o \
+misc/Custom.o \
+misc/DeleteTask.o \
+misc/DoMethod.o \
+misc/DoPktn.o \
+misc/DoSuperMethod.o \
+misc/FastRand.o \
+misc/FreeIEvents.o \
+misc/HookEntry.o \
+misc/HotKey.o \
+misc/LibAllocPooled.o \
+misc/LibCreatePool.o \
+misc/LibFreePooled.o \
+misc/NewList.o \
+misc/RangeRand.o \
+misc/SetSuperAttrs.o \
+misc/TimeDelay.o \
+misc/WaitBeam.o \
+misc/sprintf.o \
+
+SUBDIRS= \
+misc \

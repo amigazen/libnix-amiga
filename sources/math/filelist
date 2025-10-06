@@ -1,0 +1,32 @@
+#Computer generated partial makefile-do not edit
+OBJECTS= \
+extra/rand48.o \
+stdio/isinf.o \
+stdio/isnan.o \
+stdlib/atof.o \
+stdlib/strtod.o \
+trans/acos.o \
+trans/asin.o \
+trans/atan.o \
+trans/atan2.o \
+trans/ceil.o \
+trans/cos.o \
+trans/cosh.o \
+trans/exp.o \
+trans/fabs.o \
+trans/floor.o \
+trans/fmod.o \
+trans/log.o \
+trans/log10.o \
+trans/pow.o \
+trans/sin.o \
+trans/sinh.o \
+trans/sqrt.o \
+trans/tan.o \
+trans/tanh.o \
+
+SUBDIRS= \
+extra \
+stdio \
+stdlib \
+trans \
