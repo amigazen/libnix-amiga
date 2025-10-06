@@ -4,18 +4,13 @@
 
 char *strncpy(char *s1,const char *s2,size_t n)
 {
-  if (n != 0)
-  {
+  if (n != 0) {
     char *s=s1;
 
-    while ((*s++=*s2++) && (--n != 0))
-      ;
-    if (n != 0)
-    {
-      do
-        *s++=0;
-      while (--n != 0);
-    }
+    do{}while((*s++=*s2++) && (--n != 0));
+
+    if (n)
+      while(--n != 0) *s++=0;
   }
   return s1;
 }
@@ -32,9 +27,9 @@ L4:	subql	#1,d1
 	bcs	L1
 	moveb	a0@+,a1@+
 	bne	L4
-	jra	L2
+	.word	0x0c40
 L3:	clrb	a1@+
-L2:	subql	#1,d1
+	subql	#1,d1
 	bcc	L3
 L1:	rts
 ");

@@ -19,7 +19,7 @@ void dotimer(ULONG unit,ULONG timercmd,struct timeval *t)
       portio->port.mp_SigTask=FindTask(NULL);
       NEWLIST(&portio->port.mp_MsgList);
 
-      portio->treq.tr_node.io_Message.mn_Node.ln_Type=NT_MESSAGE;
+      portio->treq.tr_node.io_Message.mn_Node.ln_Type=NT_REPLYMSG;
       portio->treq.tr_node.io_Message.mn_ReplyPort=&portio->port;
       if (!(OpenDevice(TIMERNAME,unit,&portio->treq.tr_node,0)))
       {

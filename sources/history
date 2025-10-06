@@ -262,3 +262,20 @@ F Added CPU check with error requester for the non-68000 versions (changed
   startups, too).
 
 V1.1
+F cache flush function for gcc support added
+
+B fixed a macro in stabs.h for shared library support
+
+F replaced asm functions for automatic library with c functions
+
+F updated support functions for amiga.lib
+
+F code cleanup 
+
+V1.1a
+
+F fixed "off-by-one" error of portable strncpy()
+
+F fixed open() so that it ignores stdio slots now
+
+V1.1b

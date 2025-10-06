@@ -33,7 +33,7 @@ int fstat(int d,struct stat *buf)
 
   memset(buf,0,sizeof(struct stat));
 
-  buf->st_mode	  = S_IFCHR | 0777;
+  buf->st_mode    = S_IFCHR | 0777;
   buf->st_nlink   = 1;
   buf->st_blksize = 512;
   /*buf->st_blocks  = 0;*/
@@ -44,11 +44,11 @@ int fstat(int d,struct stat *buf)
     {
       len = 0; pos = Seek(fh,0,OFFSET_END);
       if (pos >= 0 && (IoErr() != ERROR_ACTION_NOT_KNOWN))
-	len = Seek(fh,pos,OFFSET_BEGINNING);
+        len = Seek(fh,pos,OFFSET_BEGINNING);
 
-      fib->fib_DiskKey	    = (ino_t)~((LONG)fh);
+      fib->fib_DiskKey      = (ino_t)~((LONG)fh);
       fib->fib_DirEntryType = -1;
-      fib->fib_Size	    = len;
+      fib->fib_Size         = len;
       fib->fib_Protection   = 0xff0;
       fib->fib_NumBlocks    = ((len + 511) >> 9);
       DateStamp(&fib->fib_Date);
@@ -63,4 +63,3 @@ int fstat(int d,struct stat *buf)
 
   FreeDosObject(DOS_FIB,fib); return 0;
 }
-

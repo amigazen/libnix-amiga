@@ -17,8 +17,8 @@
                 }while(0)
 
 #define MINFLOATSIZE (DBL_DIG+1) /* Why not 1 more - it's 97% reliable */
-#define MININTSIZE (sizeof(unsigned long)*BITSPERBYTE/3+1)
-#define MINPOINTSIZE (sizeof(void *)*BITSPERBYTE/4+1)
+#define MININTSIZE (sizeof(unsigned long)*CHAR_BIT/3+1)
+#define MINPOINTSIZE (sizeof(void *)*CHAR_BIT/4+1)
 #define REQUIREDBUFFER (MININTSIZE>MINPOINTSIZE? \
                         (MININTSIZE>MINFLOATSIZE?MININTSIZE:MINFLOATSIZE): \
                         (MINPOINTSIZE>MINFLOATSIZE?MINPOINTSIZE:MINFLOATSIZE))

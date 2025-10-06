@@ -3,14 +3,9 @@
 #include <clib/alib_protos.h>
 #include <proto/exec.h>
 
-extern inline void NewList(struct List *list)
-{
-   LONG *p;
-
-   list->lh_TailPred=(struct Node*)list;
-   ((LONG *)list)++;
-   p=(LONG *)list; *--p=(LONG)list;
-}
+#define NEWLIST(l) ((l)->lh_Head = (struct Node *)&(l)->lh_Tail, \
+                    /*(l)->lh_Tail = NULL,*/ \
+                    (l)->lh_TailPred = (struct Node *)&(l)->lh_Head)
 
 struct MsgPort *CreatePort(STRPTR name,LONG pri)
 { struct MsgPort *port = NULL;
@@ -29,7 +24,7 @@ struct MsgPort *CreatePort(STRPTR name,LONG pri)
       */
       port->mp_SigBit=portsig;
       port->mp_SigTask=FindTask(NULL);
-      NewList(&port->mp_MsgList);
+      NEWLIST(&port->mp_MsgList);
       if (port->mp_Node.ln_Name)
         AddPort(port);
     }

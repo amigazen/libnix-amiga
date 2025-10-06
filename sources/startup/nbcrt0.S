@@ -22,9 +22,8 @@ pr_CLI		=	 172
 
 | first entry - init some vars, check for cli or wb start
 
-start:		jbsr	_geta4
-
-		movel	#___bss_size,d1
+start:		movel	#___bss_size,d1
+		jbsr	_geta4
 		beqs	nobss
 		lea	a4@(__edata:W),a1
 clrbss: 	clrl	a1@+

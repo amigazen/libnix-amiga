@@ -65,7 +65,7 @@ int open(const char *path,int flags,...)
     return -1;
 #endif
 
-  for(sfd=__stdfiledes,max=stdfilesize,file=0;file<max;file++)
+  for(sfd=__stdfiledes,max=stdfilesize,file=3;file<max;file++)
     if(!sfd[file])
       break;
 

@@ -53,7 +53,7 @@ extern const BYTE LibIdString[];
 extern APTR  __LibTable__[];
 extern APTR  __FuncTable__[];
 
-extern const int __datadata_relocs[];
+extern int __datadata_relocs();
 
 extern int   __UserLibInit(_LIB *);
 extern void  __UserLibCleanup();
@@ -185,7 +185,7 @@ struct Library *LibOpen()
 
     /* relocate */
 
-    relocs=(long *)&__datadata_relocs[0];
+    relocs=(long *)&__datadata_relocs;
     if ((numrel=*relocs++))
     {
       int origmem=(int)NewLibrary->DataSeg, mem=(int)((UBYTE *)NewLibrary+sizeof(_LIB));

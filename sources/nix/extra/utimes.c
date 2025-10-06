@@ -25,9 +25,9 @@ int utimes(const char *file, const struct timeval *times)
 #if 0
     extern long timezone;
 #endif
-    t -= (2922L * SECSPERDAY);  /* Datestamps start from Jan 1, 1978, unix
-				     time from Jan 1, 1970, i.e., 2922 days
-				     earlier! */
+    t -= (2922L * SECSPERDAY);	/* Datestamps start from Jan 1, 1978, unix
+				   time from Jan 1, 1970, i.e., 2922 days
+				   earlier! */
 #if 0
     t -= timezone;	/* Adjust for local time */
 #endif
@@ -48,11 +48,3 @@ int utimes(const char *file, const struct timeval *times)
     return -1;
   }
 }
-
-/*
-  if (error = ~(SetFileDate ((char *)files, &d)))
-    {
-      __seterrno();
-    }
-  return error;
-*/

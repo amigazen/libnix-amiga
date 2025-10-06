@@ -95,7 +95,7 @@ _ADDTABL_ARG(arg3);			\
 _ADDTABL_ARG(arg2);			\
 _ADDTABL_ARG(arg1);			\
 _ADDTABL_CALL(name);			\
-_ADDTABL_ENDN(name,3)
+_ADDTABL_ENDN(name,4)
 
 #define ADDTABL_END() asm(".stabs \"___FuncTable__\",20,0,0,-1")
 

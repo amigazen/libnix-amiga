@@ -450,7 +450,7 @@ To utilize the stack checking or extension feature you need at least V2.7.0 of
 gcc. With this compiler you get 2 new amiga specific options that emit special
 code whenever necessary:
 
-@itemize
+@itemize @bullet
 @item
 @samp{-mstackcheck} Emits code that checks if there is enough stack left.
 The program exits if not.
@@ -989,7 +989,7 @@ If you don't like the hassle with semaphores you can use this startup.
 It provides a new data segment for each task that opens your library.
 There are two disadvantages over libinit.o:
 
-@itemize
+@itemize @bullet
 @item
 This method needs more memory.
 @item
