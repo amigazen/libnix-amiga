@@ -14,6 +14,6 @@ char *fgets(char *s,int n,FILE *stream)
     if(c=='\n')
       break;
   }
-  *s2++='\0';
+  *s2='\0';
   return s;
 }

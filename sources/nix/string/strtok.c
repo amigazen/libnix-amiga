@@ -1,5 +1,6 @@
 #include <string.h>
 
+#if 0 // libnix < 3.x
 char *strtok(char *s1,const char *s2)
 { static char *t;
   if(s1)
@@ -15,3 +16,12 @@ char *strtok(char *s1,const char *s2)
     *t++='\0';
   return s1;
 }
+#else
+extern char *strtok_r(char *s1,const char *s2,char **t);
+static char *t = NULL;
+
+char *strtok(char *s1,const char *s2)
+{
+  return strtok_r(s1,s2,&t);
+}
+#endif

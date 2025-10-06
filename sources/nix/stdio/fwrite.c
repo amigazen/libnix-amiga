@@ -10,6 +10,21 @@ int fwrite(const void *ptr,size_t size,size_t nmemb,FILE *stream)
   unsigned char *b=(unsigned char *)ptr;
   if(!(total=size*nmemb)) /* Just in case size==0 */
     return total;
+  if(!__valid_fp(stream)||!b)
+    return 0;
+  if((stream->flags&(__SWO|__SNBF))==(__SWO|__SNBF))
+  { FILE fp;
+    bzero(&fp,sizeof(fp));
+    fp.magic=FILEMAGICID;
+    fp.buffer=b;
+    fp.p=b+total;
+    fp.flags=__SWR|(stream->flags&~(__SWO|__SNBF));
+    fp.file=stream->file;
+    if(__fflush(&fp) || (fp.flags&__SERR))
+    { stream->flags|=__SERR;
+      return 0; }
+    return nmemb;
+  }
   do
   {
     if(stream->outcount>0)

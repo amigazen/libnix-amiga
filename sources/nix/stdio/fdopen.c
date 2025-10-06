@@ -14,6 +14,7 @@ FILE *fdopen(int filedes,const char *mode)
       { node->FILE.bufsize=BUFSIZ;
         node->FILE.file=filedes;
         node->FILE.flags|=__SMBF; /* Buffer is malloc'ed */
+	node->FILE.magic = FILEMAGICID;
         if(isatty(filedes))
           node->FILE.flags|=__SLBF; /* set linebuffered flag */
         if(_lx_addflags(filedes,*mode=='a'?O_APPEND:0)&O_WRONLY)

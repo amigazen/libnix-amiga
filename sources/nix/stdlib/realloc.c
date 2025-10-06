@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <proto/exec.h>
+#include <string.h>
 
 void *realloc(void *ptr,size_t size)
 {
@@ -13,7 +14,8 @@ void *realloc(void *ptr,size_t size)
   { if(a!=NULL)
     { l=((ULONG *)ptr)[-1]-sizeof(ULONG);
       l=l<size?l:size;
-      CopyMem(ptr,a,l);
+    //  CopyMem(ptr,a,l);
+      bcopy(ptr,a,l);
     }
     if(size==0||a!=NULL)
       free(ptr);

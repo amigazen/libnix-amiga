@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <proto/dos.h>
 #include <errno.h>
+#include <string.h>
 
 int readlink(const char *path, char *buf, int bufsiz) {
 	struct DevProc *dp = NULL;
@@ -20,7 +21,7 @@ int readlink(const char *path, char *buf, int bufsiz) {
 		goto done;
 	}
 
-	
+
 	retval = ReadLink(dp->dvp_Port, lock, path, buf, bufsiz);
 	if (retval == TRUE)
 		retval = strlen(buf);

@@ -1,8 +1,12 @@
 #include <string.h>
+#include <stdlib.h>
 
-extern void bcopy(const void *s1,void *s2,size_t n);
+#define bcopy __bCopy
+static inline
+#include "../misc/bcopy.c"
 
 void *memmove(void *s1,const void *s2,size_t n)
 {
-  bcopy(s2,s1,n); return s1;
+  bcopy(s2,s1,n);
+  return s1;
 }

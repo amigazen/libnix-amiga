@@ -9,6 +9,8 @@
 #include <proto/dos.h>
 #include <stdio.h>
 #include "stabs.h"
+#include <signal.h>
+#include <dos/dos.h>
 
 /*
 **
@@ -39,8 +41,8 @@ static __inline StdFileDes *_allocfd(void)
 { StdFileDes *fp,**sfd;
   int file,max;
 
-  for(sfd=stdfiledes,max=stdfilesize,file=0;file<max;sfd++,file++)
-    if(!sfd[0] || !sfd[0]->lx_inuse)
+  for(sfd=stdfiledes,max=stdfilesize,file=3;file<max;file++)
+    if(!sfd[file] || !sfd[file]->lx_inuse)
       break;
 
   if(file>SHRT_MAX)
@@ -48,18 +50,20 @@ static __inline StdFileDes *_allocfd(void)
     return NULL;
   }
 
+#define ADDFD 10
   if(file==max)
-  { if((sfd=realloc(stdfiledes,(file+1)*sizeof(fp)))==NULL)
+  { if((sfd=realloc(stdfiledes,(file+ADDFD)*sizeof(fp)))==NULL)
     { errno=ENOMEM;
       return NULL;
     }
     stdfiledes=sfd;
-    stdfilesize++;
-    *(sfd=&sfd[file]) = 0;
+    stdfilesize+=ADDFD;
+    for(max=file;max<stdfilesize;max++)
+      sfd[max] = NULL;
   }
 
-  if((fp=sfd[0])==NULL)
-  { if((sfd[0]=fp=malloc(sizeof(*fp)))==NULL)
+  if((fp=sfd[file])==NULL)
+  { if((sfd[file]=fp=malloc(sizeof(*fp)))==NULL)
     { errno=ENOMEM;
       return NULL;
     }
@@ -72,21 +76,38 @@ static __inline StdFileDes *_allocfd(void)
 /*
 **
 */
+
+#define IXFA(f) \
+  ((f&O_TRUNC)?MODE_NEWFILE:((f&O_CREAT)?MODE_READWRITE:MODE_OLDFILE))
+
 int open(const char *path,int flags,...)
-{ extern char *__amigapath(const char *path);
-  StdFileDes *sfd;
+{ StdFileDes *sfd;
 
 #ifdef IXPATHS
+  extern char *__amigapath(const char *path);
   if((path=__amigapath(path))==NULL)
     return -1;
 #endif
 
-  if ((sfd=_allocfd())) {
-    sfd->lx_sys=0;
+  if(flags & O_EXCL)
+  { BPTR lock;
+    if((lock=Lock(path,SHARED_LOCK)))
+    { UnLock(lock);
+      errno=EEXIST;
+      return EOF;
+    }
+  }
+
+  if((sfd=_allocfd()))
+  { sfd->lx_sys=0;
     sfd->lx_oflags=flags;
-    if ((sfd->lx_fh=Open((char *)path,flags&O_TRUNC?MODE_NEWFILE:
-                         flags&(O_WRONLY|O_RDWR)?MODE_READWRITE:MODE_OLDFILE))) {
-      _setup_file(sfd); return sfd->lx_pos;
+    if((sfd->lx_fh=Open((char *)path,IXFA(flags))))
+    {
+      if(!(flags & O_APPEND)||Seek(sfd->lx_fh,0,OFFSET_END)!=-1)
+      { _setup_file(sfd);
+        return sfd->lx_pos;
+      }
+      Close(sfd->lx_fh);
     }
     __seterrno();
     sfd->lx_inuse = 0;
@@ -96,7 +117,7 @@ int open(const char *path,int flags,...)
 }
 
 int close(int d)
-{ StdFileDes *sfd = _lx_fhfromfd(d);
+{ StdFileDes *sfd = d>STDERR_FILENO?_lx_fhfromfd(d):NULL;
 
   if (sfd) {
     if (!(sfd->lx_inuse-=1)) {
@@ -133,6 +154,7 @@ ssize_t write(int d,const void *buf,size_t nbytes)
 
   if (sfd) {
     long r;
+#if 0 // libnix < 3.0x
     __chkabort();
     switch((sfd->lx_oflags&O_APPEND)!=0) {
       case 1:
@@ -142,6 +164,12 @@ ssize_t write(int d,const void *buf,size_t nbytes)
         if((r=Write(sfd->lx_fh,(char *)buf,nbytes))!=EOF)
           return r;
     }
+#else
+    if(SetSignal(0L,SIGBREAKF_CTRL_C) & SIGBREAKF_CTRL_C)
+      raise(SIGINT);
+    if((r = Write(sfd->lx_fh,(char *)buf,nbytes)) != EOF)
+      return r;
+#endif
     __seterrno();
   }
 
@@ -153,7 +181,7 @@ off_t lseek(int d,off_t offset,int whence)
 
   if (sfd) {
     long r,file=sfd->lx_fh;
-    __chkabort();
+//    __chkabort();
     if (Seek(file,offset,whence==SEEK_SET?OFFSET_BEGINNING:
                          whence==SEEK_END?OFFSET_END:OFFSET_CURRENT)!=EOF)
       if ((r=Seek(file,0,OFFSET_CURRENT))!=EOF)
@@ -162,6 +190,49 @@ off_t lseek(int d,off_t offset,int whence)
   }
 
   return EOF;
+}
+
+int ftruncate(int fd, off_t length)
+{
+  StdFileDes *sfd = _lx_fhfromfd(fd);
+  long pos,r,file;
+
+  if(!sfd)
+  { errno = EBADF;
+    return EOF;
+  }
+  file=sfd->lx_fh;
+  pos=Seek(file,0,OFFSET_CURRENT);
+
+  if((r=SetFileSize(file,length,OFFSET_BEGINNING))==EOF)
+  { errno=EIO;
+    return EOF;
+  }
+  if((r=Seek(file,length>pos?pos:length,OFFSET_BEGINNING))==EOF)
+  { errno=EIO;
+    return EOF;
+  }
+  return 0;
+}
+
+int truncate(const char *path, off_t length)
+{
+  int fd,r;
+
+  if(!(path && *path))
+  { errno=EFAULT;
+    return EOF;
+  }
+
+  if((fd=open(path,0))==EOF)
+  { errno=ENOENT;
+    return EOF;
+  }
+
+  r=ftruncate(fd,length);
+  close(fd);
+
+  return r;
 }
 
 int isatty(int d)
@@ -212,7 +283,7 @@ void __initstdio(void)
         _setup_file(fp);
         if((sfd[STDERR_FILENO]=fp=(StdFileDes *)malloc(sizeof(StdFileDes)))) {
           if((fp->lx_fh=((struct Process *)FindTask(NULL))->pr_CES)==0)
-            if(_WBenchMsg||(fp->lx_fh=stderrdes=Open("*",MODE_OLDFILE))==0)
+            if(_WBenchMsg||(fp->lx_fh=stderrdes=Open("CONSOLE:",MODE_OLDFILE))==0)
               fp->lx_fh=sfd[STDOUT_FILENO]->lx_fh;
           fp->lx_pos    = STDERR_FILENO;
           fp->lx_sys    = -1;
@@ -230,7 +301,7 @@ ADD2INIT(__initstdio,-30);
 void __exitstdio(void)
 { int i,max;
 
-  for(max=stdfilesize,i=0;i<max;i++) {
+  for(max=stdfilesize,i=3;i<max;i++) {
     StdFileDes *sfd = stdfiledes[i];
     if(sfd && sfd->lx_inuse) {
       close(i);
@@ -241,3 +312,12 @@ void __exitstdio(void)
     Close(stderrdes);
 }
 ADD2EXIT(__exitstdio,-30);
+
+#if 0
+#if __GNUC__ < 3
+# define UNUSED __attribute__((unused))
+#else
+# define UNUSED __attribute__((used))
+#endif
+static unsigned char __auth[] UNUSED = "$(diegocr:libnix)";
+#endif

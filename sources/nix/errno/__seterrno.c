@@ -4,6 +4,8 @@
 
 /* Table to convert amigados error messages to unix ones */
 
+#if 0 // libnix < 3.x
+
 static long _errortable[] = {
   ERROR_NO_FREE_STORE		,ENOMEM,
   ERROR_TASK_TABLE_FULL		,EPROCLIM,
@@ -63,3 +65,68 @@ void __seterrno(void)
     ++ptr;
   errno=*ptr;
 }
+#else
+
+void __seterrno(void)
+{
+	static const struct { UBYTE io_err; UBYTE errno; } map_table[] =
+	{
+		{ ERROR_NO_FREE_STORE,			ENOMEM },
+		{ ERROR_TASK_TABLE_FULL,		ENOMEM },
+		{ ERROR_BAD_TEMPLATE,			EINVAL },
+		{ ERROR_BAD_NUMBER,			EINVAL },
+		{ ERROR_REQUIRED_ARG_MISSING,		EINVAL },
+		{ ERROR_KEY_NEEDS_ARG,			EINVAL },
+		{ ERROR_TOO_MANY_ARGS,			EINVAL },
+		{ ERROR_UNMATCHED_QUOTES,		EINVAL },
+		{ ERROR_LINE_TOO_LONG,			ENAMETOOLONG },
+		{ ERROR_FILE_NOT_OBJECT,		ENOEXEC },
+		{ ERROR_OBJECT_IN_USE,			EBUSY },
+		{ ERROR_OBJECT_EXISTS,			EEXIST },
+		{ ERROR_DIR_NOT_FOUND,			ENOENT },
+		{ ERROR_OBJECT_NOT_FOUND,		ENOENT },
+		{ ERROR_BAD_STREAM_NAME,		EINVAL },
+		{ ERROR_OBJECT_TOO_LARGE,		EFBIG },
+		{ ERROR_ACTION_NOT_KNOWN,		ENOSYS },
+		{ ERROR_INVALID_COMPONENT_NAME,		EINVAL },
+		{ ERROR_INVALID_LOCK,			EBADF },
+		{ ERROR_OBJECT_WRONG_TYPE,		EFTYPE },
+		{ ERROR_DISK_NOT_VALIDATED,		EROFS },
+		{ ERROR_DISK_WRITE_PROTECTED,		EROFS },
+		{ ERROR_RENAME_ACROSS_DEVICES,		EXDEV },
+		{ ERROR_DIRECTORY_NOT_EMPTY,		ENOTEMPTY },
+		{ ERROR_TOO_MANY_LEVELS,		ENAMETOOLONG },
+		{ ERROR_DEVICE_NOT_MOUNTED,		ENXIO },
+		{ ERROR_COMMENT_TOO_BIG,		ENAMETOOLONG },
+		{ ERROR_DISK_FULL,			ENOSPC },
+		{ ERROR_DELETE_PROTECTED,		EACCES },
+		{ ERROR_WRITE_PROTECTED,		EACCES },
+		{ ERROR_READ_PROTECTED,			EACCES },
+		{ ERROR_NOT_A_DOS_DISK,			EFTYPE },
+		{ ERROR_NO_DISK,			EACCES },
+		{ ERROR_IS_SOFT_LINK,			EFTYPE },
+		{ ERROR_BAD_HUNK,			ENOEXEC },
+		{ ERROR_NOT_IMPLEMENTED,		ENOSYS },
+		{ ERROR_LOCK_COLLISION,			EACCES },
+#if 0
+		{ ERROR_BREAK,				EINTR },
+		{ ERROR_NOT_EXECUTABLE,			ENOEXEC }
+#endif
+	};
+	
+	LONG io_err = IoErr();
+	
+	unsigned int i, table_size = (sizeof(map_table) / sizeof(map_table[0]));
+
+	errno = EIO;
+
+	for(i = 0 ; i < table_size ; i++)
+	{
+		if((LONG)map_table[i].io_err == io_err)
+		{
+			errno = (int) map_table[i].errno;
+			break;
+		}
+	}
+}
+#endif

@@ -14,9 +14,11 @@ void __initstdfio(void)
      ((*f++=fdopen(STDOUT_FILENO,"w"))==NULL)||
      ((*f=err=fdopen(STDERR_FILENO,"w"))==NULL))
     exit(20);
+#if 0
   free(err->buffer);
   err->flags&=~(__SMBF|__SLBF); err->flags|=__SNBF;
   err->buffer=NULL;
+#endif
 }
 
 /* Call our private constructor */

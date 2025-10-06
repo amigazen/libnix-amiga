@@ -1,5 +1,6 @@
 #include <string.h>
 
+#if 0 // libnix < 3.x
 size_t strspn(const char *s1,const char *s2)
 { size_t i;
   unsigned char *c1=(unsigned char *)s1;
@@ -12,3 +13,21 @@ size_t strspn(const char *s1,const char *s2)
       return i;
   }
 }
+#else
+
+size_t strspn(const char *s1,const char *s2)
+{
+  const char *s = s1;
+  const char *c;
+  
+  while (*s1) {
+    for(c = s2; *c && *s1 != *c; c++);
+    if(*c == '\0')
+      break;
+    s1++;
+  }
+  
+  return s1 - s;
+}
+
+#endif

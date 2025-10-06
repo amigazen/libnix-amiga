@@ -8,8 +8,15 @@
 
 /* a little macro to make life easier */
 
+#ifdef putc
+// I assume this should make it faster.. [diegocr]
+# define __i_putc(C,S) ({int _CH=(C); putc(_CH,(S));})
+#else
+# define __i_putc fputc
+#endif
+
 #define OUT(c)  do                           \
-                { if(fputc((c),stream)==EOF) \
+                { if(__i_putc((c),stream)==EOF) \
                     return outcount;         \
                   outcount++;                \
                 }while(0)
@@ -40,6 +47,7 @@ static int __vfprintf(FILE *stream,const char *format,va_list args)
   fp.buffer      = buf;
   fp.bufsize     = sizeof(buf);
   fp.linebufsize = 0;
+  fp.magic       = FILEMAGICID;
   if(((ret=vfprintf(&fp,format,args))>=0) && __fflush(&fp))
     ret = -1;
   if(fp.flags&__SERR)
@@ -48,7 +56,7 @@ static int __vfprintf(FILE *stream,const char *format,va_list args)
 }
 
 int vfprintf(FILE *stream,const char *format,va_list args)
-{ 
+{
   size_t outcount=0;
 
   /* optimize unbuffered write-only files */
@@ -58,7 +66,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
   while(*format)
   {
     if(*format=='%')
-    { 
+    {
       static const char flagc[]=
       { '#','0','-',' ','+' };
       static const char lowertabel[]=

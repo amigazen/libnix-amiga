@@ -5,7 +5,7 @@
 #define NEWLIST(l) ((l)->lh_Head = (struct Node *)&(l)->lh_Tail, \
                     (l)->lh_TailPred = (struct Node *)&(l)->lh_Head)
 
-void dotimer(ULONG unit,ULONG timercmd,struct timeval *t)
+void dotimer_r(ULONG unit,ULONG timercmd,struct timeval *t)
 { struct PortIO {
     struct timerequest treq;
     struct MsgPort port;

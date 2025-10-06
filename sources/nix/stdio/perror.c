@@ -2,6 +2,8 @@
 #include <string.h>
 #include <errno.h>
 
+#if 0
+// This was buggy because stderr might be unbuffered.. [diegocr]
 void perror(const char *string)
 { int err=errno;
   if(string!=NULL)
@@ -11,3 +13,10 @@ void perror(const char *string)
   fputs(strerror(err),stderr);
   fputc('\n',stderr);
 }
+#else
+extern char *__procname;
+void perror(const char *string)
+{ int err=errno;
+  fprintf(stderr,"%s: %s\n",string?string:__procname,strerror(err));
+}
+#endif

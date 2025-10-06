@@ -6,6 +6,11 @@ int __fflush(FILE *stream) /* fflush exactly one file */
 { unsigned char *subbuf;
   long size,subsize;
 
+  if(!stream||!__valid_fp(stream))
+  { errno=EINVAL;
+    return EOF;
+  }
+
   if(stream->flags&__SERR) /* Error on stream */
   { errno=EPERM;
     return EOF; }

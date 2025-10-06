@@ -1,12 +1,27 @@
-SOURCEDIR=../../sources/nix
+# Generated automatically from Makefile.in by configure.
+#### Start of system configuration section. ####
 
-include $(SOURCEDIR)/filelist
+srcdir =	.
 
-OPTIONS=-I $(SOURCEDIR)/../headers $(CFLAGS)
+CC =		m68k-amigaos-gcc
+CPP =		m68k-amigaos-gcc -E
+AS =		m68k-amigaos-as
 
-vpath %.c $(SOURCEDIR)
+AR =		m68k-amigaos-ar
+RANLIB =	m68k-amigaos-ranlib
+AWK =		gawk
+V	=	VER: libnix 3.0 (29.11.2009)
+CFLAGS	=	-Wall -m68020-60 -O2 -msoft-float -funroll-loops -fomit-frame-pointer -noixemul -I../headers -g
 
-SOURCEFILES=*/*
+#### End system configuration section ####
+
+ifneq ($(TARGET),clean)
+include ../../sources/nix/filelist
+endif
+
+CURDIR = $(shell pwd)
+
+OPTIONS=-I$(srcdir)/../headers $(CFLAGS)
 
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \
@@ -16,10 +31,10 @@ REDEF=-D_DOSBase=___DOSBase \
       -D_MathIeeeDoubTransBase=___MathIeeeDoubTransBase \
       -D_LocaleBase=___LocaleBase
 
-%.o: %.c
-	gcc $(OPTIONS) -S $^ -o $*.S 2>&1|tee $*.err
-	gcc -E -traditional $(REDEF) $*.S -o $*2.S
-	gcc $(OPTIONS) $*2.S -c -o $*.o
+%.o: ../../sources/nix/%.c
+	$(CC) $(OPTIONS) -S $^ -o $*.S 2>&1|tee $*.err
+	$(CPP) -traditional $(REDEF) $*.S -o $*2.S
+	$(CC) $(OPTIONS) $*2.S -c -o $*.o
 	-rm $*.S $*2.S
 	-if test ! -s $*.err; then rm $*.err; fi
 
@@ -28,18 +43,17 @@ REDEF=-D_DOSBase=___DOSBase \
 all: libnix.a
 
 clean:
-	-rm -r $(SUBDIRS)
+	-rm -f */*.o *.a
 
-veryclean:
-	-rm -r *
+filelists:
+	rm -fv filelist
+	cd ../ && make filelists
 
-$(SUBDIRS):
+$(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
 	mkdir $@
 
-libnix.a: $(SUBDIRS) $(OBJECTS) $(SOURCEDIR)/makefile $(SOURCEDIR)/filelist
-	-rm $@
-	ar -q /tmp/$@ $(OBJECTS)
-	ranlib /tmp/$@
-	echo "\$$$(V)" >>/tmp/$@
-	cp /tmp/$@ .
-	rm /tmp/$@
+libnix.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) ../../sources/nix/Makefile ../../sources/nix/filelist
+	-rm -f $@
+	$(AR) -q $@ $(OBJECTS)
+	$(RANLIB) $@
+	echo "\$$$(V)" >>$@
