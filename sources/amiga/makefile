@@ -10,11 +10,11 @@ vpath %.S $(SOURCEDIR)
 SOURCEFILES=*/*
 
 %.o: %.c
-	gcc $(OPTIONS) -c $^ -o $@ 2>&1|tee $*.err
+	gcc $(OPTIONS) -c $^ -o $@ 2>&1 | tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 
 %.o: %.S
-	gcc $(OPTIONS) -c $^ -o $@ 2>&1|tee $*.err
+	gcc $(OPTIONS) -c $^ -o $@ 2>&1 | tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 
 .PHONY: all clean veryclean splitinline
@@ -33,7 +33,7 @@ $(SUBDIRS):
 libamiga.a: $(SUBDIRS) $(OBJECTS) libglue.a $(SOURCEDIR)/makefile $(SOURCEDIR)/filelist
 	-rm libamiga.a
 	-cp libglue.a libamiga.a
-	ar -q libamiga.a $(OBJECTS)
+	/bin/ar -q libamiga.a $(OBJECTS)
 	ranlib libamiga.a
 
 libglue.a:
@@ -63,5 +63,5 @@ libglue.a:
 	        { if(file!="") print $$0 >file; }' ); done
 	-cd tmp;rm vararg.c dummy.c;gcc -c *.s
 	-rm libglue.a
-	-cd tmp;ar -q ../libglue.a *.o
+	-cd tmp;/bin/ar -q ../libglue.a *.o
 	-rm -r tmp

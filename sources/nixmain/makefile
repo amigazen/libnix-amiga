@@ -16,7 +16,7 @@ REDEF=-D_DOSBase=___DOSBase \
 
 #Use private library bases to avoid naming collisions
 %.o: %.c
-	gcc $(OPTIONS) -S $^ -o $*.S 2>&1|tee $*.err
+	gcc $(OPTIONS) -S $^ -o $*.S 2>&1 | tee $*.err
 	gcc -E -traditional $(REDEF) $*.S -o $*2.S
 	gcc $(OPTIONS) $*2.S -c -o $*.o
 	-rm $*.S $*2.S
@@ -38,8 +38,8 @@ veryclean: clean
 
 libnixmain.a: $(OBJECTS) $(SOURCEDIR)/makefile
 	-rm $@
-	ar -q /tmp/$@ $(OBJECTS)
-	ranlib /tmp/$@
-	echo "\$$$(V)" >>/tmp/$@
-	cp /tmp/$@ .
-	rm /tmp/$@
+	/bin/ar -q /t/$@ $(OBJECTS)
+	ranlib /t/$@
+	echo "\$$$(V)" >>/t/$@
+	cp /t/$@ .
+	rm /t/$@

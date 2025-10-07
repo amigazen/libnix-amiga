@@ -32,7 +32,7 @@ REDEF=-D_DOSBase=___DOSBase \
       -D_LocaleBase=___LocaleBase
 
 %.o: ../../sources/nix/%.c
-	$(CC) $(OPTIONS) -S $^ -o $*.S 2>&1|tee $*.err
+	$(CC) $(OPTIONS) -S $^ -o $*.S 2>&1 | tee $*.err
 	$(CPP) -traditional $(REDEF) $*.S -o $*2.S
 	$(CC) $(OPTIONS) $*2.S -c -o $*.o
 	-rm $*.S $*2.S

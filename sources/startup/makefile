@@ -7,7 +7,7 @@ VPATH=../sources/startup
 OPTIONS=-I ../sources/headers -O -fomit-frame-pointer
 
 %.o: %.c
-	gcc $(OPTIONS) -c $^ 2>&1|tee $*.err
+	gcc $(OPTIONS) -c $^ 2>&1 | tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 	echo "\$$$(V)" >>$@
 

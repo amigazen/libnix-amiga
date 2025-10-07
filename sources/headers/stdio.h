@@ -30,6 +30,7 @@ typedef struct __FILE
 #define __SWO	0x8000	  /* write-only mode */
 
   short file;		  /* The filehandle */
+  int magic;		  /* Magic number for validation */
   unsigned char *buffer;  /* original buffer pointer */
   int bufsize;		  /* size of the buffer */
   int linebufsize;	  /* 0 full buffered
@@ -45,6 +46,8 @@ typedef struct __FILE
   long tmpdir;		  /* lock to directory if temporary file */
   char *name;		  /* filename if temporary file */
 } FILE;
+
+#define FILEMAGICID 0x12345678
 
 #ifndef NULL
 #define NULL ((void *)0l)

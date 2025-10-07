@@ -45,7 +45,7 @@ All *amigazen project* releases will release in a ready to build configuration a
 
 Each component of **ToolKit** is open source and like *csh* here will have it's own github repo, while ToolKit itself will eventually be released as an easy to install package containing the redistributable components, as well as scripts to easily install the parts that are not freely redistributable from archive.
 
-### libnix Features
+## libnix Features
 
 - **Auto-open-library feature** - Automatically opens Amiga system libraries without requiring OpenLibrary
 - **Workbench startup message handling** - Follows same pattern as SAS/C for entering main() from Workbench

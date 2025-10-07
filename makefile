@@ -9,16 +9,17 @@
 #   -DDEBUG_LIB 		build a library for debugging (not yet fully working)
 #   -DOS_20_ONLY		disable some 1.3 compatibilities (use always)
 
-V=VER: libnix 1.1 (24.2.96)
+V=VER: libnix 3.1 (7.10.2025)
 
 MAKE=make -f ../sources/makefile
 
 SUBDIRS=startup lib libb lib020 libb020 lib881 libb881
 
-all: libnix.guide $(SUBDIRS)
+all: $(SUBDIRS)
+#all: libnix.guide $(SUBDIRS)
 	cd sources;	make filelists
 	cd startup;	make -f ../sources/startup/makefile V="$(V)"
-	cd lib; 	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY"
+	cd lib;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY"
 	cd libb;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -fbaserel -DSMALL_DATA"
 	cd lib020;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -mc68020"
 	cd libb020;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -fbaserel -DSMALL_DATA -mc68020"
@@ -27,17 +28,17 @@ all: libnix.guide $(SUBDIRS)
 #	cd libix;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -DIXPATHS"
 
 $(SUBDIRS):
-	mkdir $@
+	mkdir -p $@
 
 libamiga:
-	@-mkdir lib libb
+	@-mkdir lib lib/libb
 	cd sources;	make filelists
-	cd lib; 	$(MAKE) libamiga CFLAGS="-O3"
-	cd libb;	$(MAKE) libamiga CFLAGS="-O3 -fbaserel"
+	cd lib/lib;	$(MAKE) libamiga CFLAGS="-O3"
+	cd lib/libb;	$(MAKE) libamiga CFLAGS="-O3 -fbaserel"
 
 clean:
 	-rm sources/*/filelist sources/stubs/libbases/* sources/stubs/libnames/*
-	cd lib; 	$(MAKE) clean
+	cd lib;	$(MAKE) clean
 	cd libb;	$(MAKE) clean
 	cd lib020;	$(MAKE) clean
 	cd libb020;	$(MAKE) clean
@@ -47,7 +48,7 @@ clean:
 
 veryclean:
 	-rm sources/*/filelist
-	cd lib; 	$(MAKE) veryclean
+	cd lib;	$(MAKE) veryclean
 	cd libb;	$(MAKE) veryclean
 	cd lib020;	$(MAKE) veryclean
 	cd libb020;	$(MAKE) veryclean
@@ -60,19 +61,19 @@ libnix.guide: libnix.texi
 	mv libnix.info libnix.guide
 
 install:
-	cp startup/*.o	/gnu/lib/libnix
-	cp lib/*/lib*.a /gnu/lib/libnix
-	cp lib/misc/*.o /gnu/lib/libnix
-	cp libb/*/lib*.a /gnu/lib/libb/libnix
-	cp libb/misc/*.o /gnu/lib/libb/libnix
-	cp lib020/*/lib*.a /gnu/lib/libm020/libnix
-	cp lib020/misc/*.o /gnu/lib/libm020/libnix
-	cp libb020/*/lib*.a /gnu/lib/libb/libm020/libnix
-	cp libb020/misc/*.o /gnu/lib/libb/libm020/libnix
-	cp lib881/*/lib*.a /gnu/lib/libm020/libm881/libnix
-	cp lib881/misc/*.o /gnu/lib/libm020/libm881/libnix
-	cp libb881/*/lib*.a /gnu/lib/libb/libm020/libm881/libnix
-	cp libb881/misc/*.o /gnu/lib/libb/libm020/libm881/libnix
+	cp startup/*.o	./SDK/lib/libnix
+	cp lib/*/lib*.a ./SDK/lib/libnix
+	cp lib/misc/*.o ./SDK/lib/libnix
+	cp libb/*/lib*.a ./SDK/lib/libb/libnix
+	cp libb/misc/*.o ./SDK/lib/libb/libnix
+	cp lib020/*/lib*.a ./SDK/lib/libm020/libnix
+	cp lib020/misc/*.o ./SDK/lib/libm020/libnix
+	cp libb020/*/lib*.a ./SDK/lib/libb/libm020/libnix
+	cp libb020/misc/*.o ./SDK/lib/libb/libm020/libnix
+	cp lib881/*/lib*.a ./SDK/lib/libm020/libm881/libnix
+	cp lib881/misc/*.o ./SDK/lib/libm020/libm881/libnix
+	cp libb881/*/lib*.a ./SDK/lib/libb/libm020/libm881/libnix
+	cp libb881/misc/*.o ./SDK/lib/libb/libm020/libm881/libnix
 
 distribution:
 	mkdir T:gnu T:gnu/lib T:gnu/lib/libnix

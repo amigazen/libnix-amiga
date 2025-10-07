@@ -1,0 +1,5 @@
+../../sources/nix/stdio/vfprintf.c: In function `vfprintf':
+../../sources/nix/stdio/vfprintf.c:51: `BITSPERBYTE' undeclared (first use in this function)
+../../sources/nix/stdio/vfprintf.c:51: (Each undeclared identifier is reported only once
+../../sources/nix/stdio/vfprintf.c:51: for each function it appears in.)
+../../sources/nix/stdio/vfprintf.c:51: warning: unused variable `buffer'

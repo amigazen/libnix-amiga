@@ -35,7 +35,7 @@ filelists:
 	-cd math;	$(MAKELIST) SOURCEFILES="*/*"
 	-cd stack;	$(MAKELIST) SOURCEFILES="*.c"
 	-cd nix;	$(MAKELIST) SOURCEFILES="*/*"
-	-cd stubs;	make -f ../makefile libbases/dos.c; \
+	-cd stubs;	make libbases/dos.c; \
 		$(MAKELIST) SOURCEFILES=" \
 		libbases/* misc/__DOSBase.c misc/__UtilityBase.c \
 		misc/__MathIeeeSingBasBase.c misc/__MathIeeeDoubBasBase.c \
@@ -47,24 +47,16 @@ filelist:
 	echo "#Computer generated partial makefile-do not edit" >filelist
 	echo "OBJECTS= \\" >>filelist
 	( for file in $(SOURCEFILES); do echo $$file; done ) | \
-	gawk '{ print substr($$0,1,length($$0)-2) ".o \\" }' >>filelist
+	awk '{ print substr($$0,1,length($$0)-2) ".o \\" }' >>filelist
 	echo >>filelist
 	echo "SUBDIRS= \\" >>filelist
-	ls -d -F *|gawk '/\// { print substr($$0,1,length($$0)-1) " \\" }' >>filelist
+	ls -d -F *|awk '/\// { print substr($$0,1,length($$0)-1) " \\" }' >>filelist
 
 # build stubs for library base pointers
 libbases/dos.c: ../makefile library.list
-	-rm libbases/* libnames/*
-	gawk <library.list '{ sname=substr($$2,1,length($$2)-8);        \
-	  fname="libbases/" sname ".c";                                 \
-	  print "/* Machine-generated C-file- do not edit ! */" >fname; \
-	  print "#include <stabs.h>"                            >fname; \
-	  print "extern char __" sname "name[];"                >fname; \
-	  print "void *" $$1 "[2]={ 0l,__" sname "name };"      >fname; \
-	  print "ADD2LIB(" $$1 ");"                             >fname; \
-	  fname="libnames/" sname ".c";                                 \
-	  print "/* Machine-generated C-file- do not edit ! */" >fname; \
-	  print "char __" sname "name[]=\"" $$2 "\";"           >fname;}'
+	-rm -f libbases/* libnames/*
+	mkdir -p libbases libnames
+	gawk -F' ' '{ sname=substr($$2,1,length($$2)-8); fname="libbases/" sname ".c"; print "/* Machine-generated C-file- do not edit ! */" >fname; print "#include <stabs.h>" >fname; print "extern char __" sname "name[];" >fname; print "void *" $$1 "[2]={ 0l,__" sname "name };" >fname; print "ADD2LIB(" $$1 ");" >fname; fname="libnames/" sname ".c"; print "/* Machine-generated C-file- do not edit ! */" >fname; print "char __" sname "name[]=\"" $$2 "\";" >fname; }' library.list
 
 clean:
 	cd nixmain;	make clean

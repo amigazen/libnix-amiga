@@ -1,0 +1,18 @@
+#Computer generated partial makefile-do not edit
+OBJECTS= \
+init_stk.o \
+link_a5_0_f.o \
+link_a5_d0_f.o \
+longjmp.o \
+stk_argbytes.o \
+stk_minframe.o \
+stk_safezone.o \
+stkchk_d0.o \
+stkext.o \
+stkovf.o \
+stkrst.o \
+stkrst_f.o \
+sub_d0_sp.o \
+xcovf.o \
+
+SUBDIRS= \
