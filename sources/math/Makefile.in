@@ -54,7 +54,7 @@ clean:
 	-rm -rf $(SUBDIRS2)
 
 veryclean:
-	-rm -rf *
+	-rm -f *.o *.a *.err
 
 $(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)):
 	mkdir $@

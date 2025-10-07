@@ -54,7 +54,7 @@ filelist:
 
 # build stubs for library base pointers
 libbases/dos.c: ../makefile library.list
-	-rm -f libbases/* libnames/*
+	-rm -f libbases/*.o libnames/*.o
 	mkdir -p libbases libnames
 	gawk -F' ' '{ sname=substr($$2,1,length($$2)-8); fname="libbases/" sname ".c"; print "/* Machine-generated C-file- do not edit ! */" >fname; print "#include <stabs.h>" >fname; print "extern char __" sname "name[];" >fname; print "void *" $$1 "[2]={ 0l,__" sname "name };" >fname; print "ADD2LIB(" $$1 ");" >fname; fname="libnames/" sname ".c"; print "/* Machine-generated C-file- do not edit ! */" >fname; print "char __" sname "name[]=\"" $$2 "\";" >fname; }' library.list
 
@@ -68,4 +68,4 @@ clean:
 	cd stubs;	make clean
 
 veryclean:
-	-rm -r *
+	-rm -f *.o *.a *.err

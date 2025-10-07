@@ -43,7 +43,7 @@ clean:
 	-rm -rf $(SUBDIRS)
 
 veryclean:
-	-rm -rf *
+	-rm -f *.o *.a *.err
 
 $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
 	mkdir $@

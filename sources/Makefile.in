@@ -86,4 +86,4 @@ clean:
 	done
 
 veryclean:
-	-rm -rf *
+	-rm -f *.o *.a *.err

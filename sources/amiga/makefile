@@ -25,7 +25,7 @@ clean:
 	-rm -r $(SUBDIRS)
 
 veryclean:
-	-rm -r *
+	-rm -f *.o *.a *.err
 
 $(SUBDIRS):
 	mkdir $@

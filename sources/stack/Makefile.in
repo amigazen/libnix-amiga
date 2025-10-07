@@ -33,10 +33,10 @@ REDEF=-D_DOSBase=___DOSBase
 all: libstack.a
 
 clean:
-	-rm -rf *.o
+	-rm -f *.o *.a *.err.o
 
 veryclean:
-	-rm -rf *
+	-rm -f *.o *.a *.err
 
 libstack.a: $(OBJECTS) ../../sources/stack/Makefile ../../sources/stack/filelist
 	-rm -f $@

@@ -22,10 +22,10 @@ REDEF=-D_DOSBase=___DOSBase
 all: libstack.a
 
 clean:
-	-rm -r *.o
+	-rm -f *.o
 
 veryclean:
-	-rm -r *
+	-rm -f *.o *.a *.err
 
 libstack.a: $(OBJECTS) $(SOURCEDIR)/makefile $(SOURCEDIR)/filelist
 	-rm $@
