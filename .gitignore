@@ -1,2 +1,4 @@
 *.o
 *.uaem
+a.out
+output.txt
