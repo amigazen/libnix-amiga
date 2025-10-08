@@ -8,57 +8,97 @@
 #   -DIXPATHS			for Un*x path option
 #   -DDEBUG_LIB 		build a library for debugging (not yet fully working)
 #   -DOS_20_ONLY		disable some 1.3 compatibilities (use always)
+# Variants:
+#   lib      - Standard library
+#   libb     - Small data model (-fbaserel -DSMALL_DATA)
+#   lib020   - 68020 specific (-mc68020)
+#   libb020  - Small data + 68020 (-fbaserel -DSMALL_DATA -mc68020)
+#   lib881   - 68020 + 68881 FPU (-mc68020 -m68881)
+#   libb881  - Small data + 68020 + 68881 (-fbaserel -DSMALL_DATA -mc68020 -m68881)
 
 V=VER: libnix 3.1 (7.10.2025)
 
 MAKE=make -f ../sources/makefile
-MAKE_LIB=make -f ../../sources/makefile
 
-SUBDIRS=startup lib
-LIBDIRS=libb lib020 libb020 lib881 libb881
+# Base CFLAGS for all variants
+BASE_CFLAGS=-Wall -O3 -DOS_20_ONLY
 
-all: $(SUBDIRS) $(LIBDIRS)
-#all: libnix.guide $(SUBDIRS)
+# Ensure targets always run
+.PHONY: all startup startup-baserel filelists lib libb lib020 libb020 lib881 libb881 clean veryclean
+
+all: lib libb lib020 libb020 lib881 libb881
+
+# Build startup files for normal (large data) model
+startup:
+	mkdir -p startup
 	cd sources;	make filelists
 	cd startup;	make -f ../sources/startup/makefile V="$(V)"
-	cd lib;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY"
-	cd lib/libb;	make -f makefile V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -fbaserel -DSMALL_DATA"
-	cd lib/lib020;	make -f makefile V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -mc68020"
-	cd lib/libb020;	make -f makefile V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -fbaserel -DSMALL_DATA -mc68020"
-	cd lib/lib881;	make -f makefile V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -mc68020 -m68881"
-	cd lib/libb881;	make -f makefile V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -fbaserel -DSMALL_DATA -mc68020 -m68881"
-#	cd libix;	$(MAKE) V="$(V)" CFLAGS="-Wall -O3 -DOS_20_ONLY -DIXPATHS"
 
-$(SUBDIRS):
-	mkdir -p $@
-
-$(LIBDIRS):
-	mkdir -p lib/$@
-
-libamiga:
-	@-mkdir lib lib/libb
+# Build startup files for small data model
+startup-baserel:
+	mkdir -p startup-baserel
 	cd sources;	make filelists
-	cd lib/lib;	$(MAKE) libamiga CFLAGS="-O3"
-	cd lib/libb;	$(MAKE) libamiga CFLAGS="-O3 -fbaserel"
+	cd startup-baserel;	make -f ../sources/startup/makefile V="$(V)" CFLAGS="-fbaserel -DSMALL_DATA"
+
+# Copy filelist files to variant directories
+filelists:
+	cd sources;	make filelists
+	cp sources/nix/filelist libb/nix/filelist
+	cp sources/nix/filelist lib020/nix/filelist
+	cp sources/nix/filelist libb020/nix/filelist
+	cp sources/nix/filelist lib881/nix/filelist
+	cp sources/nix/filelist libb881/nix/filelist
+
+# Standard library variant (uses normal startup)
+lib: startup sources/makefile
+	mkdir -p lib
+	cd lib;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS)"
+
+# Small data model variant (uses baserel startup)
+libb: startup-baserel filelists sources/makefile
+	mkdir -p libb
+	cd libb;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -fbaserel -DSMALL_DATA"
+
+# 68020 specific variant (uses normal startup)
+lib020: startup filelists sources/makefile
+	mkdir -p lib020
+	cd lib020;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -mc68020"
+
+# Small data + 68020 variant (uses baserel startup)
+libb020: startup-baserel filelists sources/makefile
+	mkdir -p libb020
+	cd libb020;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -fbaserel -DSMALL_DATA -mc68020"
+
+# 68020 + 68881 FPU variant (uses normal startup)
+lib881: startup filelists sources/makefile
+	mkdir -p lib881
+	cd lib881;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -mc68020 -m68881"
+
+# Small data + 68020 + 68881 variant (uses baserel startup)
+libb881: startup-baserel filelists sources/makefile
+	mkdir -p libb881
+	cd libb881;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -fbaserel -DSMALL_DATA -mc68020 -m68881"
+
 
 clean:
 	cd lib;	$(MAKE) clean
-	cd lib/libb;	make -f makefile clean
-	cd lib/lib020;	make -f makefile clean
-	cd lib/libb020;	make -f makefile clean
-	cd lib/lib881;	make -f makefile clean
-	cd lib/libb881;	make -f makefile clean
-#	cd libix;	$(MAKE) clean
+	cd libb;	$(MAKE) clean
+	cd lib020;	$(MAKE) clean
+	cd libb020;	$(MAKE) clean
+	cd lib881;	$(MAKE) clean
+	cd libb881;	$(MAKE) clean
+	cd startup;	$(MAKE) -f ../sources/startup/makefile clean
+	cd startup-baserel;	$(MAKE) -f ../sources/startup/makefile clean
 
 veryclean:
-	# filelists are now hardcoded - do not delete
 	cd lib;	$(MAKE) veryclean
-	cd lib/libb;	make -f makefile veryclean
-	cd lib/lib020;	make -f makefile veryclean
-	cd lib/libb020;	make -f makefile veryclean
-	cd lib/lib881;	make -f makefile veryclean
-	cd lib/libb881;	make -f makefile veryclean
-#	cd libix;	$(MAKE) veryclean
+	cd libb;	$(MAKE) veryclean
+	cd lib020;	$(MAKE) veryclean
+	cd libb020;	$(MAKE) veryclean
+	cd lib881;	$(MAKE) veryclean
+	cd libb881;	$(MAKE) veryclean
+	cd startup;	$(MAKE) -f ../sources/startup/makefile veryclean
+	cd startup-baserel;	$(MAKE) -f ../sources/startup/makefile veryclean
 
 filelist:
 	echo "#Computer generated partial makefile-do not edit" >filelist
@@ -77,16 +117,16 @@ install:
 	cp startup/*.o	./SDK/lib/libnix
 	cp lib/*/lib*.a ./SDK/lib/libnix
 	cp lib/misc/*.o ./SDK/lib/libnix
-	cp lib/libb/*/lib*.a ./SDK/lib/libb/libnix
-	cp lib/libb/misc/*.o ./SDK/lib/libb/libnix
-	cp lib/lib020/*/lib*.a ./SDK/lib/libm020/libnix
-	cp lib/lib020/misc/*.o ./SDK/lib/libm020/libnix
-	cp lib/libb020/*/lib*.a ./SDK/lib/libb/libm020/libnix
-	cp lib/libb020/misc/*.o ./SDK/lib/libb/libm020/libnix
-	cp lib/lib881/*/lib*.a ./SDK/lib/libm020/libm881/libnix
-	cp lib/lib881/misc/*.o ./SDK/lib/libm020/libm881/libnix
-	cp lib/libb881/*/lib*.a ./SDK/lib/libb/libm020/libm881/libnix
-	cp lib/libb881/misc/*.o ./SDK/lib/libb/libm020/libm881/libnix
+	cp libb/*/lib*.a ./SDK/lib/libb/libnix
+	cp libb/misc/*.o ./SDK/lib/libb/libnix
+	cp lib020/*/lib*.a ./SDK/lib/libm020/libnix
+	cp lib020/misc/*.o ./SDK/lib/libm020/libnix
+	cp libb020/*/lib*.a ./SDK/lib/libb/libm020/libnix
+	cp libb020/misc/*.o ./SDK/lib/libb/libm020/libnix
+	cp lib881/*/lib*.a ./SDK/lib/libm020/libm881/libnix
+	cp lib881/misc/*.o ./SDK/lib/libm020/libm881/libnix
+	cp libb881/*/lib*.a ./SDK/lib/libb/libm020/libm881/libnix
+	cp libb881/misc/*.o ./SDK/lib/libb/libm020/libm881/libnix
 
 distribution:
 	mkdir T:gnu T:gnu/lib T:gnu/lib/libnix
@@ -100,16 +140,16 @@ distribution:
 	cp -p startup/*.o T:gnu/lib/libnix
 	cp -p lib/*/*.a T:gnu/lib/libnix
 	cp -p lib/misc/*.o T:gnu/lib/libnix
-	cp -p lib/libb/*/*.a T:gnu/lib/libb/libnix
-	cp -p lib/libb/misc/*.o T:gnu/lib/libb/libnix
-	cp -p lib/lib020/*/*.a T:gnu/lib/libm020/libnix
-	cp -p lib/lib020/misc/*.o T:gnu/lib/libm020/libnix
-	cp -p lib/libb020/*/*.a T:gnu/lib/libb/libm020/libnix
-	cp -p lib/libb020/misc/*.o T:gnu/lib/libb/libm020/libnix
-	cp -p lib/lib881/*/*.a T:gnu/lib/libm020/libm881/libnix
-	cp -p lib/lib881/misc/*.o T:gnu/lib/libm020/libm881/libnix
-	cp -p lib/libb881/*/*.a T:gnu/lib/libb/libm020/libm881/libnix
-	cp -p lib/libb881/misc/*.o T:gnu/lib/libb/libm020/libm881/libnix
+	cp -p libb/*/*.a T:gnu/lib/libb/libnix
+	cp -p libb/misc/*.o T:gnu/lib/libb/libnix
+	cp -p lib020/*/*.a T:gnu/lib/libm020/libnix
+	cp -p lib020/misc/*.o T:gnu/lib/libm020/libnix
+	cp -p libb020/*/*.a T:gnu/lib/libb/libm020/libnix
+	cp -p libb020/misc/*.o T:gnu/lib/libb/libm020/libnix
+	cp -p lib881/*/*.a T:gnu/lib/libm020/libm881/libnix
+	cp -p lib881/misc/*.o T:gnu/lib/libm020/libm881/libnix
+	cp -p libb881/*/*.a T:gnu/lib/libb/libm020/libm881/libnix
+	cp -p libb881/misc/*.o T:gnu/lib/libb/libm020/libm881/libnix
 	-rm T:gnu/lib/libnix/libglue.a T:gnu/lib/libb/libnix/libglue.a
 	-cp * T:gnu
 	rm T:gnu/makefile T:gnu/libnix.texi

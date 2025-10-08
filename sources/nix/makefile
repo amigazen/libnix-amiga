@@ -16,7 +16,11 @@ CFLAGS	=	-Wall -m68020-60 -O2 -msoft-float -funroll-loops -fomit-frame-pointer -
 #### End system configuration section ####
 
 ifneq ($(TARGET),clean)
+ifneq (,$(wildcard ./filelist))
+include ./filelist
+else
 include ../../sources/nix/filelist
+endif
 endif
 
 CURDIR = $(shell pwd)
@@ -44,6 +48,7 @@ REDEF=-D_DOSBase=___DOSBase \
 .PHONY: all clean veryclean
 
 all: libnix.a
+	@echo "nix all target completed"
 
 clean:
 	-rm -f */*.o *.a
@@ -55,9 +60,11 @@ filelists:
 $(SUBDIRS):
 	mkdir -p $@
 
-libnix.a: $(SUBDIRS) $(OBJECTS) ../../sources/nix/Makefile ../../sources/nix/filelist
+libnix.a: $(SUBDIRS) $(OBJECTS) ../../sources/nix/Makefile
+	@echo "Building libnix.a with $(words $(OBJECTS)) objects"
 	$(AR) -r /t/$@ $(OBJECTS)
 	$(RANLIB) /t/$@
 	echo "\$$$(V)" >>/t/$@
 	cp /t/$@ .
 	rm /t/$@
+	@echo "Created libnix.a with $(words $(OBJECTS)) objects"
