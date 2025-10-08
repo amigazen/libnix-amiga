@@ -2,7 +2,7 @@ SOURCEDIR=../../sources/nixmain
 
 OBJECTS=__nocommandline.o __stdiowin.o
 
-OPTIONS=-I $(SOURCEDIR)/../headers $(CFLAGS)
+OPTIONS=-I $(SOURCEDIR)/../headers -I/netinclude/ $(CFLAGS)
 
 vpath %.c $(SOURCEDIR)
 

@@ -1,2 +1,0 @@
-../../sources/nix/socket/gethostbyname.c:1: proto/socket.h: No such file or directory
-../../sources/nix/socket/gethostbyname.c:5: #error what !?

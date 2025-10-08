@@ -2,7 +2,7 @@ SOURCEDIR=../../sources/misc
 
 OBJECTS=detach.o swapstack.o
 
-OPTIONS=-I $(SOURCEDIR)/../headers $(CFLAGS)
+OPTIONS=-I $(SOURCEDIR)/../headers -I/netinclude/ $(CFLAGS)
 
 vpath %.c $(SOURCEDIR)
 

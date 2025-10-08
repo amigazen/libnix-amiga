@@ -4,7 +4,7 @@
 
 VPATH=../sources/startup
 
-OPTIONS=-I ../sources/headers -O -fomit-frame-pointer
+OPTIONS=-I ../sources/headers -I/netinclude/ -O -fomit-frame-pointer
 
 %.o: %.c
 	m68k-amigaos-gcc $(OPTIONS) -c $^ 2>&1 | tee $*.err

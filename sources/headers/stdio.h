@@ -112,6 +112,9 @@ extern struct MinList __memorylist; /* List of memory puddles */
 
 extern int __fflush(FILE *stream); /* fflush single file */
 extern void __chkabort(void);      /* check for SIGABRT */
+extern int __valid_fp(FILE *stream); /* validate file pointer */
+extern void perror(const char *s); /* print system error message */
+extern int fprintf(FILE *stream, const char *format, ...); /* formatted output to stream */
 
 /* objects in __filelist */
 struct filenode {

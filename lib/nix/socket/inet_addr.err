@@ -1,2 +1,2 @@
-In file included from ../../sources/nix/socket/inet_addr.c:2:
-../../sources/nix/headers/socketnix.h:11: proto/socket.h: No such file or directory
+../../sources/nix/socket/inet_addr.c: In function `inet_addr':
+../../sources/nix/socket/inet_addr.c:16: warning: implicit declaration of function `inet_aton'

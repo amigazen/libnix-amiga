@@ -2,7 +2,7 @@ SOURCEDIR=../../sources/stack
 
 include $(SOURCEDIR)/filelist
 
-OPTIONS=-I $(SOURCEDIR)/../headers $(CFLAGS)
+OPTIONS=-I $(SOURCEDIR)/../headers -I/netinclude/ $(CFLAGS)
 
 vpath %.c $(SOURCEDIR)
 
@@ -28,8 +28,7 @@ veryclean:
 	-rm -f *.o *.a *.err
 
 libstack.a: $(OBJECTS) $(SOURCEDIR)/makefile $(SOURCEDIR)/filelist
-	-rm $@
-	/bin/ar -q /t/$@ $(OBJECTS)
+	/bin/ar -r /t/$@ $(OBJECTS)
 	ranlib /t/$@
 	echo "\$$$(V)" >>/t/$@
 	cp /t/$@ .

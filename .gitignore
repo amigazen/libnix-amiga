@@ -1,4 +1,5 @@
 *.o
 *.uaem
+*.err
 a.out
 output.txt

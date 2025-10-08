@@ -1,4 +1,0 @@
-In file included from /gg/os-include/dos/dosextens.h:29,
-                 from /gg/os-include/proto/dos.h:26,
-                 from ../../sources/nix/extra/chdir.c:3:
-/gg/os-include/devices/timer.h:74: redefinition of `struct timeval'

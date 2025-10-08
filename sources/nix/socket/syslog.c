@@ -1,9 +1,10 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
+#include <exec/types.h>
 #include <proto/socket.h>
 
-void syslog(ULONG pri, const char *fmt, ...)
+void __syslog(ULONG pri, const char *fmt, ...)
 {
 	va_list ap;
 

@@ -12,7 +12,7 @@
 #   -DDEBUG_LIB 		build a library for debugging (not recommended)
 #   -DOS_20_ONLY		disable some 1.3 compatibilities (use always)
 
-SOURCEDIR=../sources
+SOURCEDIR=../../sources
 
 MAKELIST=make -f ../../makefile filelist
 
@@ -20,12 +20,12 @@ SUBDIRS=nixmain nix_main misc nix math stack stubs
 
 all: $(SUBDIRS)
 	for subdir in $(SUBDIRS); do \
-	( cd $$subdir;make -f ../$(SOURCEDIR)/$$subdir/makefile V="$(V)" \
+	( cd $$subdir;make -f $(SOURCEDIR)/$$subdir/makefile V="$(V)" \
 	  CFLAGS="$(CFLAGS)" ); \
 	done
 
 $(SUBDIRS):
-	mkdir $@
+	mkdir -p $@
 
 libamiga:
 	@-mkdir amiga
@@ -35,7 +35,7 @@ filelists:
 	-cd math;	$(MAKELIST) SOURCEFILES="*/*"
 	-cd stack;	$(MAKELIST) SOURCEFILES="*.c"
 	-cd nix;	$(MAKELIST) SOURCEFILES="*/*"
-	-cd stubs;	make -f ../../sources/stubs/makefile libbases/dos.c; \
+	-cd stubs;	make -f $(SOURCEDIR)/stubs/makefile libbases/dos.c; \
 		$(MAKELIST) SOURCEFILES=" \
 		libbases/* misc/__DOSBase.c misc/__UtilityBase.c \
 		misc/__MathIeeeSingBasBase.c misc/__MathIeeeDoubBasBase.c \
@@ -59,20 +59,20 @@ libbases/dos.c: ../../makefile library.list
 	gawk -F' ' '{ sname=substr($$2,1,length($$2)-8); fname="libbases/" sname ".c"; print "/* Machine-generated C-file- do not edit ! */" >fname; print "#include <stabs.h>" >fname; print "extern char __" sname "name[];" >fname; print "void *" $$1 "[2]={ 0l,__" sname "name };" >fname; print "ADD2LIB(" $$1 ");" >fname; fname="libnames/" sname ".c"; print "/* Machine-generated C-file- do not edit ! */" >fname; print "char __" sname "name[]=\"" $$2 "\";" >fname; }' library.list
 
 clean:
-	cd nixmain;	make -f ../../sources/nixmain/makefile clean
-	cd nix_main;	make -f ../../sources/nix_main/makefile clean
-	cd misc;	make -f ../../sources/misc/makefile clean
-	cd math;	make -f ../../sources/math/makefile clean
-	cd stack;	make -f ../../sources/stack/makefile clean
-	cd nix; 	make -f ../../sources/nix/makefile clean
-	cd stubs;	make -f ../../sources/stubs/makefile clean
+	cd nixmain;	make -f $(SOURCEDIR)/nixmain/makefile clean
+	cd nix_main;	make -f $(SOURCEDIR)/nix_main/makefile clean
+	cd misc;	make -f $(SOURCEDIR)/misc/makefile clean
+	cd math;	make -f $(SOURCEDIR)/math/makefile clean
+	cd stack;	make -f $(SOURCEDIR)/stack/makefile clean
+	cd nix; 	make -f $(SOURCEDIR)/nix/makefile clean
+	cd stubs;	make -f $(SOURCEDIR)/stubs/makefile clean
 
 veryclean:
-	cd nixmain;	make -f ../../sources/nixmain/makefile veryclean
-	cd nix_main;	make -f ../../sources/nix_main/makefile veryclean
-	cd misc;	make -f ../../sources/misc/makefile veryclean
-	cd math;	make -f ../../sources/math/makefile veryclean
-	cd stack;	make -f ../../sources/stack/makefile veryclean
-	cd nix; 	make -f ../../sources/nix/makefile veryclean
-	cd stubs;	make -f ../../sources/stubs/makefile veryclean
+	cd nixmain;	make -f $(SOURCEDIR)/nixmain/makefile veryclean
+	cd nix_main;	make -f $(SOURCEDIR)/nix_main/makefile veryclean
+	cd misc;	make -f $(SOURCEDIR)/misc/makefile veryclean
+	cd math;	make -f $(SOURCEDIR)/math/makefile veryclean
+	cd stack;	make -f $(SOURCEDIR)/stack/makefile veryclean
+	cd nix; 	make -f $(SOURCEDIR)/nix/makefile veryclean
+	cd stubs;	make -f $(SOURCEDIR)/stubs/makefile veryclean
 	-rm -f *.o *.a *.err

@@ -1,4 +1,9 @@
 ../../sources/nix/locale/langinfo.c: In function `nl_langinfo':
-../../sources/nix/locale/langinfo.c:65: `__global_locale' undeclared (first use in this function)
-../../sources/nix/locale/langinfo.c:65: (Each undeclared identifier is reported only once
-../../sources/nix/locale/langinfo.c:65: for each function it appears in.)
+../../sources/nix/locale/langinfo.c:72: warning: initialization from incompatible pointer type
+../../sources/nix/locale/langinfo.c:76: warning: initialization from incompatible pointer type
+../../sources/nix/locale/langinfo.c:80: warning: initialization from incompatible pointer type
+../../sources/nix/locale/langinfo.c:84: warning: initialization from incompatible pointer type
+../../sources/nix/locale/langinfo.c:109: warning: initialization from incompatible pointer type
+../../sources/nix/locale/langinfo.c:110: warning: initialization from incompatible pointer type
+../../sources/nix/locale/langinfo.c:122: warning: initialization from incompatible pointer type
+../../sources/nix/locale/langinfo.c:123: warning: initialization from incompatible pointer type

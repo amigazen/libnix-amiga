@@ -25,9 +25,9 @@ int __swbuf(int c,FILE *stream) /* Get next output block */
   if(!(stream->flags&__SWR)) /* File wasn't in write mode */
   { if(!stream->buffer)
     { unsigned char ch = (unsigned char)c;
-      if(!(stream->flags&__SNBE))
+      if(!(stream->flags&__SERR))
       { char errstr[70];
-	stream->flags|=__SNBE;
+	stream->flags|=__SERR;
 	Fault(ERROR_INVALID_LOCK,NULL,errstr,sizeof(errstr));
 	fprintf(stream==stderr?stdout:stderr,"\afp(%p):%s\n",stream,errstr);
       }

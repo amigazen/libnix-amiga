@@ -32,4 +32,4 @@ SUBDIRS=\
 extra\
 stdio\
 stdlib\
-trans \\
+trans

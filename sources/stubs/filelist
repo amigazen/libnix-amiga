@@ -20,4 +20,4 @@ stubs/__stack.o\
 
 SUBDIRS=\
 misc\
-stubs\
+stubs

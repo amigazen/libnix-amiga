@@ -12,7 +12,7 @@ SUBDIRS=nixmain nix_main misc nix math stack stubs
 
 all: $(SUBDIRS)
 	for subdir in $(SUBDIRS); do \
-	( cd $$subdir;make -f ../../sources/$$subdir/makefile V="$(V)" \
+	( cd $$subdir;make -f $(SOURCEDIR)/$$subdir/makefile V="$(V)" \
 	  CFLAGS="$(CFLAGS)" ); \
 	done
 

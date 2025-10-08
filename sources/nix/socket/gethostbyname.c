@@ -1,18 +1,19 @@
-#include <proto/socket.h>
 #include <netdb.h>
+//
+#include "socket.h"
 
-#ifndef gethostbyname
-# error what !?
-#endif
-
-static __inline struct hostent *GetHostByName(const char *name)
-{
-  return gethostbyname(name);
-}
-
-#undef gethostbyname
 struct hostent *gethostbyname(const char *name)
-{
-  return GetHostByName(name);
+{ struct SocketSettings *lss;
+
+  switch (lss=_lx_get_socket_settings(),lss->lx_network_type) {
+    case LX_AS225:
+      return SOCK_gethostbyname(name);
+
+    case LX_AMITCP:
+      return TCP_GetHostByName(name);
+
+    default:
+      return NULL;
+  }
 }
 

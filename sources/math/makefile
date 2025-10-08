@@ -2,7 +2,7 @@ SOURCEDIR=../../sources/math
 
 include $(SOURCEDIR)/filelist
 
-OPTIONS=-I $(SOURCEDIR)/../headers -DFULL_SPECIFIERS $(CFLAGS)
+OPTIONS=-I $(SOURCEDIR)/../headers -I/netinclude/ -DFULL_SPECIFIERS $(CFLAGS)
 
 vpath %.c $(SOURCEDIR)
 
@@ -42,11 +42,10 @@ veryclean:
 	-rm -f *.o *.a *.err
 
 $(SUBDIRS2):
-	mkdir $@
+	mkdir -p $@
 
 libm.a: $(SUBDIRS2) $(OBJECTS2) $(SOURCEDIR)/makefile $(SOURCEDIR)/filelist
-	-rm $@
-	/bin/ar -q /t/$@ $(OBJECTS2)
+	/bin/ar -r /t/$@ $(OBJECTS2)
 	ranlib /t/$@
 	echo "\$$$(V)" >>/t/$@
 	cp /t/$@ .

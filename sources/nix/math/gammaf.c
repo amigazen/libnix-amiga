@@ -117,14 +117,9 @@ int sgngamf = 0;
 extern int sgngamf;
 
 #ifdef ANSIC
-#ifndef __libnix__
-float exp(float);
-float log(float);
-float pow( float, float );
-float sin(float);
-float floor(float);
+#include <math.h>
+
 static float stirf(float);
-#endif
 float gamma(float);
 float polevl( float, float *, int );
 float p1evl( float, float *, int );

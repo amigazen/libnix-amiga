@@ -1,5 +1,7 @@
 
-#include "socketnix.h"
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #undef inet_addr
 
@@ -7,7 +9,7 @@
  * Ascii internet address interpretation routine.
  * The value returned is in network order.
  */
-u_long inet_addr(const unsigned char *cp)
+u_long inet_addr(const char *cp)
 {
   struct in_addr val;
 

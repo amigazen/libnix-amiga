@@ -1,4 +1,5 @@
 #include "timerbase.h"
+#include <dos/dos.h>
 
 LONG TimeDelay(LONG unit,ULONG seconds,ULONG micros)
 {

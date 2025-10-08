@@ -1,1 +1,2 @@
-../../sources/nix/socket/syslog.c:4: proto/socket.h: No such file or directory
+../../sources/nix/socket/syslog.c: In function `__syslog':
+../../sources/nix/socket/syslog.c:12: warning: initialization discards qualifiers from pointer target type

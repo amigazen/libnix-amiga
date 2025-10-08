@@ -7,7 +7,7 @@ CC =		m68k-amigaos-gcc
 CPP =		m68k-amigaos-gcc -E
 AS =		m68k-amigaos-as
 
-AR =		m68k-amigaos-ar
+AR =		/bin/ar
 RANLIB =	m68k-amigaos-ranlib
 AWK =		gawk
 V	=	VER: libnix 3.1 (08.10.2025)
@@ -21,7 +21,7 @@ endif
 
 CURDIR = $(shell pwd)
 
-OPTIONS=-I../../sources/headers -I../../sources/nix/headers $(CFLAGS)
+OPTIONS=-I../../sources/headers -I../../sources/nix/headers -I/netinclude/  $(CFLAGS)
 
 vpath %.c ../../sources/nix ../../sources/nix/assert ../../sources/nix/ctype ../../sources/nix/errno ../../sources/nix/extra ../../sources/nix/locale ../../sources/nix/math ../../sources/nix/misc ../../sources/nix/setjmp ../../sources/nix/signal ../../sources/nix/socket ../../sources/nix/stdio ../../sources/nix/stdlib ../../sources/nix/string ../../sources/nix/time
 
@@ -56,7 +56,8 @@ $(SUBDIRS):
 	mkdir -p $@
 
 libnix.a: $(SUBDIRS) $(OBJECTS) ../../sources/nix/Makefile ../../sources/nix/filelist
-	-rm -f $@
-	$(AR) -q $@ $(OBJECTS)
-	$(RANLIB) $@
-	echo "\$$$(V)" >>$@
+	$(AR) -r /t/$@ $(OBJECTS)
+	$(RANLIB) /t/$@
+	echo "\$$$(V)" >>/t/$@
+	cp /t/$@ .
+	rm /t/$@

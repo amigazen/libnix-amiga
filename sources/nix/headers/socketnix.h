@@ -10,4 +10,14 @@
 #include <errno.h>
 #include <proto/socket.h>
 
+/* Socket address families */
+#ifndef AF_INET
+#define AF_INET 2
+#endif
+
+/* Error codes */
+#ifndef EAFNOSUPPORT
+#define EAFNOSUPPORT 97
+#endif
+
 #endif /* SOCKET_COMMON_H */

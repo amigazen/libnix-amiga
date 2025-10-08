@@ -2,7 +2,7 @@ SOURCEDIR=../../sources/amiga
 
 include $(SOURCEDIR)/filelist
 
-OPTIONS=-I $(SOURCEDIR)/../headers $(CFLAGS)
+OPTIONS=-I $(SOURCEDIR)/../headers -I/netinclude/ $(CFLAGS)
 
 vpath %.c $(SOURCEDIR)
 vpath %.S $(SOURCEDIR)
