@@ -1,2 +1,0 @@
-../../sources/nix/stdio/readpassphrase.c: In function `readpassphrase':
-../../sources/nix/stdio/readpassphrase.c:64: warning: implicit declaration of function `__fflush'

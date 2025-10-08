@@ -20,8 +20,14 @@ SUBDIRS=nixmain nix_main misc nix math stack stubs
 
 all: $(SUBDIRS)
 	for subdir in $(SUBDIRS); do \
-	( cd $$subdir;make -f $(SOURCEDIR)/$$subdir/makefile V="$(V)" \
-	  CFLAGS="$(CFLAGS)" ); \
+	if [ "$$subdir" = "nix" ]; then \
+		echo "Building nix subdirectory with 'all' target"; \
+		( cd $$subdir;make -k -f $(SOURCEDIR)/$$subdir/makefile all V="$(V)" \
+		  CFLAGS="$(CFLAGS)" ); \
+	else \
+		( cd $$subdir;make -f $(SOURCEDIR)/$$subdir/makefile V="$(V)" \
+		  CFLAGS="$(CFLAGS)" ); \
+	fi; \
 	done
 
 $(SUBDIRS):

@@ -1,2 +1,0 @@
-../../sources/nix/stdio/freopen.c: In function `freopen':
-../../sources/nix/stdio/freopen.c:14: warning: implicit declaration of function `__valid_fp'

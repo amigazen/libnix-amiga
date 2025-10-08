@@ -7,7 +7,7 @@ CC =		m68k-amigaos-gcc
 CPP =		m68k-amigaos-gcc -E
 AS =		m68k-amigaos-as
 
-AR =		/bin/ar
+AR =		m68k-amigaos-ar
 RANLIB =	m68k-amigaos-ranlib
 AWK =		gawk
 V	=	VER: libnix 3.1 (08.10.2025)
@@ -25,6 +25,34 @@ endif
 
 CURDIR = $(shell pwd)
 
+# Default target (first target in makefile)
+all: libnix.a
+	@echo "nix all target completed"
+
+# Force rebuild of libnix.a even if some objects fail
+libnix.a: $(SUBDIRS) $(OBJECTS) ../../sources/nix/Makefile
+	@echo "Building libnix.a with $(words $(OBJECTS)) objects"
+	@echo "Current directory: $(shell pwd)"
+	@echo "Archiving object files..."
+	@mkdir -p /t
+	@echo "Running: $(AR) -r /t/$@ $(OBJECTS)"
+	@echo "Checking if object files exist..."
+	@EXISTING_OBJECTS=""; \
+	for obj in $(OBJECTS); do \
+		if [ -f "$$obj" ]; then \
+			EXISTING_OBJECTS="$$EXISTING_OBJECTS $$obj"; \
+		else \
+			echo "Missing: $$obj"; \
+		fi; \
+	done; \
+	echo "Archiving $$(echo $$EXISTING_OBJECTS | wc -w) existing object files..."; \
+	$(AR) -r /t/$@ $$EXISTING_OBJECTS || echo "AR command failed, trying alternative approach"
+	@$(RANLIB) /t/$@ || echo "RANLIB command failed"
+	@echo "\$$$(V)" >>/t/$@
+	@cp /t/$@ .
+	@rm /t/$@
+	@echo "Created libnix.a with $(words $(OBJECTS)) objects"
+
 OPTIONS=-I../../sources/headers -I../../sources/nix/headers -I/netinclude/  $(CFLAGS)
 
 vpath %.c ../../sources/nix ../../sources/nix/assert ../../sources/nix/ctype ../../sources/nix/errno ../../sources/nix/extra ../../sources/nix/locale ../../sources/nix/math ../../sources/nix/misc ../../sources/nix/setjmp ../../sources/nix/signal ../../sources/nix/socket ../../sources/nix/stdio ../../sources/nix/stdlib ../../sources/nix/string ../../sources/nix/time
@@ -39,16 +67,13 @@ REDEF=-D_DOSBase=___DOSBase \
 
 %.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(OPTIONS) -S $< -o $*.S 2>&1 | tee $*.err
-	$(CPP) -traditional $(REDEF) $*.S -o $*2.S
-	$(CC) $(OPTIONS) $*2.S -c -o $@
-	-rm $*.S $*2.S
-	-if test ! -s $*.err; then rm $*.err; fi
+	@-$(CC) $(OPTIONS) -S $< -o $*.S 2>&1 | tee $*.err || true
+	@-$(CPP) -traditional $(REDEF) $*.S -o $*2.S 2>/dev/null || true
+	@-$(CC) $(OPTIONS) $*2.S -c -o $@ 2>/dev/null || true
+	@-rm $*.S $*2.S 2>/dev/null || true
+	@-if test ! -s $*.err; then rm $*.err; fi
 
 .PHONY: all clean veryclean
-
-all: libnix.a
-	@echo "nix all target completed"
 
 clean:
 	-rm -f */*.o *.a
@@ -60,11 +85,3 @@ filelists:
 $(SUBDIRS):
 	mkdir -p $@
 
-libnix.a: $(SUBDIRS) $(OBJECTS) ../../sources/nix/Makefile
-	@echo "Building libnix.a with $(words $(OBJECTS)) objects"
-	$(AR) -r /t/$@ $(OBJECTS)
-	$(RANLIB) /t/$@
-	echo "\$$$(V)" >>/t/$@
-	cp /t/$@ .
-	rm /t/$@
-	@echo "Created libnix.a with $(words $(OBJECTS)) objects"

@@ -1,2 +1,0 @@
-../../sources/nix/stdio/fopen.c: In function `fclose':
-../../sources/nix/stdio/fopen.c:49: warning: implicit declaration of function `fprintf'

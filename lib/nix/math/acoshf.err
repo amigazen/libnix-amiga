@@ -1,2 +1,0 @@
-../../sources/nix/math/acoshf.c: In function `acosh':
-../../sources/nix/math/acoshf.c:70: warning: implicit declaration of function `perror'

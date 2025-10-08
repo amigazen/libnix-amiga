@@ -40,43 +40,52 @@ startup-baserel:
 	cd sources;	make filelists
 	cd startup-baserel;	make -f ../sources/startup/makefile V="$(V)" CFLAGS="-fbaserel -DSMALL_DATA"
 
-# Copy filelist files to variant directories
-filelists:
-	cd sources;	make filelists
-	cp sources/nix/filelist libb/nix/filelist
-	cp sources/nix/filelist lib020/nix/filelist
-	cp sources/nix/filelist libb020/nix/filelist
-	cp sources/nix/filelist lib881/nix/filelist
-	cp sources/nix/filelist libb881/nix/filelist
-
 # Standard library variant (uses normal startup)
 lib: startup sources/makefile
 	mkdir -p lib
+	cd sources;	make filelists
+	mkdir -p lib/nix
+	cp sources/nix/filelist lib/nix/filelist
 	cd lib;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS)"
 
 # Small data model variant (uses baserel startup)
-libb: startup-baserel filelists sources/makefile
+libb: startup-baserel sources/makefile
 	mkdir -p libb
+	cd sources;	make filelists
+	mkdir -p libb/nix
+	cp sources/nix/filelist libb/nix/filelist
 	cd libb;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -fbaserel -DSMALL_DATA"
 
 # 68020 specific variant (uses normal startup)
-lib020: startup filelists sources/makefile
+lib020: startup sources/makefile
 	mkdir -p lib020
+	cd sources;	make filelists
+	mkdir -p lib020/nix
+	cp sources/nix/filelist lib020/nix/filelist
 	cd lib020;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -mc68020"
 
 # Small data + 68020 variant (uses baserel startup)
-libb020: startup-baserel filelists sources/makefile
+libb020: startup-baserel sources/makefile
 	mkdir -p libb020
+	cd sources;	make filelists
+	mkdir -p libb020/nix
+	cp sources/nix/filelist libb020/nix/filelist
 	cd libb020;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -fbaserel -DSMALL_DATA -mc68020"
 
 # 68020 + 68881 FPU variant (uses normal startup)
-lib881: startup filelists sources/makefile
+lib881: startup sources/makefile
 	mkdir -p lib881
+	cd sources;	make filelists
+	mkdir -p lib881/nix
+	cp sources/nix/filelist lib881/nix/filelist
 	cd lib881;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -mc68020 -m68881"
 
 # Small data + 68020 + 68881 variant (uses baserel startup)
-libb881: startup-baserel filelists sources/makefile
+libb881: startup-baserel sources/makefile
 	mkdir -p libb881
+	cd sources;	make filelists
+	mkdir -p libb881/nix
+	cp sources/nix/filelist libb881/nix/filelist
 	cd libb881;	$(MAKE) V="$(V)" CFLAGS="$(BASE_CFLAGS) -fbaserel -DSMALL_DATA -mc68020 -m68881"
 
 

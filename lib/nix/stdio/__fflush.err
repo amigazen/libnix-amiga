@@ -1,2 +1,0 @@
-../../sources/nix/stdio/__fflush.c: In function `__fflush':
-../../sources/nix/stdio/__fflush.c:9: warning: implicit declaration of function `__valid_fp'
