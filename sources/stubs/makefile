@@ -4,14 +4,15 @@ include $(SOURCEDIR)/filelist
 
 OPTIONS=-I $(SOURCEDIR)/../headers $(CFLAGS)
 
-vpath %.c $(SOURCEDIR)
+vpath %.c $(SOURCEDIR) $(SOURCEDIR)/misc $(SOURCEDIR)/libbases $(SOURCEDIR)/libnames $(SOURCEDIR)/stubs
 
 OBJECTS2=$(OBJECTS)
 
 SUBDIRS2=$(SUBDIRS)
 
 %.o: %.c
-	gcc $(OPTIONS) -c $^ -o $@ 2>&1 | tee $*.err
+	@mkdir -p $(dir $@)
+	m68k-amigaos-gcc $(OPTIONS) -c $< -o $@ 2>&1 | tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 
 .PHONY: all clean veryclean

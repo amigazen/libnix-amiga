@@ -1,0 +1,2 @@
+../../sources/nix/stdio/fwrite.c: In function `fwrite':
+../../sources/nix/stdio/fwrite.c:13: warning: implicit declaration of function `__valid_fp'

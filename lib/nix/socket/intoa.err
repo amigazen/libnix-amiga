@@ -1,0 +1,2 @@
+In file included from ../../sources/nix/socket/intoa.c:42:
+../../sources/nix/headers/socketnix.h:11: proto/socket.h: No such file or directory

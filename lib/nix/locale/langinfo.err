@@ -1,0 +1,4 @@
+../../sources/nix/locale/langinfo.c: In function `nl_langinfo':
+../../sources/nix/locale/langinfo.c:65: `__global_locale' undeclared (first use in this function)
+../../sources/nix/locale/langinfo.c:65: (Each undeclared identifier is reported only once
+../../sources/nix/locale/langinfo.c:65: for each function it appears in.)

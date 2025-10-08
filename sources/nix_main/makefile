@@ -16,9 +16,9 @@ REDEF=-D_DOSBase=___DOSBase \
 
 #Use private library bases to avoid naming collisions
 %.o: %.c
-	gcc $(OPTIONS) -S $^ -o $*.S 2>&1 | tee $*.err
-	gcc -E -traditional $(REDEF) $*.S -o $*2.S
-	gcc $(OPTIONS) $*2.S -c -o $*.o
+	m68k-amigaos-gcc $(OPTIONS) -S $^ -o $*.S 2>&1 | tee $*.err
+	m68k-amigaos-gcc -E -traditional $(REDEF) $*.S -o $*2.S
+	m68k-amigaos-gcc $(OPTIONS) $*2.S -c -o $*.o
 	-rm $*.S $*2.S
 	-if test ! -s $*.err; then rm $*.err; fi
 

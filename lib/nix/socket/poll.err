@@ -1,0 +1,2 @@
+../../sources/nix/socket/poll.c:25: poll.h: No such file or directory
+../../sources/nix/socket/poll.c:29: proto/socket.h: No such file or directory

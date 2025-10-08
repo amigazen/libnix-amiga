@@ -18,17 +18,17 @@ The repository name "libnix-amiga" reflects the intention that this release alwa
 
 *Minds awaken, free*
 
-**amigazen project** uses modern software development tools and methods to update and rerelease classic Amiga open source software. Our upcoming releases include a new AWeb, and a new Amiga Python 2.
+**amigazen project** uses modern software development tools and methods to update and rerelease classic Amiga open source software. Upcoming releases include a new AWeb, and a new Amiga Python 2.
 
-Key to our approach is ensuring every project can be built with the same common set of development tools and configurations, so we created the ToolKit project to provide a standard configuration for Amiga development. All *amigazen project* releases will be guaranteed to build against the ToolKit standard so that anyone can download and begin contributing straightaway without having to tailor the toolchain for their own setup.
+Key to the amigazen project approach is ensuring every project can be built with the same common set of development tools and configurations, so we created the ToolKit project to provide a standard configuration for Amiga development. All *amigazen project* releases will be guaranteed to build against the ToolKit standard so that anyone can download and begin contributing straightaway without having to tailor the toolchain for their own setup.
 
-The original authors of the *CShell* software are not affiliated with the amigazen project. This software is redistributed on terms described in the documentation, particularly the files COPYING or LICENSE.md
+The original authors of the *libnix* software are not affiliated with the amigazen project. This software is redistributed on terms described in the documentation, particularly the files COPYING or LICENSE.md
 
-Our philosophy is based on openness:
+The amigazen project philosophy is based on openness:
 
 *Open* to anyone and everyone	- *Open* source and free for all	- *Open* your mind and create!
 
-PRs for all of our projects are gratefully received at [GitHub](https://github.com/amigazen/). While our focus now is on classic 68k software, we do intend that all amigazen project releases can be ported to other Amiga-like systems including AROS and MorphOS where feasible.
+PRs for all projects are gratefully received at [GitHub](https://github.com/amigazen/). While the focus now is on classic 68k software, it is intended that all amigazen project releases can be ported to other Amiga-like systems including AROS and MorphOS where feasible.
 
 All amigazen projects have been updated:
 - To build against the latest NDK3.2
@@ -169,8 +169,12 @@ Several reasons:
 - Amiga operating system 3.1 (and even 3.2) is available for all classic Amigas. There is no Amiga that cannot run the latest version of the classic Amiga operating system.
 - While ixemul.library and early versions of GCC did originate in the era of Kickstart 1.x, they quickly outgrew the hardware constraints of classic Amiga computers, even expanded ones, with high demands on RAM usage and CPU performace, and the Unix ports they enabled grew at an even faster rate. In practice therefore any user wishing to run software built with GCC, including _gcc_ itself, is not going to be using an outdated, unexpanded Amiga.
 - There is no known software still in use or supported today targetting earlier Amiga operating system versions and that needs GCC compiler.
-- For retro enthuasiasts who really want a C compiler for targetting older versions, plenty of other options exist that are free and/or open source including VBCC and DICE.
+- For retro enthusiasts who really want a C compiler for targetting older versions, plenty of other options exist that are free and/or open source including VBCC and DICE.
 - amigazen projects like ToolKit are not retro-computing projects. They are projects intended to rejuvenate the Amiga platform. With limited time and resources, retaining backwards compatibility is not a sensible endeavour.
+
+### What changes have been made in libnix-amiga 3.1?
+
+The only changes made to date are to the build system. The earlier libnix versions , while Diego Casorran's libnix 3.0 was incomplete, with no indication of exactly which . Therefore none of the makefiles . Additionally, the makefiles , and still partly relied on a very old configure based system which simply does not work.
 
 ### Which is better ixemul.library or libnix?
 
@@ -192,7 +196,7 @@ At this time, this fork of libnix only contains code from the original Aminet re
 
 It does not contain any of the changes found in releases from beppo, BSzili, AmigaPorts and others.
 
-The reason for this is that many changes in those other forks are both poorly documented, and written without regard for retaining compatibility with Amiga nativebuilds. Indeed usually their changes are designed to improve compatibility with newer versions of GCC used in cross compilers targeting Amiga.
+The reason for this is that many changes in those other forks are both poorly documented, and written without regard for retaining compatibility with Amiga native builds. Indeed usually their changes are designed to improve compatibility with newer versions of GCC used in cross compilers targeting Amiga.
 
 In time, the best patches from other libnix forks may be cherry-picked where it is beneficial to do so, while retaining compatibility with Amiga's native GCC.
 
@@ -230,7 +234,7 @@ It is planned that this libnix-amiga project will be rounded out with missing fu
 
 ## Contact 
 
-- At GitHub https://github.com/amigazen/CShell
+- At GitHub https://github.com/amigazen/libnix-amiga
 - on the web at http://www.amigazen.com/toolkit/ (Amiga browser compatible)
 - or email toolkit@amigazen.com
 

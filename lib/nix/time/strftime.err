@@ -1,0 +1,4 @@
+../../sources/nix/time/strftime.c: In function `strftime':
+../../sources/nix/time/strftime.c:51: warning: `%y' yields only last 2 digits of year
+../../sources/nix/time/strftime.c:71: warning: `%y' yields only last 2 digits of year
+../../sources/nix/time/strftime.c:81: warning: `%y' yields only last 2 digits of year

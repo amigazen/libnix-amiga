@@ -10,11 +10,11 @@ vpath %.S $(SOURCEDIR)
 SOURCEFILES=*/*
 
 %.o: %.c
-	gcc $(OPTIONS) -c $^ -o $@ 2>&1 | tee $*.err
+	m68k-amigaos-gcc $(OPTIONS) -c $^ -o $@ 2>&1 | tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 
 %.o: %.S
-	gcc $(OPTIONS) -c $^ -o $@ 2>&1 | tee $*.err
+	m68k-amigaos-gcc $(OPTIONS) -c $^ -o $@ 2>&1 | tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 
 .PHONY: all clean veryclean splitinline
@@ -55,13 +55,13 @@ libglue.a:
 	          print "#undef" substr(st,1,index(st,"(")-1) "\n" vs st2 "tags,...)"; \
 	          print "{ " rs fn substr(st,index(st,"(")) "&tags); }\n" \
 	        }' $$file >vararg.c; \
-	  ( gcc $(CFLAGS) -w -include $$file vararg.c -S -o -; \
-	    gcc -Dextern= -D__inline= -D_STRSUP_H -include $$file $(CFLAGS) dummy.c -S -o - ) | \
+	  ( m68k-amigaos-gcc $(CFLAGS) -w -include $$file vararg.c -S -o -; \
+	    m68k-amigaos-gcc -Dextern= -D__inline= -D_STRSUP_H -include $$file $(CFLAGS) dummy.c -S -o - ) | \
 	  gawk '/.even/ { next } /.comm/ { next } \
 	        /.globl/ { if(file!="") close(file); file=$$2 ".s"; \
 	                   print "\t.even\n" $$0 >file; next; } \
 	        { if(file!="") print $$0 >file; }' ); done
-	-cd tmp;rm vararg.c dummy.c;gcc -c *.s
+	-cd tmp;rm vararg.c dummy.c;m68k-amigaos-gcc -c *.s
 	-rm libglue.a
 	-cd tmp;/bin/ar -q ../libglue.a *.o
 	-rm -r tmp

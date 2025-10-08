@@ -1,0 +1,5 @@
+../../sources/nix/socket/socketpair.c: In function `socketpair':
+../../sources/nix/socket/socketpair.c:78: warning: implicit declaration of function `close'
+../../sources/nix/socket/socketpair.c:82: warning: passing arg 3 of `getsockname' from incompatible pointer type
+../../sources/nix/socket/socketpair.c:116: warning: passing arg 3 of `getsockname' from incompatible pointer type
+../../sources/nix/socket/socketpair.c:143: warning: passing arg 3 of `accept' from incompatible pointer type

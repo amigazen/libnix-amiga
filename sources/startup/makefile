@@ -7,7 +7,7 @@ VPATH=../sources/startup
 OPTIONS=-I ../sources/headers -O -fomit-frame-pointer
 
 %.o: %.c
-	gcc $(OPTIONS) -c $^ 2>&1 | tee $*.err
+	m68k-amigaos-gcc $(OPTIONS) -c $^ 2>&1 | tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 	echo "\$$$(V)" >>$@
 
@@ -27,17 +27,17 @@ veryclean:
 # baserelative resident startup-code
 
 nrcrt0.o: nrcrt0.S
-	gcc -c $^
+	m68k-amigaos-gcc -c $^
 	echo "\$$$(V)" >>$@
 
 # baserelative startup code
 
 nbcrt0.o: nbcrt0.S
-	gcc -c $^
+	m68k-amigaos-gcc -c $^
 	echo "\$$$(V)" >>$@
 
 # normal (=large) startup code
 
 ncrt0.o: ncrt0.S
-	gcc -c $^
+	m68k-amigaos-gcc -c $^
 	echo "\$$$(V)" >>$@

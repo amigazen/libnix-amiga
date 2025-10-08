@@ -10,7 +10,7 @@ AS =		m68k-amigaos-as
 AR =		m68k-amigaos-ar
 RANLIB =	m68k-amigaos-ranlib
 AWK =		gawk
-V	=	VER: libnix 3.0 (29.11.2009)
+V	=	VER: libnix 3.1 (08.10.2025)
 CFLAGS	=	-Wall -m68020-60 -O2 -msoft-float -funroll-loops -fomit-frame-pointer -noixemul -I../headers -g
 
 #### End system configuration section ####
@@ -21,7 +21,9 @@ endif
 
 CURDIR = $(shell pwd)
 
-OPTIONS=-I$(srcdir)/../headers $(CFLAGS)
+OPTIONS=-I../../sources/headers -I../../sources/nix/headers $(CFLAGS)
+
+vpath %.c ../../sources/nix ../../sources/nix/assert ../../sources/nix/ctype ../../sources/nix/errno ../../sources/nix/extra ../../sources/nix/locale ../../sources/nix/math ../../sources/nix/misc ../../sources/nix/setjmp ../../sources/nix/signal ../../sources/nix/socket ../../sources/nix/stdio ../../sources/nix/stdlib ../../sources/nix/string ../../sources/nix/time
 
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \
@@ -31,10 +33,11 @@ REDEF=-D_DOSBase=___DOSBase \
       -D_MathIeeeDoubTransBase=___MathIeeeDoubTransBase \
       -D_LocaleBase=___LocaleBase
 
-%.o: ../../sources/nix/%.c
-	$(CC) $(OPTIONS) -S $^ -o $*.S 2>&1 | tee $*.err
+%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(OPTIONS) -S $< -o $*.S 2>&1 | tee $*.err
 	$(CPP) -traditional $(REDEF) $*.S -o $*2.S
-	$(CC) $(OPTIONS) $*2.S -c -o $*.o
+	$(CC) $(OPTIONS) $*2.S -c -o $@
 	-rm $*.S $*2.S
 	-if test ! -s $*.err; then rm $*.err; fi
 
@@ -46,13 +49,13 @@ clean:
 	-rm -f */*.o *.a
 
 filelists:
-	rm -fv filelist
+	# filelist is now hardcoded - do not delete
 	cd ../ && make filelists
 
-$(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
-	mkdir $@
+$(SUBDIRS):
+	mkdir -p $@
 
-libnix.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) ../../sources/nix/Makefile ../../sources/nix/filelist
+libnix.a: $(SUBDIRS) $(OBJECTS) ../../sources/nix/Makefile ../../sources/nix/filelist
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@

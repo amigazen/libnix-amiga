@@ -80,7 +80,7 @@ clean:
 #	cd libb32881;	$(MAK2) clean
 #	cd libb32060;	$(MAK2) clean
 #	cd libix;	$(MAK2) clean
-	-rm -f sources/*/filelist sources/stubs/libbases/* sources/stubs/libnames/*
+	# sources folder is sacrosanct - do not delete anything from sources
 
 veryclean:
 	cd lib; 	$(MAK2) veryclean
@@ -95,7 +95,7 @@ veryclean:
 #	cd libb32881;	$(MAK2) veryclean
 #	cd libb32060;	$(MAK2) veryclean
 #	cd libix;	$(MAK2) veryclean
-	-rm sources/*/filelist
+	# filelists are now hardcoded - do not delete
 
 libnix.guide: libnix.texi
 	makeinfo --amiga $(srcdir)/libnix.texi -o libnix.guide

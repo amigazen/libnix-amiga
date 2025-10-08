@@ -1,2 +1,23 @@
 #Computer generated partial makefile-do not edit
-OBJECTS= \
+OBJECTS=\
+misc/__DOSBase.o\
+misc/__MathIeeeDoubBasBase.o\
+misc/__MathIeeeDoubTransBase.o\
+misc/__MathIeeeSingBasBase.o\
+misc/__MathIeeeSingTransBase.o\
+misc/__UtilityBase.o\
+misc/__cpucheck.o\
+misc/__flush_cache.o\
+misc/__initlibraries.o\
+stubs/__exit_list__.o\
+stubs/__init_list__.o\
+stubs/__lib_list__.o\
+stubs/__main.o\
+stubs/__oslibversion.o\
+stubs/__priority.o\
+stubs/__procname.o\
+stubs/__stack.o\
+
+SUBDIRS=\
+misc\
+stubs\
