@@ -174,7 +174,9 @@ Several reasons:
 
 ### What changes have been made in libnix-amiga 3.1?
 
-The only changes made to date are to the build system. The earlier libnix versions , while Diego Casorran's libnix 3.0 was incomplete, with no indication of exactly which . Therefore none of the makefiles . Additionally, the makefiles , and still partly relied on a very old configure based system which simply does not work.
+The only changes made to date are to the build system. The earlier libnix versions relied on a very early implementation of common Unix install and configure scripts, while Diego Casorran's libnix 3.0 was an incomplete set of patches that do not build correctly when merged with the 2.0 release.
+
+The Makefiles have been completely rewritten and simplified for ease of future maintenance, reducing dependency on GNU tools, making build contents explicit rather than dynamically generated. In short, the original build scripts were too clever for their own good, getting in the way of simple maintainability.
 
 ### Which is better ixemul.library or libnix?
 
@@ -190,7 +192,7 @@ libnix on the other hand is a straightforward and easy to understand ANSI C libr
 
 Since debugging, fixing bugs in the library itself and building with ixemul.library is significantly more difficult, and with the benefits of easy porting rendered irrelevant by years of advances on other platforms that Amiga has not kept pace with, libnix is surely a better option when using GCC.
 
-### Does this libnix include all the changes from other libnix versions found on GitHub and elsewhere
+### Does this libnix include all the changes from other libnix versions found on GitHub and elsewhere?
 
 At this time, this fork of libnix only contains code from the original Aminet releases of libnix, the later sourceforge release by Jeff Shepherd and the GitHub release by Diego Casorran. 
 
@@ -206,7 +208,7 @@ Earlier versions of GCC and the binutils could indeed be built with libnix inste
 
 ### Does libnix 3.1 support OS4?
 
-The libnix codebase supports building an OS4 shared library variant called 'libnix4.library' using the OS4 GCC-based SDK, however this is not currently tested or supported. It may be supported in future.
+The libnix codebase supports building an OS4 shared library variant called 'libnix4.library' using the OS4 GCC-based SDK, however this is not currently tested or supported. It may be supported one day, for now use clib4.
 
 ### What Standard C Libraries are available for Amiga?
 

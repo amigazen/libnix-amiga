@@ -123,19 +123,47 @@ libnix.guide: libnix.texi
 	mv libnix.info libnix.guide
 
 install:
-	cp startup/*.o	./SDK/lib/libnix
-	cp lib/*/lib*.a ./SDK/lib/libnix
-	cp lib/misc/*.o ./SDK/lib/libnix
-	cp libb/*/lib*.a ./SDK/lib/libb/libnix
-	cp libb/misc/*.o ./SDK/lib/libb/libnix
-	cp lib020/*/lib*.a ./SDK/lib/libm020/libnix
-	cp lib020/misc/*.o ./SDK/lib/libm020/libnix
-	cp libb020/*/lib*.a ./SDK/lib/libb/libm020/libnix
-	cp libb020/misc/*.o ./SDK/lib/libb/libm020/libnix
-	cp lib881/*/lib*.a ./SDK/lib/libm020/libm881/libnix
-	cp lib881/misc/*.o ./SDK/lib/libm020/libm881/libnix
-	cp libb881/*/lib*.a ./SDK/lib/libb/libm020/libm881/libnix
-	cp libb881/misc/*.o ./SDK/lib/libb/libm020/libm881/libnix
+	# Create target directories
+	mkdir -p ./SDK/gg/lib/libnix
+	mkdir -p ./SDK/gg/lib/libb/libnix
+	mkdir -p ./SDK/gg/lib/libm020/libnix
+	mkdir -p ./SDK/gg/lib/libb/libm020/libnix
+	mkdir -p ./SDK/gg/lib/libm020/libm881/libnix
+	mkdir -p ./SDK/gg/lib/libb/libm020/libm881/libnix
+	
+	# Copy startup files to libnix directory
+	cp startup/*.o ./SDK/gg/lib/libnix/
+	
+	# Copy standard library files
+	cp lib/*/lib*.a ./SDK/gg/lib/libnix/
+	cp lib/misc/*.o ./SDK/gg/lib/libnix/
+	
+	# Copy small data model library files
+	cp libb/*/lib*.a ./SDK/gg/lib/libb/libnix/
+	cp libb/misc/*.o ./SDK/gg/lib/libb/libnix/
+	
+	# Copy 68020 specific library files
+	cp lib020/*/lib*.a ./SDK/gg/lib/libm020/libnix/
+	cp lib020/misc/*.o ./SDK/gg/lib/libm020/libnix/
+	
+	# Copy small data + 68020 library files
+	cp libb020/*/lib*.a ./SDK/gg/lib/libb/libm020/libnix/
+	cp libb020/misc/*.o ./SDK/gg/lib/libb/libm020/libnix/
+	
+	# Copy 68020 + 68881 FPU library files
+	cp lib881/*/lib*.a ./SDK/gg/lib/libm020/libm881/libnix/
+	cp lib881/misc/*.o ./SDK/gg/lib/libm020/libm881/libnix/
+	
+	# Copy small data + 68020 + 68881 library files
+	cp libb881/*/lib*.a ./SDK/gg/lib/libb/libm020/libm881/libnix/
+	cp libb881/misc/*.o ./SDK/gg/lib/libb/libm020/libm881/libnix/
+	
+	# Copy guide and info files
+	cp guide/libnix.guide ./SDK/Help/
+	
+	# Note: libnix13.a files are not currently built by the main makefile
+	# If nix13 libraries are needed, they should be built separately and
+	# the install target should be updated to include them
 
 distribution:
 	mkdir T:gnu T:gnu/lib T:gnu/lib/libnix

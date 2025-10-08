@@ -154,6 +154,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Key Features |
 |---------|------|--------------|
+| 3.1 | 2025 | Makefile fixes, POSIX compatibility updates |
 | 3.0 | 2010-07-04 | POSIX semaphores, network support, IEEE math functions, extensive new standard functions |
 | 2.1 | 2000 | Network support, append mode, standard stderr behavior |
 | 2.0 | 1996 | Initial networking capabilities |
@@ -166,6 +167,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Gunther Nikl** - Co-author and maintainer (versions 1.x-2.x)
 - **Jeff Shepherd** - Network support implementation (version 2.x)
 - **Diego Casorran** - Version 3.0 maintainer and major contributor
+- **amigazen project** - Version 3.1
 
 ## License
 
