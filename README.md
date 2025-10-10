@@ -63,6 +63,9 @@ Based on version 3.0 by Diego Casorran, this release builds a new stable foundat
 #### Major Changes from 3.0 to 3.1:
 - **Makefiles**: Builds out of the box on Amiga with a standard GCC installation
 - **Kickstart 3.1**: Optimised for Kickstart 3.1 and later, not tested on older versions of the Amiga operating system
+- **getopts()**: Added getopts() command line parser based on Daniel Barrett's public domain GetOpt-1.3 originally for the Aztec Manx compiler
+- **Improved string functions**: Improved some string function implementations using implementations from Henry Spencer's public domain StringLib
+- **Removed GPL/LGPL code**: Diego Casorran's libnix 3.0 included several items licensed under GPL/LGPL. Since libnix is meant to be a permissive public domain library, these have now been replaced with independent alternative implementations. This includes strchrnul.c, getdelim.c, getline.c, libintl.h and intl_*.c files
 - **Work in progress**: More features to come
 
 ### libnix 3.0
@@ -174,9 +177,15 @@ Several reasons:
 
 ### What changes have been made in libnix-amiga 3.1?
 
-The only changes made to date are to the build system. The earlier libnix versions relied on a very early implementation of common Unix install and configure scripts, while Diego Casorran's libnix 3.0 was an incomplete set of patches that do not build correctly when merged with the 2.0 release.
+The first set of changes made isto the build system. The earlier libnix versions relied on a very early implementation of common Unix install and configure scripts, while Diego Casorran's libnix 3.0 was an incomplete set of patches that do not build correctly when merged with the 2.0 release.
 
 The Makefiles have been completely rewritten and simplified for ease of future maintenance, reducing dependency on GNU tools, making build contents explicit rather than dynamically generated. In short, the original build scripts were too clever for their own good, getting in the way of simple maintainability.
+
+Additional string functions have been added from Henry Spencer's public domain StringLib.
+
+The getopts() function has been added.
+
+Several files added by Diego Casorran in version 3.0 were GPL or LGPL licensed. These have now been removed and replaced by completely independent and more permissively licensed versions.
 
 ### Which is better ixemul.library or libnix?
 

@@ -1,3 +1,7 @@
+/*
+ * intl_textdomain.c - textdomain stub implementation
+ */
+
 #include <libintl.h>
 #include <string.h>
 #include <stdlib.h>

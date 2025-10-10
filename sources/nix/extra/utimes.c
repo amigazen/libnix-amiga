@@ -3,12 +3,7 @@
 #include <errno.h>
 #include <proto/dos.h>
 #include <devices/timer.h>
-
-/* Define timeval structure to avoid system header issues */
-struct timeval {
-    long tv_sec;
-    long tv_usec;
-};
+#include <sys/time.h>
 
 #define SECSPERDAY (24L * 60L * 60L)
 

@@ -23,7 +23,6 @@ extra/__stat.o\
 extra/access.o\
 extra/asprintf.o\
 extra/basename.o\
-extra/bcmp.o\
 extra/chdir.o\
 extra/chmod.o\
 extra/creat.o\
@@ -127,8 +126,6 @@ math/sqrt.o\
 math/trunc.o\
 misc/ConsoleWidth.o\
 misc/__request.o\
-misc/bcopy.o\
-misc/bzero.o\
 setjmp/longjmp.o\
 setjmp/setjmp.o\
 signal/__chkabort.o\
@@ -168,7 +165,6 @@ stdio/fwrite.o\
 stdio/getc.o\
 stdio/getchar.o\
 stdio/getdelim.o\
-stdio/getline.o\
 stdio/getpass.o\
 stdio/getpass_r.o\
 stdio/gets.o\
@@ -215,6 +211,7 @@ stdlib/bswap64.o\
 stdlib/calloc.o\
 stdlib/divsi3.o\
 stdlib/getenv.o\
+stdlib/getopt.o\
 stdlib/labs.o\
 stdlib/malloc.o\
 stdlib/putenv.o\
@@ -224,6 +221,8 @@ stdlib/realloc.o\
 stdlib/strtol.o\
 stdlib/strtoul.o\
 stdlib/system.o\
+string/index.o\
+string/memccpy.o\
 string/memchr.o\
 string/memcmp.o\
 string/memcpy.o\
@@ -250,6 +249,7 @@ string/strncmp.o\
 string/strncpy.o\
 string/strnlen.o\
 string/strpbrk.o\
+string/rindex.o\
 string/strrchr.o\
 string/strsep.o\
 string/strspn.o\

@@ -5,16 +5,41 @@ All notable changes to libnix are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.1] - 2025-10-07
+## [3.1] - 2025-10-10
 
 ### Added 
 - **Optimised for Kickstart 3.1** - 
+- **StringLib Integration** - Integrated Henry Spencer's public domain string library functions:
+  - `memccpy` - Copy bytes up to a certain character (new function)
+  - `index` - Find first occurrence of character (V7 compatibility)
+  - `rindex` - Find last occurrence of character (V7 compatibility)
+  - Enhanced `strstr` - Better algorithm with improved edge case handling
+  - Enhanced `strtok` - More robust implementation with comprehensive testing
+  - Enhanced `memcpy` - Proper overlap handling as required by X3J11 standard
+- **GetOpt Integration** - Added complete `getopt()` command-line argument parsing:
+  - Full POSIX-compliant implementation based on Daniel J. Barrett's GetOpt-1.3 originally for Aztec Manx compiler
+  - Support for single-character options (`-a`, `-b`, `-c`)
+  - Support for options requiring arguments (`-o filename`)
+  - Support for grouped short options (`-abc`)
+  - Recognition of `--` end-of-options marker
+  - Configurable error reporting via `opterr` variable
+  - Global variables: `optarg`, `optind`, `optopt`, `opterr`
+- **Headers** - Created local `string.h` and `getopt.h` headers in `sources/nix/headers/`
+- **License Compliance** - Replaced all GNU GPL/LGPL licensed code included by Diego Casorran with permissive alternatives:
+  - `strchrnul.c` - Replaced with public domain implementation
+  - `getdelim.c` - Replaced with BSD licensed implementation (James E. Ingram, 2011) - includes both getdelim and getline functions
+  - `libintl.h` - Replaced with simple public domain stub implementation
+  - `intl_*.c files` - Updated no-op stub implementations
+  - `getline.c` - Removed (functionality merged into getdelim.c)
 
 ### Fixed
 - **Makefiles** - Now builds out of the box natively on Amiga with GCC 2.95.3
+- **String Function Compatibility** - Improved V7 and Berkeley compatibility with `index`, `rindex`, `bcmp`, `bcopy`, `bzero`
+- **Memory Operations** - Fixed `memcpy` to handle overlapping memory regions correctly
 
 ### Removed
 - **Legacy support** - No longer supports Kickstart 1.3 because it is irrelevant
+- **GNU Licensed Code** - Removed all GPL/LGPL licensed files added in version 3.0 by Diego Casorran
 
 ## [3.0] - 2010-07-04
 

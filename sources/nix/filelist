@@ -165,7 +165,6 @@ stdio/fwrite.o\
 stdio/getc.o\
 stdio/getchar.o\
 stdio/getdelim.o\
-stdio/getline.o\
 stdio/getpass.o\
 stdio/getpass_r.o\
 stdio/gets.o\
