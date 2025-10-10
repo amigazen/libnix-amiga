@@ -55,7 +55,7 @@ libnix.a: $(SUBDIRS) $(OBJECTS) ../../sources/nix/Makefile
 
 OPTIONS=-I../../sources/headers -I../../sources/nix/headers -I/netinclude/  $(CFLAGS)
 
-vpath %.c ../../sources/nix ../../sources/nix/assert ../../sources/nix/ctype ../../sources/nix/errno ../../sources/nix/extra ../../sources/nix/locale ../../sources/nix/math ../../sources/nix/misc ../../sources/nix/setjmp ../../sources/nix/signal ../../sources/nix/socket ../../sources/nix/stdio ../../sources/nix/stdlib ../../sources/nix/string ../../sources/nix/time
+vpath %.c ../../sources/nix ../../sources/nix/assert ../../sources/nix/ctype ../../sources/nix/errno ../../sources/nix/extra ../../sources/nix/ipc ../../sources/nix/locale ../../sources/nix/math ../../sources/nix/misc ../../sources/nix/setjmp ../../sources/nix/signal ../../sources/nix/socket ../../sources/nix/stdio ../../sources/nix/stdlib ../../sources/nix/string ../../sources/nix/time
 
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \

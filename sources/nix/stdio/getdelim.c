@@ -28,7 +28,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <sys/types.h>
 
 #if __STDC_VERSION__ >= 199901L
 /* restrict is a keyword */
@@ -36,10 +36,9 @@
 # define restrict
 #endif
 
-
-#ifndef _POSIX_SOURCE
-typedef long ssize_t;
-#define SSIZE_MAX LONG_MAX
+/* Define EOVERFLOW if not available */
+#ifndef EOVERFLOW
+#define EOVERFLOW 75
 #endif
 
 

@@ -54,6 +54,7 @@ Each component of **ToolKit** is open source and like *csh* here will have it's 
 - **No shared library dependencies** - Only requires standard Amiga system libraries
 - **Auto stack-extension** - Handles stack overflow gracefully
 - **ANSI C compliant** - Full standard library implementation
+- **System V IPC support** - Complete semaphore, shared memory, and message queue implementations
 
 ## Version History
 
@@ -64,6 +65,7 @@ Based on version 3.0 by Diego Casorran, this release builds a new stable foundat
 - **Makefiles**: Builds out of the box on Amiga with a standard GCC installation
 - **Kickstart 3.1**: Optimised for Kickstart 3.1 and later, not tested on older versions of the Amiga operating system
 - **getopts()**: Added getopts() command line parser based on Daniel Barrett's public domain GetOpt-1.3 originally for the Aztec Manx compiler
+- **System V IPC**: Added complete System V Inter-Process Communication support including semaphores, shared memory, and message queues
 - **Improved string functions**: Improved some string function implementations using implementations from Henry Spencer's public domain StringLib
 - **Removed GPL/LGPL code**: Diego Casorran's libnix 3.0 included several items licensed under GPL/LGPL. Since libnix is meant to be a permissive public domain library, these have now been replaced with independent alternative implementations. This includes strchrnul.c, getdelim.c, getline.c, libintl.h and intl_*.c files
 - **Work in progress**: More features to come
@@ -184,6 +186,8 @@ The Makefiles have been completely rewritten and simplified for ease of future m
 Additional string functions have been added from Henry Spencer's public domain StringLib.
 
 The getopts() function has been added.
+
+A System V IPC implementation based on the OS4 implementation by Peter Bengtsson has been added.
 
 Several files added by Diego Casorran in version 3.0 were GPL or LGPL licensed. These have now been removed and replaced by completely independent and more permissively licensed versions.
 

@@ -83,6 +83,11 @@ extra/unlink.o\
 extra/usleep.o\
 extra/utime.o\
 extra/utimes.o\
+ipc/ftok.o\
+ipc/ipc.o\
+ipc/msg.o\
+ipc/sem.o\
+ipc/shm.o\
 locale/__decimalpoint.o\
 locale/__lconv.o\
 locale/__localevec.o\
@@ -280,6 +285,7 @@ assert\
 ctype\
 errno\
 extra\
+ipc\
 locale\
 math\
 misc\

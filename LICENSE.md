@@ -23,6 +23,11 @@ This project incorporates some code from various third-party sources. While the 
 - **OpenBSD** - strlcpy function under ISC license (Todd C. Miller)
 - **James E. Ingram** - getline and getdelim functions (https://gist.github.com/ingramj/1105106)
 
+### Public Domain Code
+- **Henry Spencer** - StringLib string functions (memccpy, index, rindex, enhanced strstr, strtok, memcpy)
+- **Daniel J. Barrett** - GetOpt-1.3 command line argument parsing (originally for Aztec Manx compiler)
+- **Peter Bengtsson** - System V IPC implementation (semaphores, shared memory, message queues)
+
 ### Apache Licensed Code
 - **Diego Casorran** - poll.c implementation under Apache License 2.0
 

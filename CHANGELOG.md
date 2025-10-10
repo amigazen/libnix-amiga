@@ -24,7 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Recognition of `--` end-of-options marker
   - Configurable error reporting via `opterr` variable
   - Global variables: `optarg`, `optind`, `optopt`, `opterr`
-- **Headers** - Created local `string.h` and `getopt.h` headers in `sources/nix/headers/`
+- **System V IPC Integration** - Added complete System V Inter-Process Communication support:
+  - **Semaphores** - `semget()`, `semop()`, `semctl()` with full POSIX compliance
+  - **Shared Memory** - `shmget()`, `shmat()`, `shmdt()`, `shmctl()` with Amiga-optimized memory management
+  - **Message Queues** - `msgget()`, `msgsnd()`, `msgrcv()`, `msgctl()` with robust message handling
+  - **IPC Keys** - `ftok()` function for generating IPC keys from file paths
+  - **Headers** - Complete `sys/ipc.h`, `sys/sem.h`, `sys/shm.h`, `sys/msg.h` header implementations
+  - **Amiga Integration** - Uses native Amiga memory allocation (`AllocVec`/`FreeVec`) and semaphore primitives
+  - **Error Handling** - Proper errno mapping and error reporting throughout
+- **Headers** - Created local `string.h`, `getopt.h`, and System V IPC headers in `sources/nix/headers/`
 - **License Compliance** - Replaced all GNU GPL/LGPL licensed code included by Diego Casorran with permissive alternatives:
   - `strchrnul.c` - Replaced with public domain implementation
   - `getdelim.c` - Replaced with BSD licensed implementation (James E. Ingram, 2011) - includes both getdelim and getline functions
