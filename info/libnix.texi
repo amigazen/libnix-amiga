@@ -761,12 +761,159 @@ task - but there is no information like this in the amiga OS :-(.
 So it just measures the time from program start on - and is compatible with
 this behaviour to all single tasking OSs around.
 
-@node Multibyte character functions,,clock,libnix.a
+@node Multibyte character functions,New standard functions,clock,libnix.a
 @chapter Multibyte character functions
 
 The multibyte character functions are all there - but since the
 Amiga OS uses no other character set than ECMA Latin I they simulate
 just "C" locale. This means they do nothing useful.
+
+@node New standard functions,Internationalization,Multibyte character functions,libnix.a
+@chapter New standard functions
+
+libnix 3.1 includes several new standard functions that provide enhanced
+POSIX compatibility and improved functionality.
+
+@menu
+* getdelim and getline::        Safe line reading functions
+* strchrnul::                   String search with null terminator
+@end menu
+
+@node getdelim and getline,strchrnul,New standard functions,New standard functions
+@chapter getdelim and getline - Safe line reading
+
+@code{getdelim()} and @code{getline()} are POSIX-standard functions for
+reading lines from a stream with automatic memory allocation. These
+functions are safer alternatives to @code{gets()} and provide more
+flexibility than @code{fgets()}.
+
+@example
+ssize_t getdelim(char **restrict lineptr, size_t *restrict n, 
+                 int delimiter, FILE *restrict stream);
+ssize_t getline(char **restrict lineptr, size_t *restrict n,
+                FILE *restrict stream);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{lineptr} - Pointer to buffer for the line (will be allocated if NULL)
+@item
+@code{n} - Pointer to size of buffer (will be updated as needed)
+@item
+@code{delimiter} - Character that terminates the line (for @code{getdelim()})
+@item
+@code{stream} - File stream to read from
+@end itemize
+
+@strong{Features:}
+@itemize @bullet
+@item
+Automatic memory allocation and reallocation
+@item
+No buffer overflow vulnerabilities
+@item
+POSIX-compliant behavior
+@item
+BSD licensed implementation (James E. Ingram, 2011)
+@end itemize
+
+@strong{Returns:} Number of characters read (including delimiter) on success,
+-1 on error or EOF.
+
+@strong{Example:}
+@example
+char *line = NULL;
+size_t len = 0;
+ssize_t read;
+
+while ((read = getline(&line, &len, stdin)) != -1) @{
+    printf("Retrieved line of length %zu:\n", read);
+    printf("%s", line);
+@}
+free(line);
+@end example
+
+@node strchrnul,,getdelim and getline,New standard functions
+@chapter strchrnul - String search with null terminator
+
+@code{strchrnul()} searches for the first occurrence of a character in a
+string, returning a pointer to the character if found, or a pointer to
+the null terminator if not found.
+
+@example
+char *strchrnul(const char *s, int c);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{s} - String to search
+@item
+@code{c} - Character to search for
+@end itemize
+
+@strong{Returns:} Pointer to the found character, or pointer to the null
+terminator if the character is not found.
+
+@strong{Note:} This function is a GNU extension that has been implemented
+in libnix as a public domain function for compatibility.
+
+@node Internationalization,,New standard functions,libnix.a
+@chapter Internationalization
+
+libnix 3.1 includes basic internationalization support through simple
+stub implementations of the gettext family of functions. These functions
+provide a foundation for internationalization while maintaining the
+library's public domain status.
+
+@menu
+* gettext functions::           Basic message translation
+* textdomain functions::        Domain management
+@end menu
+
+@node gettext functions,textdomain functions,Internationalization,Internationalization
+@chapter gettext functions
+
+The gettext family of functions provide message translation capabilities:
+
+@example
+char *gettext(const char *msgid);
+char *dgettext(const char *domainname, const char *msgid);
+char *dcgettext(const char *domainname, const char *msgid, int category);
+char *ngettext(const char *msgid1, const char *msgid2, unsigned long int n);
+char *dngettext(const char *domainname, const char *msgid1, 
+                const char *msgid2, unsigned long int n);
+char *dcngettext(const char *domainname, const char *msgid1,
+                 const char *msgid2, unsigned long int n, int category);
+@end example
+
+@strong{Current Implementation:}
+These functions currently return the original message unchanged (stub
+implementation). They are provided as public domain functions to replace
+the GNU LGPL versions that were previously included.
+
+@strong{Note:} For full internationalization support, you would need to
+implement proper message catalog handling and locale support.
+
+@node textdomain functions,,gettext functions,Internationalization
+@chapter textdomain functions
+
+Domain management functions for internationalization:
+
+@example
+char *textdomain(const char *domainname);
+char *bindtextdomain(const char *domainname, const char *dirname);
+char *bind_textdomain_codeset(const char *domainname, const char *codeset);
+@end example
+
+@strong{Current Implementation:}
+@code{textdomain()} stores the domain name and returns it. The other
+functions are stub implementations that return the provided values.
+
+@strong{Note:} These functions provide basic compatibility for code that
+expects internationalization support, but do not provide full translation
+capabilities.
 
 @node System V IPC,libstubs.a,libamiga.a,Features
 @chapter System V IPC - Inter-Process Communication

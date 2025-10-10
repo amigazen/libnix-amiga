@@ -675,7 +675,9 @@ want to use this library.
  @{" setjmp longjmp " Link "setjmp longjmp"} 
  @{" ctype " Link "ctype"} 
  @{" clock " Link "clock"} 
- @{" Multibyte character functions " Link "Multibyte character functions"} 
+ @{" Multibyte character functions " Link "Multibyte character functions"}
+ @{" New standard functions " Link "New standard functions"}
+ @{" Internationalization " Link "Internationalization"} 
 
    ---------- Footnotes ----------
 
@@ -954,6 +956,7 @@ compatible with this behaviour to all single tasking OSs around.
 @EndNode
 
 @Node "Multibyte character functions" "libnix.info/Multibyte character functions"
+@Next "New standard functions"
 @Prev "clock"
 @Toc "libnix.a"
 
@@ -963,6 +966,170 @@ Multibyte character functions
    The multibyte character functions are all there - but since the
 Amiga OS uses no other character set than ECMA Latin I they simulate
 just "C" locale. This means they do nothing useful.
+
+
+@EndNode
+
+@Node "New standard functions" "libnix.info/New standard functions"
+@Next "Internationalization"
+@Prev "Multibyte character functions"
+@Toc "libnix.a"
+
+New standard functions
+**********************
+
+   libnix 3.1 includes several new standard functions that provide enhanced
+   POSIX compatibility and improved functionality.
+
+   @{" getdelim and getline " Link "getdelim and getline"} 	       Safe line reading functions
+   @{" strchrnul " Link "strchrnul"} 	       String search with null terminator
+
+
+@EndNode
+
+@Node "getdelim and getline" "libnix.info/getdelim and getline"
+@Next "strchrnul"
+@Prev "New standard functions"
+@Toc "New standard functions"
+
+getdelim and getline - Safe line reading
+========================================
+
+   getdelim() and getline() are POSIX-standard functions for reading lines
+   from a stream with automatic memory allocation. These functions are safer
+   alternatives to gets() and provide more flexibility than fgets().
+
+   ssize_t getdelim(char **restrict lineptr, size_t *restrict n, 
+                    int delimiter, FILE *restrict stream);
+   ssize_t getline(char **restrict lineptr, size_t *restrict n,
+                   FILE *restrict stream);
+
+   Parameters:
+   * lineptr - Pointer to buffer for the line (will be allocated if NULL)
+   * n - Pointer to size of buffer (will be updated as needed)
+   * delimiter - Character that terminates the line (for getdelim())
+   * stream - File stream to read from
+
+   Features:
+   * Automatic memory allocation and reallocation
+   * No buffer overflow vulnerabilities
+   * POSIX-compliant behavior
+   * BSD licensed implementation (James E. Ingram, 2011)
+
+   Returns: Number of characters read (including delimiter) on success,
+   -1 on error or EOF.
+
+   Example:
+   char *line = NULL;
+   size_t len = 0;
+   ssize_t read;
+
+   while ((read = getline(&line, &len, stdin)) != -1) {
+       printf("Retrieved line of length %zu:\n", read);
+       printf("%s", line);
+   }
+   free(line);
+
+
+@EndNode
+
+@Node "strchrnul" "libnix.info/strchrnul"
+@Next "Internationalization"
+@Prev "getdelim and getline"
+@Toc "New standard functions"
+
+strchrnul - String search with null terminator
+==============================================
+
+   strchrnul() searches for the first occurrence of a character in a string,
+   returning a pointer to the character if found, or a pointer to the null
+   terminator if not found.
+
+   char *strchrnul(const char *s, int c);
+
+   Parameters:
+   * s - String to search
+   * c - Character to search for
+
+   Returns: Pointer to the found character, or pointer to the null
+   terminator if the character is not found.
+
+   Note: This function is a GNU extension that has been implemented
+   in libnix as a public domain function for compatibility.
+
+
+@EndNode
+
+@Node "Internationalization" "libnix.info/Internationalization"
+@Next "System V IPC"
+@Prev "strchrnul"
+@Toc "libnix.a"
+
+Internationalization
+********************
+
+   libnix 3.1 includes basic internationalization support through simple
+   stub implementations of the gettext family of functions. These functions
+   provide a foundation for internationalization while maintaining the
+   library's public domain status.
+
+   @{" gettext functions " Link "gettext functions"} 	       Basic message translation
+   @{" textdomain functions " Link "textdomain functions"} 	       Domain management
+
+
+@EndNode
+
+@Node "gettext functions" "libnix.info/gettext functions"
+@Next "textdomain functions"
+@Prev "Internationalization"
+@Toc "Internationalization"
+
+gettext functions
+=================
+
+   The gettext family of functions provide message translation capabilities:
+
+   char *gettext(const char *msgid);
+   char *dgettext(const char *domainname, const char *msgid);
+   char *dcgettext(const char *domainname, const char *msgid, int category);
+   char *ngettext(const char *msgid1, const char *msgid2, unsigned long int n);
+   char *dngettext(const char *domainname, const char *msgid1, 
+                   const char *msgid2, unsigned long int n);
+   char *dcngettext(const char *domainname, const char *msgid1,
+                    const char *msgid2, unsigned long int n, int category);
+
+   Current Implementation:
+   These functions currently return the original message unchanged (stub
+   implementation). They are provided as public domain functions to replace
+   the GNU LGPL versions that were previously included.
+
+   Note: For full internationalization support, you would need to
+   implement proper message catalog handling and locale support.
+
+
+@EndNode
+
+@Node "textdomain functions" "libnix.info/textdomain functions"
+@Next "System V IPC"
+@Prev "gettext functions"
+@Toc "Internationalization"
+
+textdomain functions
+====================
+
+   Domain management functions for internationalization:
+
+   char *textdomain(const char *domainname);
+   char *bindtextdomain(const char *domainname, const char *dirname);
+   char *bind_textdomain_codeset(const char *domainname, const char *codeset);
+
+   Current Implementation:
+   textdomain() stores the domain name and returns it. The other
+   functions are stub implementations that return the provided values.
+
+   Note: These functions provide basic compatibility for code that
+   expects internationalization support, but do not provide full translation
+   capabilities.
 
 
 @EndNode

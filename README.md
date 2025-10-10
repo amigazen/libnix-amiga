@@ -173,8 +173,8 @@ To create compact executables:
 Several reasons:
 - Amiga operating system 3.1 (and even 3.2) is available for all classic Amigas. There is no Amiga that cannot run the latest version of the classic Amiga operating system.
 - While ixemul.library and early versions of GCC did originate in the era of Kickstart 1.x, they quickly outgrew the hardware constraints of classic Amiga computers, even expanded ones, with high demands on RAM usage and CPU performace, and the Unix ports they enabled grew at an even faster rate. In practice therefore any user wishing to run software built with GCC, including _gcc_ itself, is not going to be using an outdated, unexpanded Amiga.
-- There is no known software still in use or supported today targetting earlier Amiga operating system versions and that needs GCC compiler.
-- For retro enthusiasts who really want a C compiler for targetting older versions, plenty of other options exist that are free and/or open source including VBCC and DICE.
+- There is no known software still in use or supported today targeting earlier Amiga operating system versions and that needs GCC compiler.
+- For retro enthusiasts who really want a C compiler for targeting older versions, plenty of other options exist that are free and/or open source including VBCC and DICE.
 - amigazen projects like ToolKit are not retro-computing projects. They are projects intended to rejuvenate the Amiga platform. With limited time and resources, retaining backwards compatibility is not a sensible endeavour.
 
 ### What changes have been made in libnix-amiga 3.1?
@@ -204,6 +204,10 @@ ixemul.library is widely considered to use esoteric and unusual techniques, and 
 libnix on the other hand is a straightforward and easy to understand ANSI C library, with permissive licensing (in fact, no license at all) and easy to fix and extend.
 
 Since debugging, fixing bugs in the library itself and building with ixemul.library is significantly more difficult, and with the benefits of easy porting rendered irrelevant by years of advances on other platforms that Amiga has not kept pace with, libnix is surely a better option when using GCC.
+
+### Is it correct that I should use ixemul.library for porting Unix software and libnix for normal native Amiga programs that need a C library?
+
+It might have been correct in 1992 but it's not correct anymore. If you are making Amiga native software you're more likely to be using VBCC or SAS/C anyway, not GCC, and you'll get a better result if you do. If you're using GCC you're almost certainly trying to port something that will need a more modern C library akin to glibc and since ixemul.library has stood still, whilst libnix continues to evolve that means libnix is a much better option, with features such as wide char support and System V IPC. You might also consider clib2, or clib4 if you're targeting OS4. 
 
 ### Does this libnix include all the changes from other libnix versions found on GitHub and elsewhere?
 
