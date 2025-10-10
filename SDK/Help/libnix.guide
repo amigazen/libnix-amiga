@@ -91,7 +91,7 @@ fleischr@izfm.uni-stuttgart.de
    Gunther Nikl
 gnikl@informatik.uni-rostock.de
 
-   Special thanks go to Gerhard Müller for writing gerlib, Philippe
+   Special thanks go to Gerhard Mï¿½ller for writing gerlib, Philippe
 Brand for finding a name for this beast and Kriton Kyrimis who
 contributed some of the non-ANSI functions and a lot of ideas.
 
@@ -224,6 +224,7 @@ configuration.
  @{" libstack.a " Link "libstack.a"} 	       Stack extension code (optional).
  @{" libnix.a " Link "libnix.a"} 	       The library itself.
  @{" libamiga.a " Link "libamiga.a"} 	       If you have one.
+ @{" System V IPC " Link "System V IPC"} 	       Inter-Process Communication support.
  @{" detach.o " Link "detach.o"} 	       Auto detaching
  @{" libstubs.a " Link "libstubs.a"} 	       The library bases.
 
@@ -966,9 +967,453 @@ just "C" locale. This means they do nothing useful.
 
 @EndNode
 
+@Node "System V IPC" "libnix.info/System V IPC"
+@Next "libstubs.a"
+@Prev "libamiga.a"
+@Toc "Features"
+
+System V IPC - Inter-Process Communication
+******************************************
+
+   libnix 3.1 includes complete System V Inter-Process Communication support,
+   providing semaphores, shared memory, and message queues for inter-process
+   communication. This implementation is based on Peter Bengtsson's sysvipc
+   implementation and has been adapted for libnix-amiga.
+
+   System V IPC provides three mechanisms for inter-process communication:
+
+   * Semaphores - Used for process synchronization and mutual exclusion
+   * Shared Memory - Allows multiple processes to share memory segments  
+   * Message Queues - Enables processes to send and receive messages
+
+   All IPC operations use unique keys to identify resources. Keys can be
+   generated using the ftok() function or specified directly. The special
+   key IPC_PRIVATE always creates a new resource.
+
+   @{" IPC Overview " Link "IPC Overview"} 	       Introduction to System V IPC
+   @{" Semaphores " Link "Semaphores"} 	       Semaphore operations
+   @{" Shared Memory " Link "Shared Memory"} 	       Shared memory segments
+   @{" Message Queues " Link "Message Queues"} 	       Message queue operations
+   @{" IPC Keys " Link "IPC Keys"} 	       Generating IPC keys
+   @{" IPC Headers " Link "IPC Headers"} 	       Header files and structures
+
+@EndNode
+
+@Node "IPC Overview" "libnix.info/IPC Overview"
+@Next "Semaphores"
+@Prev "System V IPC"
+@Toc "System V IPC"
+
+IPC Overview
+************
+
+   System V IPC provides three mechanisms for inter-process communication:
+
+   * Semaphores - Used for process synchronization and mutual exclusion
+   * Shared Memory - Allows multiple processes to share memory segments
+   * Message Queues - Enables processes to send and receive messages
+
+   All IPC operations use unique keys to identify resources. Keys can be
+   generated using the ftok() function or specified directly. The special
+   key IPC_PRIVATE always creates a new resource.
+
+@EndNode
+
+@Node "Semaphores" "libnix.info/Semaphores"
+@Next "Shared Memory"
+@Prev "IPC Overview"
+@Toc "System V IPC"
+
+Semaphores
+**********
+
+   Semaphores are used for process synchronization and mutual exclusion.
+   They can be used to control access to shared resources or to coordinate
+   process execution.
+
+   @{" semget " Link "semget"} 	       Create or access semaphore sets
+   @{" semop " Link "semop"} 	       Perform semaphore operations
+   @{" semctl " Link "semctl"} 	       Control semaphore sets
+
+@EndNode
+
+@Node "semget" "libnix.info/semget"
+@Next "semop"
+@Prev "Semaphores"
+@Toc "Semaphores"
+
+semget - Create or access semaphore sets
+****************************************
+
+   semget() retrieves an identifier for a semaphore array resource.
+
+   int semget(key_t key, int nsems, int semflg);
+
+   Parameters:
+   * key - A unique value identifying the IPC resource or IPC_PRIVATE
+   * nsems - Number of semaphores to create in the array
+   * semflg - Flags: IPC_CREAT, IPC_EXCL, and access permissions
+
+   Flags:
+   * IPC_CREAT - Create the semaphore array if it doesn't exist
+   * IPC_EXCL - Fail if array with specified key already exists
+   * Access bits (9 lowest bits) - Read, write, alter rights for owner/group/other
+
+   Returns: Semaphore array identifier on success, -1 on error.
+
+@EndNode
+
+@Node "semop" "libnix.info/semop"
+@Next "semctl"
+@Prev "semget"
+@Toc "Semaphores"
+
+semop - Perform semaphore operations
+************************************
+
+   semop() atomically performs semaphore operations on zero or more
+   semaphores in a semaphore array.
+
+   int semop(int semid, const struct sembuf *sops, int nsops);
+
+   Parameters:
+   * semid - Semaphore array identifier
+   * sops - Array of semaphore operations
+   * nsops - Number of operations in the array
+
+   Semaphore Operations:
+   * sem_op < 0 - Wait until semaphore value >= -sem_op, then add sem_op
+   * sem_op > 0 - Add sem_op to semaphore value (signal)
+   * sem_op = 0 - Wait until semaphore value is 0
+
+   Flags:
+   * SEM_UNDO - Adjust semaphore on process exit
+   * IPC_NOWAIT - Return immediately if operation would block
+
+   Returns: 0 on success, -1 on error.
+
+@EndNode
+
+@Node "semctl" "libnix.info/semctl"
+@Prev "semop"
+@Toc "Semaphores"
+
+semctl - Control semaphore sets
+*******************************
+
+   semctl() performs control operations on a semaphore set.
+
+   int semctl(int semid, int semnum, int cmd, union semun arg);
+
+   Parameters:
+   * semid - Semaphore array identifier
+   * semnum - Semaphore index for single-semaphore operations
+   * cmd - Control command
+   * arg - Command-specific argument
+
+   Commands:
+   * GETVAL - Get semaphore value
+   * SETVAL - Set semaphore value
+   * GETPID - Get process ID of last operation
+   * GETNCNT - Get number of processes waiting for semaphore > current value
+   * GETZCNT - Get number of processes waiting for semaphore = 0
+   * SETALL - Set all semaphore values
+   * GETALL - Get all semaphore values
+   * IPC_STAT - Get semaphore set status
+   * IPC_SET - Set semaphore set status
+   * IPC_RMID - Remove semaphore set
+
+   Returns: Command-specific value on success, -1 on error.
+
+@EndNode
+
+@Node "Shared Memory" "libnix.info/Shared Memory"
+@Next "Message Queues"
+@Prev "Semaphores"
+@Toc "System V IPC"
+
+Shared Memory
+*************
+
+   Shared memory allows multiple processes to share memory segments for
+   efficient data exchange.
+
+   @{" shmget " Link "shmget"} 	       Create or access shared memory segments
+   @{" shmat " Link "shmat"} 	       Attach to shared memory segments
+   @{" shmdt " Link "shmdt"} 	       Detach from shared memory segments
+   @{" shmctl " Link "shmctl"} 	       Control shared memory segments
+
+@EndNode
+
+@Node "shmget" "libnix.info/shmget"
+@Next "shmat"
+@Prev "Shared Memory"
+@Toc "Shared Memory"
+
+shmget - Create or access shared memory segments
+************************************************
+
+   shmget() retrieves an identifier for a shared memory segment.
+
+   int shmget(key_t key, size_t size, int shmflg);
+
+   Parameters:
+   * key - A unique value identifying the IPC resource or IPC_PRIVATE
+   * size - Size of the shared memory segment
+   * shmflg - Flags: IPC_CREAT, IPC_EXCL, and access permissions
+
+   Flags:
+   * IPC_CREAT - Create the segment if it doesn't exist
+   * IPC_EXCL - Fail if segment with specified key already exists
+   * Access bits (9 lowest bits) - Read, write, alter rights for owner/group/other
+
+   Returns: Shared memory identifier on success, -1 on error.
+
+@EndNode
+
+@Node "shmat" "libnix.info/shmat"
+@Next "shmdt"
+@Prev "shmget"
+@Toc "Shared Memory"
+
+shmat - Attach to shared memory segments
+****************************************
+
+   shmat() attaches a shared memory segment to the current process.
+
+   void *shmat(int shmid, const void *shmaddr, int shmflg);
+
+   Parameters:
+   * shmid - Shared memory identifier
+   * shmaddr - Preferred address (should be 0 or NULL)
+   * shmflg - Flags: SHM_RDONLY for read-only access
+
+   Returns: Address of shared memory segment on success, (void *)-1 on error.
+
+@EndNode
+
+@Node "shmdt" "libnix.info/shmdt"
+@Next "shmctl"
+@Prev "shmat"
+@Toc "Shared Memory"
+
+shmdt - Detach from shared memory segments
+******************************************
+
+   shmdt() detaches a shared memory segment from the current process.
+
+   int shmdt(const void *shmaddr);
+
+   Parameters:
+   * shmaddr - Address of shared memory segment to detach
+
+   Returns: 0 on success, -1 on error.
+
+@EndNode
+
+@Node "shmctl" "libnix.info/shmctl"
+@Prev "shmdt"
+@Toc "Shared Memory"
+
+shmctl - Control shared memory segments
+***************************************
+
+   shmctl() performs control operations on a shared memory segment.
+
+   int shmctl(int shmid, int cmd, struct shmid_ds *buf);
+
+   Parameters:
+   * shmid - Shared memory identifier
+   * cmd - Control command
+   * buf - Buffer for status information
+
+   Commands:
+   * IPC_STAT - Get segment status
+   * IPC_SET - Set segment status
+   * IPC_RMID - Mark segment for removal
+   * SHM_LOCK - Lock segment in memory
+   * SHM_UNLOCK - Unlock segment from memory
+
+   Returns: 0 on success, -1 on error.
+
+@EndNode
+
+@Node "Message Queues" "libnix.info/Message Queues"
+@Next "IPC Keys"
+@Prev "Shared Memory"
+@Toc "System V IPC"
+
+Message Queues
+**************
+
+   Message queues allow processes to send and receive messages with type filtering.
+
+   @{" msgget " Link "msgget"} 	       Create or access message queues
+   @{" msgsnd " Link "msgsnd"} 	       Send messages to queues
+   @{" msgrcv " Link "msgrcv"} 	       Receive messages from queues
+   @{" msgctl " Link "msgctl"} 	       Control message queues
+
+@EndNode
+
+@Node "msgget" "libnix.info/msgget"
+@Next "msgsnd"
+@Prev "Message Queues"
+@Toc "Message Queues"
+
+msgget - Create or access message queues
+****************************************
+
+   msgget() retrieves an identifier for a message queue.
+
+   int msgget(key_t key, int msgflg);
+
+   Parameters:
+   * key - A unique value identifying the IPC resource or IPC_PRIVATE
+   * msgflg - Flags: IPC_CREAT, IPC_EXCL, and access permissions
+
+   Flags:
+   * IPC_CREAT - Create the queue if it doesn't exist
+   * IPC_EXCL - Fail if queue with specified key already exists
+   * Access bits (9 lowest bits) - Read, write, alter rights for owner/group/other
+
+   Returns: Message queue identifier on success, -1 on error.
+
+@EndNode
+
+@Node "msgsnd" "libnix.info/msgsnd"
+@Next "msgrcv"
+@Prev "msgget"
+@Toc "Message Queues"
+
+msgsnd - Send messages to queues
+********************************
+
+   msgsnd() places a message on a message queue.
+
+   int msgsnd(int msqid, const void *msgp, size_t msgsz, int msgflg);
+
+   Parameters:
+   * msqid - Message queue identifier
+   * msgp - Pointer to message buffer (first 4 bytes contain message type)
+   * msgsz - Size of message (excluding type field)
+   * msgflg - Flags: IPC_NOWAIT for non-blocking operation
+
+   Returns: 0 on success, -1 on error.
+
+@EndNode
+
+@Node "msgrcv" "libnix.info/msgrcv"
+@Next "msgctl"
+@Prev "msgsnd"
+@Toc "Message Queues"
+
+msgrcv - Receive messages from queues
+*************************************
+
+   msgrcv() removes a message from a message queue.
+
+   ssize_t msgrcv(int msqid, void *msgp, size_t msgsz, long msgtyp, int msgflg);
+
+   Parameters:
+   * msqid - Message queue identifier
+   * msgp - Pointer to message buffer
+   * msgsz - Maximum message size
+   * msgtyp - Message type filter
+   * msgflg - Flags: IPC_NOWAIT, MSG_NOERROR
+
+   Message Type Filtering:
+   * msgtyp = 0 - Receive oldest message
+   * msgtyp > 0 - Receive oldest message with type = msgtyp
+   * msgtyp < 0 - Receive oldest message with type <= -msgtyp
+
+   Flags:
+   * IPC_NOWAIT - Return immediately if no message available
+   * MSG_NOERROR - Truncate message if buffer too small
+
+   Returns: Number of bytes received on success, -1 on error.
+
+@EndNode
+
+@Node "msgctl" "libnix.info/msgctl"
+@Prev "msgrcv"
+@Toc "Message Queues"
+
+msgctl - Control message queues
+*******************************
+
+   msgctl() performs control operations on a message queue.
+
+   int msgctl(int msqid, int cmd, struct msgqid_ds *buf);
+
+   Parameters:
+   * msqid - Message queue identifier
+   * cmd - Control command
+   * buf - Buffer for status information
+
+   Commands:
+   * IPC_STAT - Get queue status
+   * IPC_SET - Set queue status
+   * IPC_RMID - Remove message queue
+
+   Returns: 0 on success, -1 on error.
+
+@EndNode
+
+@Node "IPC Keys" "libnix.info/IPC Keys"
+@Next "IPC Headers"
+@Prev "Message Queues"
+@Toc "System V IPC"
+
+IPC Keys
+********
+
+   ftok() generates a unique key for IPC resources based on a file path.
+
+   key_t ftok(const char *path, int id);
+
+   Parameters:
+   * path - Path to an existing file
+   * id - 8-bit project identifier
+
+   Returns: Key value on success, -1 on error.
+
+   Note: This function is marked as obsolete in the original documentation
+   but is included for compatibility with existing code.
+
+@EndNode
+
+@Node "IPC Headers" "libnix.info/IPC Headers"
+@Prev "IPC Keys"
+@Toc "System V IPC"
+
+IPC Headers
+***********
+
+   The following header files are provided for System V IPC:
+
+   * sys/ipc.h - Common IPC definitions and structures
+   * sys/sem.h - Semaphore-specific definitions
+   * sys/shm.h - Shared memory-specific definitions
+   * sys/msg.h - Message queue-specific definitions
+
+   Key Structures:
+   * struct ipc_perm - IPC permissions
+   * struct sembuf - Semaphore operation
+   * struct shmid_ds - Shared memory descriptor
+   * struct msgqid_ds - Message queue descriptor
+   * union semun - Semaphore control union
+
+   Important Constants:
+   * IPC_PRIVATE - Special key for creating new resources
+   * IPC_CREAT, IPC_EXCL - Creation flags
+   * IPC_NOWAIT - Non-blocking operation flag
+   * IPC_RMID, IPC_SET, IPC_STAT - Control commands
+
+@EndNode
+
 @Node "libstubs.a" "libnix.info/libstubs.a"
 @Next "detach.o"
-@Prev "libamiga.a"
+@Prev "System V IPC"
 @Toc "Features"
 
 libstubs - automatic library opening
@@ -1100,7 +1545,7 @@ compiler:
 @EndNode
 
 @Node "detach.o" "libnix.info/detach.o"
-@Prev "libstubs.a"
+@Prev "System V IPC"
 @Toc "Features"
 
 Detaching from the current CLI

@@ -79,7 +79,7 @@ Matthias Fleischer
 Gunther Nikl
 @*gnikl@@informatik.uni-rostock.de
 
-Special thanks go to Gerhard Müller for writing gerlib, Philippe Brand for
+Special thanks go to Gerhard Mï¿½ller for writing gerlib, Philippe Brand for
 finding a name for this beast and Kriton Kyrimis who contributed some
 of the non-ANSI functions and a lot of ideas.
 
@@ -184,6 +184,7 @@ a working configuration.
 * libstack.a::	       Stack extension code (optional).
 * libnix.a::	       The library itself.
 * libamiga.a::	       If you have one.
+* System V IPC::       Inter-Process Communication support.
 * detach.o::	       Auto detaching
 * libstubs.a::	       The library bases.
 @end menu
@@ -767,7 +768,492 @@ The multibyte character functions are all there - but since the
 Amiga OS uses no other character set than ECMA Latin I they simulate
 just "C" locale. This means they do nothing useful.
 
-@node libstubs.a,detach.o,libamiga.a,Features
+@node System V IPC,libstubs.a,libamiga.a,Features
+@chapter System V IPC - Inter-Process Communication
+
+libnix 3.1 includes complete System V Inter-Process Communication support,
+providing semaphores, shared memory, and message queues for inter-process
+communication. This implementation is based on Peter Bengtsson's sysvipc
+implementation and has been adapted for libnix-amiga.
+
+@menu
+* IPC Overview::                Introduction to System V IPC
+* Semaphores::                  Semaphore operations
+* Shared Memory::               Shared memory segments
+* Message Queues::              Message queue operations
+* IPC Keys::                    Generating IPC keys
+* IPC Headers::                 Header files and structures
+@end menu
+
+@node IPC Overview,Semaphores,System V IPC,System V IPC
+@chapter IPC Overview
+
+System V IPC provides three mechanisms for inter-process communication:
+
+@itemize @bullet
+@item
+@strong{Semaphores} - Used for process synchronization and mutual exclusion
+@item
+@strong{Shared Memory} - Allows multiple processes to share memory segments
+@item
+@strong{Message Queues} - Enables processes to send and receive messages
+@end itemize
+
+All IPC operations use unique keys to identify resources. Keys can be generated
+using the @code{ftok()} function or specified directly. The special key
+@code{IPC_PRIVATE} always creates a new resource.
+
+@node Semaphores,Shared Memory,IPC Overview,System V IPC
+@chapter Semaphores
+
+Semaphores are used for process synchronization and mutual exclusion.
+They can be used to control access to shared resources or to coordinate
+process execution.
+
+@menu
+* semget::                      Create or access semaphore sets
+* semop::                       Perform semaphore operations
+* semctl::                      Control semaphore sets
+@end menu
+
+@node semget,semop,Semaphores,Semaphores
+@chapter semget - Create or access semaphore sets
+
+@code{semget()} retrieves an identifier for a semaphore array resource.
+
+@example
+int semget(key_t key, int nsems, int semflg);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{key} - A unique value identifying the IPC resource or @code{IPC_PRIVATE}
+@item
+@code{nsems} - Number of semaphores to create in the array
+@item
+@code{semflg} - Flags: @code{IPC_CREAT}, @code{IPC_EXCL}, and access permissions
+@end itemize
+
+@strong{Flags:}
+@itemize @bullet
+@item
+@code{IPC_CREAT} - Create the semaphore array if it doesn't exist
+@item
+@code{IPC_EXCL} - Fail if array with specified key already exists
+@item
+Access bits (9 lowest bits) - Read, write, alter rights for owner/group/other
+@end itemize
+
+@strong{Returns:} Semaphore array identifier on success, -1 on error.
+
+@node semop,semctl,semget,Semaphores
+@chapter semop - Perform semaphore operations
+
+@code{semop()} atomically performs semaphore operations on zero or more
+semaphores in a semaphore array.
+
+@example
+int semop(int semid, const struct sembuf *sops, int nsops);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{semid} - Semaphore array identifier
+@item
+@code{sops} - Array of semaphore operations
+@item
+@code{nsops} - Number of operations in the array
+@end itemize
+
+@strong{Semaphore Operations:}
+@itemize @bullet
+@item
+@code{sem_op < 0} - Wait until semaphore value >= -sem_op, then add sem_op
+@item
+@code{sem_op > 0} - Add sem_op to semaphore value (signal)
+@item
+@code{sem_op = 0} - Wait until semaphore value is 0
+@end itemize
+
+@strong{Flags:}
+@itemize @bullet
+@item
+@code{SEM_UNDO} - Adjust semaphore on process exit
+@item
+@code{IPC_NOWAIT} - Return immediately if operation would block
+@end itemize
+
+@strong{Returns:} 0 on success, -1 on error.
+
+@node semctl,,semop,Semaphores
+@chapter semctl - Control semaphore sets
+
+@code{semctl()} performs control operations on a semaphore set.
+
+@example
+int semctl(int semid, int semnum, int cmd, union semun arg);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{semid} - Semaphore array identifier
+@item
+@code{semnum} - Semaphore index for single-semaphore operations
+@item
+@code{cmd} - Control command
+@item
+@code{arg} - Command-specific argument
+@end itemize
+
+@strong{Commands:}
+@itemize @bullet
+@item
+@code{GETVAL} - Get semaphore value
+@item
+@code{SETVAL} - Set semaphore value
+@item
+@code{GETPID} - Get process ID of last operation
+@item
+@code{GETNCNT} - Get number of processes waiting for semaphore > current value
+@item
+@code{GETZCNT} - Get number of processes waiting for semaphore = 0
+@item
+@code{SETALL} - Set all semaphore values
+@item
+@code{GETALL} - Get all semaphore values
+@item
+@code{IPC_STAT} - Get semaphore set status
+@item
+@code{IPC_SET} - Set semaphore set status
+@item
+@code{IPC_RMID} - Remove semaphore set
+@end itemize
+
+@strong{Returns:} Command-specific value on success, -1 on error.
+
+@node Shared Memory,Message Queues,System V IPC,System V IPC
+@chapter Shared Memory
+
+Shared memory allows multiple processes to share memory segments for
+efficient data exchange.
+
+@menu
+* shmget::                      Create or access shared memory segments
+* shmat::                       Attach to shared memory segments
+* shmdt::                       Detach from shared memory segments
+* shmctl::                      Control shared memory segments
+@end menu
+
+@node shmget,shmat,Shared Memory,Shared Memory
+@chapter shmget - Create or access shared memory segments
+
+@code{shmget()} retrieves an identifier for a shared memory segment.
+
+@example
+int shmget(key_t key, size_t size, int shmflg);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{key} - A unique value identifying the IPC resource or @code{IPC_PRIVATE}
+@item
+@code{size} - Size of the shared memory segment
+@item
+@code{shmflg} - Flags: @code{IPC_CREAT}, @code{IPC_EXCL}, and access permissions
+@end itemize
+
+@strong{Flags:}
+@itemize @bullet
+@item
+@code{IPC_CREAT} - Create the segment if it doesn't exist
+@item
+@code{IPC_EXCL} - Fail if segment with specified key already exists
+@item
+Access bits (9 lowest bits) - Read, write, alter rights for owner/group/other
+@end itemize
+
+@strong{Returns:} Shared memory identifier on success, -1 on error.
+
+@node shmat,shmdt,shmget,Shared Memory
+@chapter shmat - Attach to shared memory segments
+
+@code{shmat()} attaches a shared memory segment to the current process.
+
+@example
+void *shmat(int shmid, const void *shmaddr, int shmflg);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{shmid} - Shared memory identifier
+@item
+@code{shmaddr} - Preferred address (should be 0 or NULL)
+@item
+@code{shmflg} - Flags: @code{SHM_RDONLY} for read-only access
+@end itemize
+
+@strong{Returns:} Address of shared memory segment on success, (void *)-1 on error.
+
+@node shmdt,shmctl,shmat,Shared Memory
+@chapter shmdt - Detach from shared memory segments
+
+@code{shmdt()} detaches a shared memory segment from the current process.
+
+@example
+int shmdt(const void *shmaddr);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{shmaddr} - Address of shared memory segment to detach
+@end itemize
+
+@strong{Returns:} 0 on success, -1 on error.
+
+@node shmctl,,shmdt,Shared Memory
+@chapter shmctl - Control shared memory segments
+
+@code{shmctl()} performs control operations on a shared memory segment.
+
+@example
+int shmctl(int shmid, int cmd, struct shmid_ds *buf);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{shmid} - Shared memory identifier
+@item
+@code{cmd} - Control command
+@item
+@code{buf} - Buffer for status information
+@end itemize
+
+@strong{Commands:}
+@itemize @bullet
+@item
+@code{IPC_STAT} - Get segment status
+@item
+@code{IPC_SET} - Set segment status
+@item
+@code{IPC_RMID} - Mark segment for removal
+@item
+@code{SHM_LOCK} - Lock segment in memory
+@item
+@code{SHM_UNLOCK} - Unlock segment from memory
+@end itemize
+
+@strong{Returns:} 0 on success, -1 on error.
+
+@node Message Queues,IPC Keys,Shared Memory,System V IPC
+@chapter Message Queues
+
+Message queues allow processes to send and receive messages with type filtering.
+
+@menu
+* msgget::                      Create or access message queues
+* msgsnd::                      Send messages to queues
+* msgrcv::                      Receive messages from queues
+* msgctl::                      Control message queues
+@end menu
+
+@node msgget,msgsnd,Message Queues,Message Queues
+@chapter msgget - Create or access message queues
+
+@code{msgget()} retrieves an identifier for a message queue.
+
+@example
+int msgget(key_t key, int msgflg);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{key} - A unique value identifying the IPC resource or @code{IPC_PRIVATE}
+@item
+@code{msgflg} - Flags: @code{IPC_CREAT}, @code{IPC_EXCL}, and access permissions
+@end itemize
+
+@strong{Flags:}
+@itemize @bullet
+@item
+@code{IPC_CREAT} - Create the queue if it doesn't exist
+@item
+@code{IPC_EXCL} - Fail if queue with specified key already exists
+@item
+Access bits (9 lowest bits) - Read, write, alter rights for owner/group/other
+@end itemize
+
+@strong{Returns:} Message queue identifier on success, -1 on error.
+
+@node msgsnd,msgrcv,msgget,Message Queues
+@chapter msgsnd - Send messages to queues
+
+@code{msgsnd()} places a message on a message queue.
+
+@example
+int msgsnd(int msqid, const void *msgp, size_t msgsz, int msgflg);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{msqid} - Message queue identifier
+@item
+@code{msgp} - Pointer to message buffer (first 4 bytes contain message type)
+@item
+@code{msgsz} - Size of message (excluding type field)
+@item
+@code{msgflg} - Flags: @code{IPC_NOWAIT} for non-blocking operation
+@end itemize
+
+@strong{Returns:} 0 on success, -1 on error.
+
+@node msgrcv,msgctl,msgsnd,Message Queues
+@chapter msgrcv - Receive messages from queues
+
+@code{msgrcv()} removes a message from a message queue.
+
+@example
+ssize_t msgrcv(int msqid, void *msgp, size_t msgsz, long msgtyp, int msgflg);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{msqid} - Message queue identifier
+@item
+@code{msgp} - Pointer to message buffer
+@item
+@code{msgsz} - Maximum message size
+@item
+@code{msgtyp} - Message type filter
+@item
+@code{msgflg} - Flags: @code{IPC_NOWAIT}, @code{MSG_NOERROR}
+@end itemize
+
+@strong{Message Type Filtering:}
+@itemize @bullet
+@item
+@code{msgtyp = 0} - Receive oldest message
+@item
+@code{msgtyp > 0} - Receive oldest message with type = msgtyp
+@item
+@code{msgtyp < 0} - Receive oldest message with type <= -msgtyp
+@end itemize
+
+@strong{Flags:}
+@itemize @bullet
+@item
+@code{IPC_NOWAIT} - Return immediately if no message available
+@item
+@code{MSG_NOERROR} - Truncate message if buffer too small
+@end itemize
+
+@strong{Returns:} Number of bytes received on success, -1 on error.
+
+@node msgctl,,msgrcv,Message Queues
+@chapter msgctl - Control message queues
+
+@code{msgctl()} performs control operations on a message queue.
+
+@example
+int msgctl(int msqid, int cmd, struct msgqid_ds *buf);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{msqid} - Message queue identifier
+@item
+@code{cmd} - Control command
+@item
+@code{buf} - Buffer for status information
+@end itemize
+
+@strong{Commands:}
+@itemize @bullet
+@item
+@code{IPC_STAT} - Get queue status
+@item
+@code{IPC_SET} - Set queue status
+@item
+@code{IPC_RMID} - Remove message queue
+@end itemize
+
+@strong{Returns:} 0 on success, -1 on error.
+
+@node IPC Keys,IPC Headers,Message Queues,System V IPC
+@chapter IPC Keys
+
+@code{ftok()} generates a unique key for IPC resources based on a file path.
+
+@example
+key_t ftok(const char *path, int id);
+@end example
+
+@strong{Parameters:}
+@itemize @bullet
+@item
+@code{path} - Path to an existing file
+@item
+@code{id} - 8-bit project identifier
+@end itemize
+
+@strong{Returns:} Key value on success, -1 on error.
+
+@strong{Note:} This function is marked as obsolete in the original documentation
+but is included for compatibility with existing code.
+
+@node IPC Headers,,IPC Keys,System V IPC
+@chapter IPC Headers
+
+The following header files are provided for System V IPC:
+
+@itemize @bullet
+@item
+@code{sys/ipc.h} - Common IPC definitions and structures
+@item
+@code{sys/sem.h} - Semaphore-specific definitions
+@item
+@code{sys/shm.h} - Shared memory-specific definitions
+@item
+@code{sys/msg.h} - Message queue-specific definitions
+@end itemize
+
+@strong{Key Structures:}
+@itemize @bullet
+@item
+@code{struct ipc_perm} - IPC permissions
+@item
+@code{struct sembuf} - Semaphore operation
+@item
+@code{struct shmid_ds} - Shared memory descriptor
+@item
+@code{struct msgqid_ds} - Message queue descriptor
+@item
+@code{union semun} - Semaphore control union
+@end itemize
+
+@strong{Important Constants:}
+@itemize @bullet
+@item
+@code{IPC_PRIVATE} - Special key for creating new resources
+@item
+@code{IPC_CREAT}, @code{IPC_EXCL} - Creation flags
+@item
+@code{IPC_NOWAIT} - Non-blocking operation flag
+@item
+@code{IPC_RMID}, @code{IPC_SET}, @code{IPC_STAT} - Control commands
+@end itemize
+
+@node libstubs.a,detach.o,System V IPC,Features
 @chapter libstubs - automatic library opening
 
 The Amiga OS shared libraries are a nice thing. All the tasks can
