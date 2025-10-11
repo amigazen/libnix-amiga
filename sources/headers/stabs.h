@@ -16,6 +16,37 @@
 #define ADD2EXIT(a,pri) ADD2LIST(a,__EXIT_LIST__,22); \
                         asm(".stabs \"___EXIT_LIST__\",20,0,0," #pri "+128")
 
+#define CTOR_P -4
+
+#if __GNUC__ >= 3
+#define CONSTRUCTOR_P( function, Pri )	\
+static void function ( void )		\
+	__attribute__((used));		\
+ADD2INIT( function, Pri );		\
+static void function ( void )
+
+#define DESTRUCTOR_P( function, Pri )	\
+static void function ( void )	\
+	__attribute__((used));		\
+ADD2EXIT( function, Pri );		\
+static void function ( void )
+#else
+#define CONSTRUCTOR_P( function, Pri )	\
+void __nCTOR_##function ( void );	\
+ADD2INIT(__nCTOR_##function, Pri );	\
+void __nCTOR_##function ( void )
+
+#define DESTRUCTOR_P( function, Pri )	\
+void __nDTOR_##function ( void );	\
+ADD2EXIT(__nDTOR_##function, Pri );	\
+void __nDTOR_##function ( void )
+#endif
+
+#define CONSTRUCTOR(func)	\
+	CONSTRUCTOR_P(func,-4)
+#define DESTRUCTOR(func)	\
+	DESTRUCTOR_P(func,-4)
+
 /* Add to library list */
 #define ADD2LIB(a) ADD2LIST(a,__LIB_LIST__,24)
 
@@ -33,7 +64,7 @@
  * Usage: ADDTABL_2(AddHead,a0,a1);
  * No more than 4 arguments supported, use structures!
  */
- 
+
 #define _ADDTABL_START(name)		\
 asm(".globl ___" #name);		\
 asm("___" #name ":\tmovel a4,sp@-")

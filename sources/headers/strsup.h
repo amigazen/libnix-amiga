@@ -146,8 +146,7 @@ extern __inline__ char *stpcpy(char *dst,const char *src)
 #endif /* __OPTIMIZE__ */
 
 static  __inline__ size_t strlen_plus_one(const char *string)
-{ const char *s=string;
-
+{ register const char *s=string;
   do;while(*s++); return (s-string);
 }
 

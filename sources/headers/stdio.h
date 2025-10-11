@@ -27,10 +27,10 @@ typedef struct __FILE
 #define __SERR	0x0040	  /* error encountered */
 #define __SMBF	0x0080	  /* buffer malloc'ed by library */
 #define __SSTR	0x0200	  /* sprintf/sscanf buffer */
+#define __SNBE  0x0400	  /* error on unbuffered */
 #define __SWO	0x8000	  /* write-only mode */
 
   short file;		  /* The filehandle */
-  int magic;		  /* Magic number for validation */
   unsigned char *buffer;  /* original buffer pointer */
   int bufsize;		  /* size of the buffer */
   int linebufsize;	  /* 0 full buffered
@@ -45,14 +45,15 @@ typedef struct __FILE
   int tmpinc;		  /* Stored incount if ungetc pending, otherwise undefined */
   long tmpdir;		  /* lock to directory if temporary file */
   char *name;		  /* filename if temporary file */
-} FILE;
 
-#define FILEMAGICID 0x12345678
+  unsigned long magic;    /* Magic ID - libnix >= 3.0 */
+  #define FILEMAGICID	0x9F130130
+} FILE;
 
 #ifndef NULL
 #define NULL ((void *)0l)
 #endif
-#define BUFSIZ 1024
+#define BUFSIZ 8192
 #define EOF (-1)
 #define SEEK_SET 0
 #define SEEK_CUR 1
@@ -73,6 +74,7 @@ extern int sscanf(const char *s,const char *format,...);
 extern int vprintf(const char *format,va_list args);
 extern int vsprintf(char *s,const char *format,va_list args);
 extern int vfprintf(FILE *stream,const char *format,va_list args);
+extern int fprintf(FILE *stream,const char *format,...);
 extern int vscanf(const char *format,va_list args);
 extern int vsscanf(const char *s,const char *format,va_list args);
 extern int vfscanf(FILE *stream,const char *format,va_list args);
@@ -98,13 +100,15 @@ extern FILE **__sF; /* Standard I/O streams */
 
 /* Be careful: We have side effects and use incount in __srget -
 	       must use comma-operator */
+#define __valid_fp(fp) (1)
+//((fp)&&((FILE *)(fp))->magic==FILEMAGICID)
 #define getc(fp) ((fp)->incount-=1,(fp)->incount>=0?(int)*(fp)->p++:__srget(fp))
 #define putc(c,fp) \
 ((fp)->outcount-=1,(fp)->outcount>=0|| \
 ((fp)->outcount>=(fp)->linebufsize&&(char)(c)!='\n')? \
 *(fp)->p++=(c):__swbuf((c),(fp)))
-#define ferror(fp) ((fp)->flags&__SERR)
-#define feof(fp)   ((fp)->flags&__SEOF)
+#define ferror(fp) (!__valid_fp(fp)||(fp)->flags&__SERR)
+#define feof(fp)   (!__valid_fp(fp)||(fp)->flags&__SEOF)
 
 /* own stuff */
 extern struct MinList __filelist;   /* List of all fopen'ed files */
@@ -112,9 +116,6 @@ extern struct MinList __memorylist; /* List of memory puddles */
 
 extern int __fflush(FILE *stream); /* fflush single file */
 extern void __chkabort(void);      /* check for SIGABRT */
-extern int __valid_fp(FILE *stream); /* validate file pointer */
-extern void perror(const char *s); /* print system error message */
-extern int fprintf(FILE *stream, const char *format, ...); /* formatted output to stream */
 
 /* objects in __filelist */
 struct filenode {
